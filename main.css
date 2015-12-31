@@ -1,0 +1,21 @@
+﻿div {
+width:100%;	
+position:fixed;
+top:0px;
+left:0px;
+}
+a:link,a:visited {
+   color: #abcbff;
+}
+table{
+width:100%;
+color:white;
+background:black;
+text-align:center;
+font-size:1.2em;
+}
+table#t {
+background: -webkit-linear-gradient(rgba(80,174,209,1.00) 0%, rgba(35,68,204,1.00) 100%);
+background: linear-gradient(rgba(80,174,209,1.00) 0%, rgba(35,68,204,1.00) 100%);
+background: -moz-linear-gradient(rgba(80,174,209,1.00) 0%, rgba(35,68,204,1.00) 100%);
+}
