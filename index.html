@@ -1,89 +1,104 @@
 <html>
-<head>
-<title>Wii U Exploit Index</title>
-<link rel="stylesheet" type="text/css" href="main.css">
-</head>
-<body bgcolor="#000000">
-<div>
-<table id="t">
-<tr>
-<td>Last Updated: 9:22PM 12/21/15</td>
-</tr>
-</table>
-<table id="t">
-<tr>
-<td>Kernel Exploits</td>
-</tr>
-</table>
-<table>
-<tr>
-<td width="33%"><a href="osdriver/payload532.html">Kernel</a></td>
-<td width="34%"><a href="multiker/payload532.html">Multi-Kernel</a></td>
-<td width="33%"><a href="lkernel/payload532.html">Loadiine Kernel (5.3.2)</a></td>
-</tr>
-<tr>
-<td width="33%"><a href="lkernel/payload410.html">Loadiine Kernel (4.1.0)</a></td>
-<td width="33%"></td>
-<td width="33%"><a href="lkernel/payload500.html">Loadiine Kernel (5.0.0-5.1.0)</a></td>
-</tr>
-</table>
-<table id="t">
-<tr>
-<td>Payloads</td>
-</tr>
-</table>
-<table>
-<tr>
-<td width="25%"><a href="pygec/payload532.html">pyGecko</a></td>
-<td width="25%"><a href="pyld/payload532.html">pyGecko (Loadiine 5.3.2)</a></td>
-<td width="25%"><a href="tcpgec/payload532.html">TCPGecko (FSA)</a></td>
-<td width="25%"><a href="dumpiine/payload532.html">Dumpiine</a></td>
-</tr>
-<tr>
-<td width="25%"><a href="cafiine/payload532.html">Cafiine</a></td>
-<td width="25%"><a href="saviine/payload532.html">Saviine</a></td>
-<td width="25%"><a href="wi/payload532.html">WUP Installer</a></td>
-<td width="25%"><a href="nnu/payload532.html">NNU-Patch</a></td>
-</tr>
-<tr>
-<td width="25%"><a href="pyld/payload410.html">pyGecko (Loadiine 4.1.0)</a></td>
-<td width="25%"></td>
-<td width="25%"></td>
-<td width="25%"><a href="pyld/payload500.html">pyGecko (Loadiine 5.0.0)</a></td>
-</tr>
-
-</table>
-<table id="t">
-<tr>
-<td>Loadiine</td>
-</tr>
-</table>
-<table>
-<tr>
-<td width="33%"><a href="pyLoad/payload532.html">Loadiine (Mii Maker + pyGecko)</a></td>
-<td width="33%"><a href="loadiinev4a/payload532.html">Loadiine (v4.1)</a></td>
-<td width="33%"><a href="loadiinev4-500/payload500.html">Loadiine (v4 for 5.0.0-5.1.0)</a></td>
-</tr>
-<tr>
-<td width="33%"><a href="loadiinev3/payload410.html">Loadiine (v3.0 for 4.1.0)</a></td>
-<td width="33%"><a href="loadiinev3/payload500.html">Loadiine (v3.0 for 5.0.0)</a></td>
-<td width="33%"><a href="loadiinev3/payload532.html">Loadiine (v3.0 for 5.3.2)</a></td>
-</tr>
-</table>
-<table>
-<tr>
-<td width="20%"><a href="loadiine/payload532.html">Loadiine (v1.0)</a></td>
-<td width="20%"><a href="loadiinev2/payload532.html">Loadiine (v2.0)</a></td>
-<td width="20%"><a href="loadiinev4/payload532.html">Loadiine (v4)</a></td>
-<td width="20%"><a href="loadiinevC/payload532.html">Loadiine (v4) Cover Version</a> </td>
-<td width="20%"><a href="loadiineXML/payload532.html">Loadiine XML Dumper</a></td>
-</tr>
-</table>
-<table id="t">
-<tr>
-<td>&nbsp;</td>
-</tr>
-</table>
-</div>
-</body>
+    <head>
+    </head>
+    <body>
+		<div id="text"></div>
+		<script type="text/javascript">
+		-->Browser detection code by Relys
+		browserInfo = "<p>Browser CodeName: " + navigator.appCodeName + "</p>";
+		browserInfo+= "<p>Browser Name: " + navigator.appName + "</p>";
+		browserInfo+= "<p>Browser Version: " + navigator.appVersion + "</p>";
+		browserInfo+= "<p>Cookies Enabled: " + navigator.cookieEnabled + "</p>";
+		browserInfo+= "<p>Platform: " + navigator.platform + "</p>";
+		browserInfo+= "<p>User-agent header: " + navigator.userAgent + "</p>";
+		-->Get platform and version number
+		platform = String(navigator.platform);
+		var version = navigator.appVersion;
+		-->Check to see if we're running on a Wii U
+		if(platform == "Nintendo WiiU")
+		{
+			-->If we are then parse out the exact browser version
+			var versionRE = version.match("NX\/(.*) NintendoBrowser\/");
+			-->Ensure we were able to get browser version
+			if(versionRE.length==2)
+			{
+				-->Store the exact browser version to a string
+				versionNumber=versionRE[1];
+				-->See if browser is for Wii U version 5.4.0
+				if(versionNumber == "3.0.4.2.9")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 5.4.0";
+					window.location = "payload.php?sysver=540";
+				}
+				-->See if browser is for Wii U version 5.3.2
+				else if(versionNumber == "3.0.3.12.15")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 5.3.2";
+					window.location = "payload532.html";
+				}
+				-->See if browser is for Wii U version 5.0.0 or 5.1.0
+				else if (versionNumber == "3.0.3.12.12")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 5.0.0 or 5.1.0";
+					window.location = "payload500.html";
+				}
+				-->See if browser is for Wii U version 4.1.0
+				else if (versionNumber == "3.0.3.12.11")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 4.1.0";
+					window.location = "payload410.html";
+				}
+				-->See if browser is for Wii U version 4.0.0
+				else if (versionNumber == "3.0.3.12.6")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 4.0.0";
+					window.location = "payload400.html";
+				}
+				-->See if browser is for Wii U version 3.0.0 or 3.1.0
+				else if (versionNumber == "2.1.0.10.9")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 3.0.0 or 3.1.0";
+					var check = new XMLHttpRequest();
+					check.open('HEAD', "payload310.html", false);
+					check.send();
+					if (check.status != 404)
+						window.location = "payload310.html";
+					else
+						window.location = "payload300.html";
+				}
+				-->See if browser is for Wii U version 2.1.0
+				else if (versionNumber == "2.1.0.8.23")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 2.1.0";
+					window.location = "payload210.html";
+				}
+				-->See if browser is for Wii U version 2.0.0
+				else if (versionNumber == "2.1.0.8.21")
+				{
+					-->Display message and redirect to payload URL
+					document.getElementById("text").innerHTML="Detected Wii U Firmware version 2.0.0";
+					window.location = "payload200.html";
+				}
+			}
+			-->If we couldn't parse the browser version, throw an error message
+			else
+			{
+				document.getElementById("text").innerHTML="Unsupported Wii U Browser: "+browserInfo;
+			}
+		}
+		-->If we couldn't detect the Wii U browser, throw an error message.
+		else
+		{
+			document.getElementById("text").innerHTML="Unsupported Operating System: "+browserInfo;
+		}
+</script>
+    </body>
 </html>
+
