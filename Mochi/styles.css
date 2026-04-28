@@ -255,8 +255,8 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
 
 /* --- Context panel (left sidebar) --- */
 .context-panel {
-  width: 272px;
-  min-width: 272px;
+  width: 280px;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
@@ -421,6 +421,9 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
 }
 .panel-footer a:hover { color: #6b7280; }
 .panel-footer-sep { user-select: none; }
+
+/* Mobile footer — shown below file table on mobile, hidden on desktop */
+.mobile-app-footer { display: none; margin-top: 0; justify-content: center; flex-shrink: 0; }
 
 .panel-state[hidden] { display: none; }
 .panel-state {
@@ -598,6 +601,7 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
+.panel-header-mobile-only { display: none; }
 
 /* --- File browser area --- */
 .browser-wrap {
@@ -1240,17 +1244,14 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
   #selectionCount { font-weight: 600; font-size: var(--fs-s); color: #374151; }
 
   /* --- Selection banner (appears below nav bar when rows are selected) --- */
-  .selection-banner[hidden] { display: none; }
+  /* Nav / selection state swap inside the same bar */
+  .sb-nav { display: flex; flex: 1; align-items: center; gap: 4px; min-width: 0; }
+  .sb-sel { display: none; }
 
-  .selection-banner {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 12px;
-    height: 44px;
-    background: rgba(139,92,246,0.07);
-    border-bottom: 1px solid rgba(139,92,246,0.15);
-    flex-shrink: 0;
+  .selection-bar.has-selection { background: rgba(139,92,246,0.07); border-bottom-color: rgba(139,92,246,0.18); }
+  .selection-bar.has-selection .sb-nav { display: none; }
+  .selection-bar.has-selection .sb-sel {
+    display: flex; flex: 1; align-items: center; gap: 6px;
   }
 
   .selection-banner-count {
@@ -1269,8 +1270,10 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
     border-radius: 6px;
   }
 
-  .selection-banner #btnDeleteSelected {
-    margin-left: auto;
+  .selection-banner-spacer { flex: 1; }
+
+  .sb-sel #btnDownloadSelected,
+  .sb-sel #btnDeleteSelected {
     height: 28px;
     padding: 0 12px;
     font-size: var(--fs-s);
@@ -1589,6 +1592,15 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
   .main-overlay-card .title { font-weight: 600; font-size: var(--fs-xl); color: var(--foreground); }
   .main-overlay-card .sub  { font-size: var(--fs-base); color: #6b7280; max-width: 28ch; }
 
+  .main-overlay-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--border);
+    justify-content: center;
+  }
+
   /* --- Browser lock overlay --- */
   .browser-lock-overlay {
     display: none;
@@ -1670,6 +1682,10 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
   /* Upload is the primary nav action — filled on all viewports */
 
   @media (max-width: 991px) {
+    .mobile-app-footer { display: flex; }
+    .context-panel .panel-footer { display: none; }
+    .panel-header-mobile-only { display: flex; }
+
     .topbar-breadcrumb { max-width: 160px; }
 
     .panel-nfc-tag-content {
@@ -1754,6 +1770,18 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
 
     /* Nav bar layout: back arrow + folder name on left, actions on right */
     .selection-bar { height: 52px; padding: 0 4px; gap: 2px; }
+    .selection-bar.has-selection { padding: 0 12px; gap: 6px; }
+
+    /* Selection action buttons — icon-only, full touch target */
+    .sb-sel #btnDownloadSelected,
+    .sb-sel #btnDeleteSelected {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 999px;
+      justify-content: center;
+      flex-shrink: 0;
+    }
     .nav-breadcrumb { display: none; }
     .mobile-up-btn { display: inline-flex; flex-shrink: 0; }
     .mobile-folder-name { display: block;
@@ -1844,8 +1872,8 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
 .details-panel[hidden] { display: none; }
 
 .details-panel {
-  width: 300px;
-  min-width: 300px;
+  width: 280px;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border);
@@ -1943,8 +1971,8 @@ button.dev:hover:not(:disabled) { background: #fde68a; }
   .img-lightbox-side { display: none !important; }
 }
 .img-lightbox-side {
-  width: 260px;
-  min-width: 260px;
+  width: 280px;
+  min-width: 280px;
   background: #18181b;
   display: flex;
   flex-direction: column;
