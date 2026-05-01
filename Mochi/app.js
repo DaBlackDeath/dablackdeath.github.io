@@ -8,6 +8,34 @@ const SYNC_EXCLUDE_PATHS = ["e:/amiibo/fav", "e:/amiibo/data"]; // device paths 
 const PIXL_RELEASES_URL = "https://github.com/solosky/pixl.js/releases";
 const PIXL_LATEST_API = "https://api.github.com/repos/solosky/pixl.js/releases/latest";
 
+const FAVICON_PATH = `<path d="M225.5-82.5Q120-125 120-200q0-32 20-57.5t56-45.5l65 58q-24 8-42.5 20.5T200-200q0 26 81 53t199 27q118 0 199-27t81-53q0-12-18.5-24.5T699-245l65-58q36 20 56 45.5t20 57.5q0 75-105.5 117.5T480-40q-149 0-254.5-42.5Zm212-125Q417-215 400-230L148-453q-13-11-20.5-27t-7.5-33v-80q0-17 6.5-33t19.5-27l252-235q17-16 38-24t44-8q23 0 44 8t38 24l252 235q13 11 19.5 27t6.5 33v80q0 17-7.5 33T812-453L560-230q-17 15-37.5 22.5T480-200q-22 0-42.5-7.5Zm-42-357Q410-579 410-600t-14.5-35.5Q381-650 360-650t-35.5 14.5Q310-621 310-600t14.5 35.5Q339-550 360-550t35.5-14.5ZM410-496q43 21 90.5 13.5T584-522q34-29 44.5-73T618-678L410-496Zm105.5-188.5Q530-699 530-720t-14.5-35.5Q501-770 480-770t-35.5 14.5Q430-741 430-720t14.5 35.5Q459-670 480-670t35.5-14.5Z"/>`;
+const FAVICON_COLORS = {
+  disconnected: "#9ca3af",
+  connecting:   "#f59e0b",
+  connected:    "#10b981",
+  reconnecting: "#fb923c",
+  mock:         "#7878cc",
+};
+
+const BRAND_GRADIENTS = {
+  disconnected: ["#9ca3af", "#cbd5e1"],
+  connecting:   ["#f59e0b", "#fde68a"],
+  connected:    ["#059669", "#34d399"],
+  reconnecting: ["#f97316", "#fbbf24"],
+  mock:         ["#7c3aed", "#d946ef"],
+};
+
+function setStateColors(connState, isMock) {
+  const key = isMock ? "mock" : connState;
+  const faviconColor = FAVICON_COLORS[key] ?? FAVICON_COLORS.disconnected;
+  const [gradFrom, gradTo] = BRAND_GRADIENTS[key] ?? BRAND_GRADIENTS.disconnected;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="32" height="32" fill="${faviconColor}">${FAVICON_PATH}</svg>`;
+  const link = document.querySelector('link[rel="icon"]');
+  if (link) link.href = "data:image/svg+xml," + encodeURIComponent(svg);
+  document.documentElement.style.setProperty("--brand-grad-from", gradFrom);
+  document.documentElement.style.setProperty("--brand-grad-to", gradTo);
+}
+
 // === Utilities ===
 
 function formatBytes(bytes) {
@@ -122,7 +150,6 @@ const el = {
   panelFileLabel: document.getElementById("panelFileLabel"),
   panelFileName: document.getElementById("panelFileName"),
   panelFileSize: document.getElementById("panelFileSize"),
-  panelFileFlags: document.getElementById("panelFileFlags"),
   panelNfcTag: document.getElementById("panelNfcTag"),
   panelNfcTagContent: document.getElementById("panelNfcTagContent"),
 
@@ -187,37 +214,28 @@ const el = {
   btnSheetUpload: document.getElementById("btnSheetUpload"),
 
   // Modals
-  formatModal: document.getElementById("formatModal"),
-  btnFormatCancel: document.getElementById("btnFormatCancel"),
-  btnFormatConfirm: document.getElementById("btnFormatConfirm"),
+  confirmModal: document.getElementById("confirmModal"),
+  confirmTitle: document.getElementById("confirmTitle"),
+  confirmBadge: document.getElementById("confirmBadge"),
+  confirmIcon: document.getElementById("confirmIcon"),
+  confirmBodyTitle: document.getElementById("confirmBodyTitle"),
+  confirmMessage: document.getElementById("confirmMessage"),
+  btnConfirmOk: document.getElementById("btnConfirmOk"),
 
-  newFolderModal: document.getElementById("newFolderModal"),
-  newFolderPath: document.getElementById("newFolderPath"),
-  newFolderInput: document.getElementById("newFolderInput"),
-  newFolderError: document.getElementById("newFolderError"),
-  btnNewFolderCancel: document.getElementById("btnNewFolderCancel"),
-  btnNewFolderConfirm: document.getElementById("btnNewFolderConfirm"),
-
-  renameModal: document.getElementById("renameModal"),
-  renameInput: document.getElementById("renameInput"),
-  renameError: document.getElementById("renameError"),
-  btnRenameCancel: document.getElementById("btnRenameCancel"),
-  btnRenameConfirm: document.getElementById("btnRenameConfirm"),
-
-  deleteModal: document.getElementById("deleteModal"),
-  deleteCount: document.getElementById("deleteCount"),
-  deleteModalMsg: document.getElementById("deleteModalMsg"),
-  btnDeleteCancel: document.getElementById("btnDeleteCancel"),
-  btnDeleteConfirm: document.getElementById("btnDeleteConfirm"),
+  inputModal: document.getElementById("inputModal"),
+  inputTitle: document.getElementById("inputTitle"),
+  inputLabel: document.getElementById("inputLabel"),
+  inputField: document.getElementById("inputField"),
+  inputError: document.getElementById("inputError"),
+  inputHelper: document.getElementById("inputHelper"),
+  btnInputOk: document.getElementById("btnInputOk"),
 
   uploadWarnModal: document.getElementById("uploadWarnModal"),
   uploadWarnMsg: document.getElementById("uploadWarnMsg"),
-  btnUploadWarnCancel: document.getElementById("btnUploadWarnCancel"),
   btnUploadWarnConfirm: document.getElementById("btnUploadWarnConfirm"),
 
   sanitizeModalNone: document.getElementById("sanitizeModalNone"),
   sanitizeNonePath: document.getElementById("sanitizeNonePath"),
-  btnSanitizeNoneCancel: document.getElementById("btnSanitizeNoneCancel"),
   btnSanitizeNoneConfirm: document.getElementById("btnSanitizeNoneConfirm"),
 };
 
@@ -277,12 +295,10 @@ const state = {
   uploadTotalBytes: 0,
   uploadCompletedCount: 0,
   uploadCompletedBytes: 0,
-  truncated: false,
   disconnectToast: null,
   uploadBase: "E:/",         // path where the upload plan was built — anchors runSync
   syncState: "idle",         // "idle" | "scanning" | "done" | "error"
   syncSkippedFiles: [],      // [{ remotePath, size }]
-  syncSkippedFolders: new Set(),  // Set<remotePath>
   syncOrphans: [],           // [{ remotePath, size, kind, deletable, status }]
   syncOrphanChecked: new Set(),   // Set<remotePath>
 };
@@ -417,7 +433,7 @@ function setConnState(newState) {
   el.mainOverlayIcon.hidden = connecting || reconnecting;
   el.mainOverlaySpinner.hidden = !(connecting || reconnecting);
   el.mainOverlayTitle.textContent = reconnecting ? "Reconnecting\u2026" : connecting ? "Connecting to Pixl.js\u2026" : "No device connected";
-  el.mainOverlaySub.textContent = (connecting || reconnecting) ? "" : "Connect to browse and manage files on your Pixl.js over Bluetooth.";
+  el.mainOverlaySub.textContent = (connecting || reconnecting) ? "" : "Connect your Pixl.js to browse and manage files.";
   el.btnConnectCta.hidden = connecting || reconnecting;
   el.btnConnectCta.disabled = connecting || reconnecting;
 
@@ -457,6 +473,8 @@ function setConnState(newState) {
   }
 
   updateControls();
+
+  setStateColors(newState, connected && state.client instanceof DevMockClient);
 }
 
 function showConnError(msg) {
@@ -647,7 +665,7 @@ async function connectOrDisconnect() {
     const wasReconnecting = state.connState === "reconnecting";
     if (state.disconnectToast) { removeToast(state.disconnectToast); state.disconnectToast = null; }
     if (state.connState !== "disconnected") setConnState("disconnected");
-    if (wasReconnecting) showErrorToast("Reconnection timed out", "Try disconnecting and reconnecting.");
+    if (wasReconnecting) showErrorToast("Reconnection timed out", "Disconnect and try again.");
     invalidateCache();
   };
   state.client.onReconnecting = () => {
@@ -670,7 +688,6 @@ async function connectOrDisconnect() {
     setConnState("connected");
     showSuccessToast("Connected");
 
-    // Get version info
     const ver = await state.client.getVersion();
     if (ver.ok) {
       const parts = [];
@@ -682,14 +699,12 @@ async function connectOrDisconnect() {
       el.topbarBadge.textContent = "Pixl.js";
     }
 
-    // List drives
     const dr = await state.client.listDrives();
     if (dr.ok && dr.data.length > 0) {
       state.drive = dr.data[0];
       renderDrive(state.drive);
     }
 
-    // Browse root
     await browseFolder("E:/");
 
   } catch (err) {
@@ -755,34 +770,151 @@ function renderDrive(driveData) {
 
 function openModal(modalEl) { modalEl.classList.add("open"); }
 function closeModal(modalEl) {
-  if (modalEl === el.newFolderModal) clearInputError(el.newFolderInput, el.newFolderError);
-  if (modalEl === el.renameModal) clearInputError(el.renameInput, el.renameError);
+  if (modalEl === el.confirmModal) {
+    clearInterval(_confirmCountdown);
+    _confirmCountdown = null;
+  }
   modalEl.classList.remove("open");
+  modalEl.dispatchEvent(new Event("modal:close"));
 }
 
-let _formatCountdown = null;
-
-el.btnFormat.addEventListener("click", () => {
-  el.btnFormatConfirm.disabled = true;
-  el.btnFormatConfirm.textContent = "Wait (5s)";
-  let sec = 5;
-  clearInterval(_formatCountdown);
-  _formatCountdown = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      el.btnFormatConfirm.textContent = `Wait (${sec}s)`;
-    } else {
-      clearInterval(_formatCountdown);
-      _formatCountdown = null;
-      el.btnFormatConfirm.textContent = "Format drive";
-      el.btnFormatConfirm.disabled = false;
-    }
-  }, 1000);
-  openModal(el.formatModal);
-});
 // Generic close button delegate for all modals
 document.querySelectorAll("[data-modal-close]").forEach(btn => {
   btn.addEventListener("click", () => closeModal(btn.closest(".modal-overlay")));
+});
+
+// === Shared confirm modal ===
+
+let _confirmResolve = null;
+let _confirmCountdown = null;
+
+function showConfirmModal({ title, badge = "danger", icon, heading = "", message = "", okLabel = "Confirm", okClass = "danger", okDelay = 0 }) {
+  el.confirmTitle.textContent = title;
+  el.confirmBadge.className = `modal-icon-badge ${badge}`;
+  el.confirmBadge.hidden = !icon;
+  if (icon) el.confirmIcon.textContent = icon;
+  el.confirmBodyTitle.textContent = heading;
+  el.confirmBodyTitle.hidden = !heading;
+  el.confirmMessage.textContent = message;
+  el.confirmMessage.hidden = !message;
+  el.btnConfirmOk.className = `btn-labeled ${okClass}`;
+  clearInterval(_confirmCountdown);
+  if (okDelay > 0) {
+    el.btnConfirmOk.disabled = true;
+    el.btnConfirmOk.textContent = `Wait (${okDelay}s)`;
+    let sec = okDelay;
+    _confirmCountdown = setInterval(() => {
+      sec--;
+      if (sec > 0) {
+        el.btnConfirmOk.textContent = `Wait (${sec}s)`;
+      } else {
+        clearInterval(_confirmCountdown);
+        _confirmCountdown = null;
+        el.btnConfirmOk.textContent = okLabel;
+        el.btnConfirmOk.disabled = false;
+      }
+    }, 1000);
+  } else {
+    el.btnConfirmOk.disabled = false;
+    el.btnConfirmOk.textContent = okLabel;
+  }
+  openModal(el.confirmModal);
+  return new Promise(resolve => { _confirmResolve = resolve; });
+}
+
+el.confirmModal.addEventListener("modal:close", () => {
+  _confirmResolve?.(false);
+  _confirmResolve = null;
+});
+
+el.btnConfirmOk.addEventListener("click", () => {
+  if (el.btnConfirmOk.disabled) return;
+  const r = _confirmResolve;
+  _confirmResolve = null;
+  closeModal(el.confirmModal);
+  r?.(true);
+});
+
+// === Shared input modal ===
+
+let _inputResolve = null;
+let _inputValidate = null;
+
+function showInputModal({ title, label, placeholder = "", value = "", helper = "", okLabel = "OK" }) {
+  el.inputTitle.textContent = title;
+  el.inputLabel.textContent = label;
+  el.inputField.placeholder = placeholder;
+  el.inputField.value = value;
+  el.inputHelper.hidden = !helper;
+  el.inputHelper.textContent = helper;
+  el.btnInputOk.textContent = okLabel;
+  clearInputError(el.inputField, el.inputError);
+  openModal(el.inputModal);
+  requestAnimationFrame(() => { el.inputField.focus(); el.inputField.select(); });
+  return new Promise(resolve => { _inputResolve = resolve; });
+}
+
+el.inputModal.addEventListener("modal:close", () => {
+  clearInputError(el.inputField, el.inputError);
+  _inputResolve?.(null);
+  _inputResolve = null;
+  _inputValidate = null;
+});
+
+el.inputField.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); el.btnInputOk.click(); }
+});
+
+el.inputField.addEventListener("input", () => {
+  clearInputError(el.inputField, el.inputError);
+});
+
+el.btnInputOk.addEventListener("click", () => {
+  const raw = el.inputField.value;
+  if (_inputValidate) {
+    const err = _inputValidate(raw);
+    if (err) { showInputError(el.inputField, el.inputError, err); el.inputField.focus(); return; }
+  }
+  const r = _inputResolve;
+  _inputResolve = null;
+  closeModal(el.inputModal);
+  r?.(raw.trim());
+});
+
+// === Format drive ===
+
+el.btnFormat.addEventListener("click", async () => {
+  const confirmed = await showConfirmModal({
+    title: "Format drive",
+    badge: "warning",
+    icon: "warning",
+    heading: "Erase all files on your device?",
+    message: "Every file and folder will be permanently deleted. Firmware stays intact. You can't undo this.",
+    okLabel: "Format drive",
+    okClass: "danger",
+    okDelay: 5,
+  });
+  if (!confirmed || !state.client) return;
+  try {
+    const res = await state.client.formatDrive("E");
+    if (res.ok) {
+      log("Drive E: formatted successfully.");
+      showSuccessToast("Drive formatted");
+      invalidateCache();
+      const dr = await state.client.listDrives();
+      if (dr.ok && dr.data.length > 0) {
+        state.drive = dr.data[0];
+        renderDrive(state.drive);
+      }
+      await browseFolder("E:/");
+    } else {
+      log(`Format failed: ${res.error}`, "err");
+      showErrorToast("Format failed", res.error);
+    }
+  } catch (err) {
+    log(`Format error: ${err.message}`, "err");
+    showErrorToast("Format failed", err.message);
+  }
 });
 
 // Escape key — close surfaces from most to least prominent
@@ -804,55 +936,9 @@ document.addEventListener("keydown", e => {
   if (el.sheetContainer.classList.contains("open")) { e.preventDefault(); closeSheet(); }
 });
 
-el.btnFormatCancel.addEventListener("click", () => {
-  clearInterval(_formatCountdown);
-  _formatCountdown = null;
-  el.btnFormatConfirm.textContent = "Format drive";
-  closeModal(el.formatModal);
-});
-
-el.btnFormatConfirm.addEventListener("click", async () => {
-  closeModal(el.formatModal);
-  if (!state.client) return;
-  try {
-    el.btnFormatConfirm.disabled = true;
-    const res = await state.client.formatDrive("E");
-    if (res.ok) {
-      log("Drive E: formatted successfully.");
-      showSuccessToast("Drive formatted");
-      invalidateCache();
-      // Refresh drive info
-      const dr = await state.client.listDrives();
-      if (dr.ok && dr.data.length > 0) {
-        state.drive = dr.data[0];
-        renderDrive(state.drive);
-      }
-      await browseFolder("E:/");
-    } else {
-      log(`Format failed: ${res.error}`, "err");
-      showErrorToast("Format failed", res.error);
-    }
-  } catch (err) {
-    log(`Format error: ${err.message}`, "err");
-    showErrorToast("Format failed", err.message);
-  } finally {
-    el.btnFormatConfirm.disabled = false;
-  }
-});
-
 // Close modals on backdrop click
-for (const modal of [el.formatModal, el.newFolderModal, el.renameModal, el.deleteModal,
-    el.sanitizeModalNone]) {
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      if (modal === el.formatModal) {
-        clearInterval(_formatCountdown);
-        _formatCountdown = null;
-        el.btnFormatConfirm.textContent = "Format drive";
-      }
-      closeModal(modal);
-    }
-  });
+for (const modal of [el.confirmModal, el.inputModal, el.sanitizeModalNone, el.uploadWarnModal]) {
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(modal); });
 }
 
 // === Update Controls ===
@@ -968,7 +1054,6 @@ async function browseFolder(path) {
 
   state.currentPath = path;
   state.entries = entries;
-  state.truncated = truncated;
   state.selectedNames.clear();
   renderBreadcrumb(path);
   renderFileTable();
@@ -1161,7 +1246,7 @@ function getBrowserEmptyStateContent() {
   return {
     icon: "folder_open",
     title: "Folder is empty",
-    sub: "Nothing here yet.",
+    sub: "Upload files to get started.",
   };
 }
 
@@ -1245,8 +1330,11 @@ function renderBreadcrumb(path) {
     const label = i === 0
       ? `<span class="ms nav-home-icon">home</span>`
       : escapeHtml(c.label);
+    const cls = i === 0
+      ? `nav-crumb nav-crumb-home${isActive ? " active" : ""}`
+      : `nav-crumb${isActive ? " active" : ""}`;
     return (i > 0 ? '<span class="nav-sep">›</span>' : "") +
-      `<button class="nav-crumb${isActive ? " active" : ""}" data-path="${escapeHtml(c.path)}">${label}</button>`;
+      `<button class="${cls}" data-path="${escapeHtml(c.path)}">${label}</button>`;
   }).join("");
 
   // Mobile: show current folder name; swap icon between home (root) and arrow_back (subfolder)
@@ -1280,14 +1368,13 @@ function applySelectionToRows(checked) {
 
 // === File Table Event Delegation ===
 
-el.fileTableBody.addEventListener("click", (e) => {
+el.fileTableBody.addEventListener("click", async (e) => {
   const row = e.target.closest("tr");
   if (!row || !row.dataset.name) return;
   const name = row.dataset.name;
   const entry = state.entries.find(en => en.name === name);
   if (!entry) return;
 
-  // Checkbox click
   const checkbox = e.target.closest("input[type=checkbox]");
   if (checkbox) {
     if (checkbox.checked) {
@@ -1306,11 +1393,18 @@ el.fileTableBody.addEventListener("click", (e) => {
     if (actionBtn.dataset.action === "rename") {
       openRenameModal(entry.name);
     } else if (actionBtn.dataset.action === "delete") {
-      el.deleteCount.textContent = "1";
-      el.deleteModalMsg.textContent = `Permanently delete "${entry.name}"? This action cannot be undone.`;
       state.selectedNames.clear();
       state.selectedNames.add(entry.name);
-      openModal(el.deleteModal);
+      const confirmed = await showConfirmModal({
+        title: "Delete",
+        badge: "danger",
+        icon: "delete",
+        heading: `Delete "${entry.name}"?`,
+        message: "It will be permanently removed from your device. You can't undo this.",
+        okLabel: "Delete",
+        okClass: "danger",
+      });
+      if (confirmed) await doDeleteSelected();
     } else if (actionBtn.dataset.action === "download") {
       const filePath = joinChildPath(state.currentPath, entry.name);
       state.client.readFileData(filePath).then(res => {
@@ -1353,12 +1447,19 @@ el.checkAll.addEventListener("change", () => {
   updateSelectionBar();
 });
 
-el.btnDeleteSelected.addEventListener("click", () => {
+el.btnDeleteSelected.addEventListener("click", async () => {
   const count = state.selectedNames.size;
   if (count === 0) return;
-  el.deleteCount.textContent = String(count);
-  el.deleteModalMsg.textContent = `Permanently delete ${pluralize(count, "item")}? This action cannot be undone.`;
-  openModal(el.deleteModal);
+  const confirmed = await showConfirmModal({
+    title: "Delete",
+    badge: "danger",
+    icon: "delete",
+    heading: `Delete ${pluralize(count, "item")}?`,
+    message: "They'll be permanently removed from your device. You can't undo this.",
+    okLabel: "Delete",
+    okClass: "danger",
+  });
+  if (confirmed) await doDeleteSelected();
 });
 
 el.btnClearSelection.addEventListener("click", () => {
@@ -1464,29 +1565,25 @@ el.btnMobileUp.addEventListener("click", () => {
   }, { passive: true });
 }
 
-// New folder modal
-el.btnNewFolder.addEventListener("click", () => {
-  el.newFolderPath.textContent = state.currentPath || "E:/";
-  el.newFolderInput.value = "";
-  clearInputError(el.newFolderInput, el.newFolderError);
-  openModal(el.newFolderModal);
-  el.newFolderInput.focus();
-});
-
-el.btnNewFolderCancel.addEventListener("click", () => closeModal(el.newFolderModal));
-
-el.btnNewFolderConfirm.addEventListener("click", async () => {
+// New folder
+el.btnNewFolder.addEventListener("click", async () => {
   if (!state.client) return;
-
-  const name = readValidatedNameInput(el.newFolderInput, el.newFolderError, {
+  _inputValidate = (raw) => {
+    try {
+      const v = validateSingleName(raw, "Folder name");
+      ensureSiblingNameAvailable(v, "");
+      validateRemotePath(joinChildPath(state.currentPath || "E:/", v), "folder");
+      return null;
+    } catch (err) { return err.message; }
+  };
+  const name = await showInputModal({
+    title: "New folder",
     label: "Folder name",
-    kind: "folder",
-    currentName: "",
+    placeholder: "e.g. collection",
+    helper: `Created in ${state.currentPath || "E:/"}`,
+    okLabel: "Create",
   });
   if (!name) return;
-
-  closeModal(el.newFolderModal);
-
   try {
     const folderPath = joinChildPath(state.currentPath, name);
     const res = await state.client.createFolder(folderPath);
@@ -1497,16 +1594,13 @@ el.btnNewFolderConfirm.addEventListener("click", async () => {
       await browseFolder(state.currentPath);
     } else {
       log(`Failed to create folder: ${res.error}`, "err");
-      showErrorToast("Folder creation failed", res.error);
+      showErrorToast("Couldn't create folder", res.error);
     }
   } catch (err) {
     log(`Failed to create folder: ${err.message}`, "err");
-    showErrorToast("Folder creation failed", err.message);
+    showErrorToast("Couldn't create folder", err.message);
   }
 });
-
-el.btnDeleteCancel.addEventListener("click", () => closeModal(el.deleteModal));
-el.btnRenameCancel.addEventListener("click", () => closeModal(el.renameModal));
 
 // Normalize modal
 el.btnNormalize.addEventListener("click", () => {
@@ -1514,30 +1608,62 @@ el.btnNormalize.addEventListener("click", () => {
   openModal(el.sanitizeModalNone);
 });
 
-el.btnSanitizeNoneCancel.addEventListener("click", () => closeModal(el.sanitizeModalNone));
 
 // === Context Panel ===
 
-function setPanelState(mode, entry) {
-  // When upload panel is active, file selection only opens the right details panel —
-  // it does not replace the left upload panel.
-  if (mode === "file" && state.panelMode === "upload") {
-    state.drawerEntry = entry;
-    el.detailsPanel.hidden = false;
-    if (entry) {
-      el.panelFileName.textContent = entry.name;
-      el.panelFileSize.textContent = formatBytes(entry.size);
-      el.detailsKind.textContent = entry.type === "FILE" ? "File" : "Folder";
-      const fullPath = joinChildPath(state.currentPath, entry.name);
-      el.detailsFilePath.textContent = fullPath;
-      if (el.detailsPathInRow) el.detailsPathInRow.textContent = fullPath;
-    }
-    return;
-  }
+function populateFileDetails(entry) {
+  el.panelFileName.textContent = entry.name;
+  el.panelFileSize.textContent = formatBytes(entry.size);
+  el.detailsKind.textContent = entry.type === "FILE" ? "File" : "Folder";
+  const fullPath = joinChildPath(state.currentPath, entry.name);
+  el.detailsFilePath.textContent = fullPath;
+  if (el.detailsPathInRow) el.detailsPathInRow.textContent = fullPath;
 
-  // Left panel toggles between folder info and upload
-  el.panelFolder.hidden = (mode === "upload");
-  el.panelUpload.hidden = (mode !== "upload");
+  el.detailsHeroImgArea.innerHTML = `<span class="ms details-hero-file-icon" id="detailsHeroIcon">insert_drive_file</span>`;
+  el.detailsHeroBand.hidden = true;
+  el.detailsHeroBand.style.background = "";
+  el.detailsHeroBand.innerHTML = "";
+
+  // NFC tag section — only for .bin files
+  el.panelFileLabel.textContent = entry.name.toLowerCase().endsWith(".bin") ? "NFC Tag" : "Details";
+  const isBin = entry.type === "FILE" && entry.name.toLowerCase().endsWith(".bin");
+  el.panelNfcTag.hidden = !isBin;
+  if (!isBin) {
+    el.panelNfcTagContent.innerHTML = "";
+  } else {
+    const metaHead = entry.meta ? entry.meta.nfcTagHead : null;
+    const metaTail = entry.meta ? entry.meta.nfcTagTail : null;
+    if (metaHead != null) {
+      applyNfcTagDisplay(entry, metaHead, metaTail);
+    } else if (state.client) {
+      el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Loading\u2026</span></div>`;
+      const filePath = joinChildPath(state.currentPath, entry.name);
+      state.client.readFileData(filePath).then(res => {
+        if (state.drawerEntry !== entry) return;
+        if (res.ok && res.data.length >= 92) {
+          const dv = new DataView(res.data.buffer, res.data.byteOffset);
+          const head = dv.getUint32(84, false);
+          const tail = dv.getUint32(88, false);
+          applyNfcTagDisplay(entry, head, tail);
+        } else {
+          el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Not a valid NFC file</span></div>`;
+        }
+      }).catch(() => {
+        if (state.drawerEntry === entry) el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Error</span><span class="details-nfc-value" style="color:#e11d48">Failed to read file</span></div>`;
+      });
+    } else {
+      el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Not connected</span></div>`;
+    }
+  }
+}
+
+function setPanelState(mode, entry) {
+  // Left panel: only toggle between folder info and upload — never on file selection.
+  // The upload panel and file details panel are independent on desktop.
+  if (mode !== "file") {
+    el.panelFolder.hidden = (mode === "upload");
+    el.panelUpload.hidden = (mode !== "upload");
+  }
 
   // Right details panel: on desktop the two columns are independent, so only
   // touch it when not entering upload mode (mobile dismisses via closeDetailsSheet).
@@ -1554,65 +1680,10 @@ function setPanelState(mode, entry) {
 
   if (mode === "file" && entry) {
     state.drawerEntry = entry;
-    state.panelMode = "file";
+    // Keep panelMode as "upload" if upload panel is open — the two panels are independent.
+    if (state.panelMode !== "upload") state.panelMode = "file";
 
-    // Populate file fields
-    el.panelFileName.textContent = entry.name;
-    el.panelFileSize.textContent = formatBytes(entry.size);
-    el.detailsKind.textContent = entry.type === "FILE" ? "File" : "Folder";
-    const fullPath = joinChildPath(state.currentPath, entry.name);
-    el.detailsFilePath.textContent = fullPath;
-    if (el.detailsPathInRow) el.detailsPathInRow.textContent = fullPath;
-
-    // Reset hero to neutral state
-    el.detailsHeroImgArea.innerHTML = `<span class="ms details-hero-file-icon" id="detailsHeroIcon">insert_drive_file</span>`;
-    el.detailsHeroBand.hidden = true;
-    el.detailsHeroBand.style.background = "";
-    el.detailsHeroBand.innerHTML = "";
-
-    // Flags
-    const flagDefs = [
-      { bit: 0x02, label: "Hidden" },
-      { bit: 0x04, label: "System" },
-      { bit: 0x01, label: "Read-only" },
-    ];
-    const flags = entry.meta ? entry.meta.flags : 0;
-    el.panelFileFlags.innerHTML = flagDefs.map(f => {
-      const active = (flags & f.bit) !== 0;
-      return `<div class="details-flag-row"><span class="ms-sm details-flag-icon${active ? " is-active" : ""}">check</span> ${escapeHtml(f.label)}</div>`;
-    }).join("");
-
-    // NFC tag section — only for .bin files
-    el.panelFileLabel.textContent = entry.name.toLowerCase().endsWith(".bin") ? "NFC Tag" : "Details";
-    const isBin = entry.type === "FILE" && entry.name.toLowerCase().endsWith(".bin");
-    el.panelNfcTag.hidden = !isBin;
-    if (!isBin) {
-      el.panelNfcTagContent.innerHTML = "";
-    } else {
-      const metaHead = entry.meta ? entry.meta.nfcTagHead : null;
-      const metaTail = entry.meta ? entry.meta.nfcTagTail : null;
-      if (metaHead != null) {
-        applyNfcTagDisplay(entry, metaHead, metaTail);
-      } else if (state.client) {
-        el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Loading\u2026</span></div>`;
-        const filePath = joinChildPath(state.currentPath, entry.name);
-        state.client.readFileData(filePath).then(res => {
-          if (state.drawerEntry !== entry) return;
-          if (res.ok && res.data.length >= 92) {
-            const dv = new DataView(res.data.buffer, res.data.byteOffset);
-            const head = dv.getUint32(84, false);
-            const tail = dv.getUint32(88, false);
-            applyNfcTagDisplay(entry, head, tail);
-          } else {
-            el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Not a valid NFC file</span></div>`;
-          }
-        }).catch(() => {
-          if (state.drawerEntry === entry) el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Error</span><span class="details-nfc-value" style="color:#e11d48">Failed to read file</span></div>`;
-        });
-      } else {
-        el.panelNfcTagContent.innerHTML = `<div class="details-nfc-row"><span class="details-nfc-label">Figure ID</span><span class="details-nfc-value" style="color:#9ca3af">Not connected</span></div>`;
-      }
-    }
+    populateFileDetails(entry);
 
     // Highlight active row
     for (const row of el.fileTableBody.querySelectorAll("tr[data-name]")) {
@@ -1626,12 +1697,10 @@ function setPanelState(mode, entry) {
   state.panelMode = "folder";
   if (isMobileViewport()) closeDetailsSheet();
 
-  // Clear row highlight
   for (const row of el.fileTableBody.querySelectorAll("tr[data-name]")) {
     row.classList.remove("panel-active");
   }
 
-  // Populate folder info
   if (state.currentPath) {
     el.panelFolderName.textContent = "Pixl.js";
     el.panelFolderPath.textContent = state.drive ? state.drive.name : "E:/";
@@ -1678,13 +1747,45 @@ el.detailsSheetBackdrop.addEventListener("click", () => {
   closeDetailsSheet();
 });
 
-function openRenameModal(name) {
-  renameTarget = name;
-  el.renameInput.value = name;
-  clearInputError(el.renameInput, el.renameError);
-  openModal(el.renameModal);
-  el.renameInput.focus();
-  el.renameInput.select();
+async function openRenameModal(name) {
+  if (!state.client) return;
+  const entry = state.entries.find(e => e.name === name);
+  const kind = entry && entry.type === "DIR" ? "folder" : "file";
+  _inputValidate = (raw) => {
+    try {
+      const v = validateSingleName(raw, "Name");
+      if (v === name) throw new Error("Name is unchanged");
+      ensureSiblingNameAvailable(v, name);
+      validateRemotePath(joinChildPath(state.currentPath || "E:/", v), kind);
+      return null;
+    } catch (err) { return err.message; }
+  };
+  const newName = await showInputModal({
+    title: "Rename",
+    label: "New name",
+    placeholder: "",
+    value: name,
+    okLabel: "Rename",
+  });
+  if (!newName) return;
+  try {
+    const oldPath = joinChildPath(state.currentPath, name);
+    const newPath = joinChildPath(state.currentPath, newName);
+    const res = await state.client.renamePath(oldPath, newPath);
+    if (res.ok) {
+      log(`Renamed: ${name} → ${newName}`);
+      showSuccessToast("Renamed");
+    } else {
+      log(`Rename failed: ${res.error}`, "err");
+      showErrorToast("Rename failed", res.error);
+    }
+  } catch (err) {
+    log(`Failed to rename: ${err.message}`, "err");
+    showErrorToast("Rename failed", err.message);
+  } finally {
+    invalidateCache();
+    await browseFolder(state.currentPath);
+  }
 }
 
 // === Log side sheet ===
@@ -1800,6 +1901,7 @@ el.sidebarDropZone.addEventListener("drop", async (e) => {
       ? await collectFromDataTransfer(e.dataTransfer)
       : collectFromFiles(files);
     if (collected.files.length === 0 && collected.folders.size === 0) return;
+    if (!await checkSystemFolderWarning(collected)) return;
     buildUploadPlan(collected.folders, collected.files);
     setPanelState("upload");
   } catch (err) {
@@ -1812,12 +1914,21 @@ el.btnUploadClose.addEventListener("click", () => {
   resetUploadSessionState();
   renderUploadQueue();
   updateControls();
-  if (state.panelPrevMode === "file" && state.drawerEntry) {
-    setPanelState("file", state.drawerEntry);
+  state.panelMode = "folder";
+  if (isMobileViewport()) {
+    // Mobile: panels are unified — restore to file or folder as appropriate.
+    if (state.panelPrevMode === "file" && state.drawerEntry) {
+      setPanelState("file", state.drawerEntry);
+    } else {
+      setPanelState("folder");
+      closeSheet();
+    }
   } else {
-    setPanelState("folder");
+    // Desktop: left and right panels are independent. Only swap the left panel;
+    // leave the right details panel exactly as it is.
+    el.panelFolder.hidden = false;
+    el.panelUpload.hidden = true;
   }
-  if (isMobileViewport()) closeSheet();
 });
 
 // === Connect button ===
@@ -1825,72 +1936,9 @@ el.btnUploadClose.addEventListener("click", () => {
 el.btnConnect.addEventListener("click", connectOrDisconnect);
 el.btnConnectCta.addEventListener("click", connectOrDisconnect);
 
-// === Keyboard: Enter in new-folder input ===
-
-el.newFolderInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    el.btnNewFolderConfirm.click();
-  }
-});
-
-el.newFolderInput.addEventListener("input", () => {
-  clearInputError(el.newFolderInput, el.newFolderError);
-});
-
-el.renameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    el.btnRenameConfirm.click();
-  }
-});
-
-el.renameInput.addEventListener("input", () => {
-  clearInputError(el.renameInput, el.renameError);
-});
-
-let renameTarget = "";
-
-// --- Rename confirm ---
-
-el.btnRenameConfirm.addEventListener("click", async () => {
-  if (!state.client) return;
-
-  const entry = state.entries.find(e => e.name === renameTarget);
-  const kind = entry && entry.type === "DIR" ? "folder" : "file";
-  const newName = readValidatedNameInput(el.renameInput, el.renameError, {
-    label: "Name",
-    kind,
-    currentName: renameTarget,
-  });
-  if (!newName) return;
-
-  closeModal(el.renameModal);
-
-  try {
-    const oldPath = joinChildPath(state.currentPath, renameTarget);
-    const newPath = joinChildPath(state.currentPath, newName);
-    const res = await state.client.renamePath(oldPath, newPath);
-    if (res.ok) {
-      log(`Renamed: ${renameTarget} \u2192 ${newName}`);
-      showSuccessToast("Renamed");
-    } else {
-      log(`Rename failed: ${res.error}`, "err");
-      showErrorToast("Rename failed", res.error);
-    }
-  } catch (err) {
-    log(`Failed to rename: ${err.message}`, "err");
-    showErrorToast("Rename failed", err.message);
-  } finally {
-    invalidateCache();
-    await browseFolder(state.currentPath);
-  }
-});
-
 // --- Delete confirm ---
 
-el.btnDeleteConfirm.addEventListener("click", async () => {
-  closeModal(el.deleteModal);
+async function doDeleteSelected() {
   if (!state.client || state.selectedNames.size === 0) return;
 
   const selected = state.entries.filter(e => state.selectedNames.has(e.name));
@@ -1901,10 +1949,10 @@ el.btnDeleteConfirm.addEventListener("click", async () => {
   }));
 
   // Sort: deepest-first by "/" count, files before folders at same depth
+  const depthOf = new Map(paths.map(p => [p, (p.path.match(/\//g) || []).length]));
   paths.sort((a, b) => {
-    const depthA = (a.path.match(/\//g) || []).length;
-    const depthB = (b.path.match(/\//g) || []).length;
-    if (depthA !== depthB) return depthB - depthA;
+    const d = depthOf.get(b) - depthOf.get(a);
+    if (d !== 0) return d;
     if (a.type !== b.type) return a.type === "FILE" ? -1 : 1;
     return 0;
   });
@@ -1944,7 +1992,7 @@ el.btnDeleteConfirm.addEventListener("click", async () => {
     invalidateCache();
     await browseFolder(state.currentPath);
   }
-});
+}
 
 // --- Sanitize helpers ---
 
@@ -2033,11 +2081,11 @@ async function executeSanitize(allOps, allSkipped) {
   const totalText = pluralize(allOps.length, "item");
   const skippedText = allSkipped.length > 0 ? `Skipped ${pluralize(allSkipped.length, "item")}` : "";
   if (renamed === allOps.length && renamed > 0) {
-    showSuccessToast(`Renamed ${renamedText}`, skippedText);
+    showSuccessToast(`Lowercased ${renamedText}`, skippedText);
   } else if (renamed > 0) {
-    showErrorToast(`Renamed ${renamedText} of ${totalText}`, skippedText);
+    showErrorToast(`Lowercased ${renamedText} of ${totalText}`, skippedText);
   } else if (allOps.length > 0) {
-    showErrorToast("Rename failed");
+    showErrorToast("Normalize failed");
   } else {
     showSuccessToast("Already lowercase", skippedText);
   }
@@ -2051,7 +2099,7 @@ async function withBrowserLock(title, fn) {
     await fn();
   } catch (err) {
     log(err.message, "err");
-    showErrorToast("Rename failed", err.message);
+    showErrorToast("Normalize failed", err.message);
   } finally {
     el.browserLockOverlay.classList.remove("active");
     updateControls();
@@ -2070,7 +2118,7 @@ el.btnSanitizeNoneConfirm.addEventListener("click", async () => {
   try {
     scope = readCheckedRadioValue("sanitizeNoneScope", "Normalize scope");
   } catch (err) {
-    showErrorToast("Rename failed", err.message);
+    showErrorToast("Normalize failed", err.message);
     return;
   }
 
@@ -2219,7 +2267,6 @@ function resetUploadSessionState() {
   state.uploadBase = "E:/";
   state.syncState = "idle";
   state.syncSkippedFiles = [];
-  state.syncSkippedFolders = new Set();
   state.syncOrphans = [];
   state.syncOrphanChecked = new Set();
   state.transferSpeed = "";
@@ -2296,7 +2343,7 @@ function renderSyncQueue() {
 
   // Upload section — only render header when there are files
   if (uploadFiles.length === 0) {
-    html += `<div class="queue-empty">Everything is in sync.</div>`;
+    html += `<div class="queue-empty"><span class="ms queue-empty-icon done">check_circle</span><span class="queue-empty-title">Everything is in sync</span></div>`;
   } else {
     html += `<div class="sync-section-header sync-header-upload">TO UPLOAD · ${uploadFiles.length}</div>`;
     for (const item of uploadFiles) {
@@ -2378,8 +2425,10 @@ function renderUploadQueue() {
   }
 
   if (state.uploadPlan.length === 0) {
-    const emptyText = state.uploadTotalCount > 0 ? "Upload complete" : "Nothing queued yet";
-    el.uploadQueue.innerHTML = `<div class="queue-empty">${emptyText}</div>`;
+    const [icon, title, sub] = state.uploadTotalCount > 0
+      ? ["task_alt", "Upload complete", ""]
+      : ["inbox", "Queue is empty", `<span class="queue-empty-sub">Pick files or a folder above</span>`];
+    el.uploadQueue.innerHTML = `<div class="queue-empty"><span class="ms queue-empty-icon${state.uploadTotalCount > 0 ? " done" : ""}">${icon}</span><span class="queue-empty-title">${title}</span>${sub}</div>`;
     el.uploadWarningBanner.hidden = true;
     el.uploadWarningBanner.innerHTML = "";
     return;
@@ -2417,7 +2466,7 @@ function renderUploadQueue() {
   el.uploadQueue.innerHTML = items.join("");
 
   // Render upload warnings banner (from checkUploadPlanWarnings)
-  if (state.uploadWarnings && state.uploadWarnings.length > 0 && !state.uploadActive) {
+  if (state.uploadWarnings.length > 0 && !state.uploadActive) {
     const wasOpen = !!el.uploadWarningBanner.querySelector("details")?.open;
     // Summary line (collapsed state)
     const summaryParts = [];
@@ -2458,7 +2507,6 @@ let planSeed = 0;
 function buildUploadPlan(folders, files) {
   state.syncState = "idle";
   state.syncSkippedFiles = [];
-  state.syncSkippedFolders = new Set();
   state.syncOrphans = [];
   state.syncOrphanChecked = new Set();
 
@@ -2473,10 +2521,6 @@ function buildUploadPlan(folders, files) {
 
   for (const rel of sortedFolders) {
     const remote = joinChildPath(base, rel.toLowerCase());
-    if (isSyncExcluded(remote)) {
-      skipped.push({ path: rel, reason: "Path is excluded from sync" });
-      continue;
-    }
     try {
       validateRemotePath(remote, "folder");
     } catch (err) {
@@ -2489,10 +2533,6 @@ function buildUploadPlan(folders, files) {
 
   for (const entry of files) {
     const remote = joinChildPath(base, entry.relativePath.toLowerCase());
-    if (isSyncExcluded(remote)) {
-      skipped.push({ path: entry.relativePath, reason: "Path is excluded from sync" });
-      continue;
-    }
     try {
       validateRemotePath(remote, "file");
     } catch (err) {
@@ -2513,13 +2553,13 @@ function buildUploadPlan(folders, files) {
     if (skipped.length > 0) {
       showErrorToast("No files added to queue", formatUploadInputFeedback(skipped));
     } else {
-      showWarningToast("No files added to queue", "The selected folder appears to be empty.");
+      showWarningToast("No files added to queue", "That folder is empty.");
     }
     return;
   }
 
   if (skipped.length > 0) {
-    showWarningToast(`Skipped ${pluralize(skipped.length, "invalid upload item")}`, formatUploadInputFeedback(skipped));
+    showWarningToast(`Couldn't add ${pluralize(skipped.length, "file")}`, formatUploadInputFeedback(skipped));
   }
 }
 
@@ -2561,23 +2601,50 @@ function warningsToStrings(warnings) {
   return lines;
 }
 
-function showUploadWarningModal(warnings) {
+function detectSystemFolderWarnings(folders, files) {
+  const base = (state.currentPath || "E:/").toLowerCase();
+  const affected = new Set();
+  const check = rel => {
+    const remote = joinChildPath(base, rel.toLowerCase());
+    if (remote === "e:/amiibo/data" || remote.startsWith("e:/amiibo/data/")) affected.add("data");
+    if (remote === "e:/amiibo/fav"  || remote.startsWith("e:/amiibo/fav/"))  affected.add("fav");
+  };
+  for (const rel of folders) check(rel);
+  for (const entry of files) check(entry.relativePath);
+  return affected;
+}
+
+// Shared confirm modal: sets innerHTML, opens uploadWarnModal, returns Promise<boolean>.
+// AbortController + modal:close event ensure listeners always clean up (Cancel, X, Escape).
+function showUploadWarnModal(htmlContent) {
   return new Promise(resolve => {
-    const lines = warningsToStrings(warnings).map(w => `<li>${escapeHtml(w)}</li>`).join("");
-    el.uploadWarnMsg.innerHTML =
-      `<ul class="modal-list">${lines}</ul>` +
-      `<p class="modal-note">You can still proceed, but the upload may be slow or fail partway through.</p>`;
+    el.uploadWarnMsg.innerHTML = htmlContent;
     openModal(el.uploadWarnModal);
-    const onConfirm = () => { cleanup(); resolve(true); };
-    const onCancel = () => { cleanup(); resolve(false); };
-    const cleanup = () => {
-      el.btnUploadWarnConfirm.removeEventListener("click", onConfirm);
-      el.btnUploadWarnCancel.removeEventListener("click", onCancel);
-      closeModal(el.uploadWarnModal);
-    };
-    el.btnUploadWarnConfirm.addEventListener("click", onConfirm);
-    el.btnUploadWarnCancel.addEventListener("click", onCancel);
+    const ac = new AbortController();
+    const { signal } = ac;
+    const done = (result) => { ac.abort(); closeModal(el.uploadWarnModal); resolve(result); };
+    el.btnUploadWarnConfirm.addEventListener("click", () => done(true), { signal });
+    el.uploadWarnModal.addEventListener("modal:close", () => { ac.abort(); resolve(false); }, { signal, once: true });
   });
+}
+
+function buildSystemFolderWarnHtml(affected) {
+  const parts = [];
+  if (affected.has("data")) parts.push(
+    `<p><strong>My Tags (amiibo/data)</strong> — files need sequential names like ` +
+    `<strong>00.bin, 01.bin</strong>… to show up as slots in AmiiDB.</p>`
+  );
+  if (affected.has("fav")) parts.push(
+    `<p><strong>My Favorites (amiibo/fav)</strong> — AmiiDB manages this folder's format. ` +
+    `Files you upload here won't appear in the app.</p>`
+  );
+  return parts.join("") + `<p class="modal-note">You can still upload — some files just may not appear as expected.</p>`;
+}
+
+async function checkSystemFolderWarning(collected) {
+  const affected = detectSystemFolderWarnings(collected.folders, collected.files);
+  if (affected.size === 0) return true;
+  return showUploadWarnModal(buildSystemFolderWarnHtml(affected));
 }
 
 // --- Sync ---
@@ -2588,7 +2655,6 @@ async function runSync() {
 
   state.syncState = "scanning";
   state.syncSkippedFiles = [];
-  state.syncSkippedFolders = new Set();
   state.syncOrphans = [];
   state.syncOrphanChecked = new Set();
   updateControls();
@@ -2657,7 +2723,6 @@ async function runSync() {
 
   // Filter plan: remove items already on device at same size
   const skippedFiles = [];
-  const skippedFolders = new Set();
   const filteredPlan = [];
   for (const item of state.uploadPlan) {
     if (item.kind === "file") {
@@ -2667,7 +2732,6 @@ async function runSync() {
         continue;
       }
     } else if (item.kind === "folder" && deviceTree.has(item.remotePath)) {
-      skippedFolders.add(item.remotePath);
       continue;
     }
     filteredPlan.push(item);
@@ -2686,7 +2750,6 @@ async function runSync() {
   }
 
   state.syncSkippedFiles = skippedFiles;
-  state.syncSkippedFolders = skippedFolders;
   state.syncOrphans = orphans;
   state.uploadPlan = filteredPlan;
   state.uploadWarnings = checkUploadPlanWarnings(filteredPlan);
@@ -2734,9 +2797,11 @@ async function runUpload() {
   if (!state.client || state.connState !== "connected" || state.uploadActive) return;
   if (!hasUploads && !hasOrphanDeletions) return;
 
-  if (state.uploadWarnings && state.uploadWarnings.length > 0) {
-    const confirmed = await showUploadWarningModal(state.uploadWarnings);
-    if (!confirmed) return;
+  if (state.uploadWarnings.length > 0) {
+    const lines = warningsToStrings(state.uploadWarnings).map(w => `<li>${escapeHtml(w)}</li>`).join("");
+    const html = `<ul class="modal-list">${lines}</ul>` +
+      `<p class="modal-note">You can still proceed, but the upload may be slow or fail partway through.</p>`;
+    if (!await showUploadWarnModal(html)) return;
   }
 
   state.uploadActive = true;
@@ -2748,7 +2813,6 @@ async function runUpload() {
 
   resetUploadProgress(state.uploadPlan);
 
-  // Reset statuses
   for (const item of state.uploadPlan) { item.transferred = 0; item.status = "pending"; }
   renderUploadQueue();
 
@@ -2756,7 +2820,6 @@ async function runUpload() {
   const fileItems = state.uploadPlan.filter(i => i.kind === "file");
 
   try {
-    // Create folders (shallow-first)
     for (const item of folderItems) {
       if (state.abortController.signal.aborted) throw new Error("Aborted.");
       item.status = "active";
@@ -2767,7 +2830,6 @@ async function runUpload() {
       renderUploadQueue();
     }
 
-    // Upload files
     for (const item of fileItems) {
       if (state.abortController.signal.aborted) throw new Error("Aborted.");
       item.status = "active";
@@ -2823,7 +2885,6 @@ async function runUpload() {
   } finally {
     state.syncState = "idle";
     state.syncSkippedFiles = [];
-    state.syncSkippedFolders = new Set();
     state.syncOrphans = [];
     state.syncOrphanChecked = new Set();
     state.uploadActive = false;
@@ -2848,6 +2909,7 @@ el.btnPickFolder.addEventListener("click", async () => {
     if (typeof window.showDirectoryPicker === "function") {
       const handle = await window.showDirectoryPicker({ mode: "read" });
       const collected = await collectFromDirHandle(handle);
+      if (!await checkSystemFolderWarning(collected)) return;
       buildUploadPlan(collected.folders, collected.files);
       setPanelState("upload");
     } else {
@@ -2860,20 +2922,32 @@ el.btnPickFolder.addEventListener("click", async () => {
 
 el.folderInput.addEventListener("change", async (e) => {
   if (!e.target.files || e.target.files.length === 0) return;
-  const collected = await collectFromWebkitDir(e.target.files);
-  buildUploadPlan(collected.folders, collected.files);
-  setPanelState("upload");
+  const snapshot = Array.from(e.target.files);
   e.target.value = "";
+  try {
+    const collected = await collectFromWebkitDir(snapshot);
+    if (!await checkSystemFolderWarning(collected)) return;
+    buildUploadPlan(collected.folders, collected.files);
+    setPanelState("upload");
+  } catch (err) {
+    showErrorToast("Upload failed", err.message);
+  }
 });
 
 el.btnPickFiles.addEventListener("click", () => el.filesInput.click());
 
-el.filesInput.addEventListener("change", (e) => {
+el.filesInput.addEventListener("change", async (e) => {
   if (!e.target.files || e.target.files.length === 0) return;
-  const collected = collectFromFiles(e.target.files);
-  buildUploadPlan(collected.folders, collected.files);
-  setPanelState("upload");
+  const snapshot = Array.from(e.target.files);
   e.target.value = "";
+  try {
+    const collected = collectFromFiles(snapshot);
+    if (!await checkSystemFolderWarning(collected)) return;
+    buildUploadPlan(collected.folders, collected.files);
+    setPanelState("upload");
+  } catch (err) {
+    showErrorToast("Upload failed", err.message);
+  }
 });
 
 el.btnUploadStart.addEventListener("click", runUpload);
@@ -2944,3 +3018,20 @@ if (isDevMode) {
 
 setConnState("disconnected");
 updateControls();
+
+if (!navigator.bluetooth) {
+  const [summary, detail, overlaySub] = window.isSecureContext
+    ? [
+        "Chrome or Edge required",
+        "Your browser doesn't support device connections. Switch to Chrome or Edge to use Mochi.",
+        "Open Mochi in Chrome or Edge to connect to your Pixl.js.",
+      ]
+    : [
+        "Secure connection required",
+        "Mochi needs to be opened over HTTPS to connect to your device.",
+        "Open this page over HTTPS to connect to your Pixl.js.",
+      ];
+  el.mainOverlaySub.textContent = overlaySub;
+  el.btnConnectCta.disabled = true;
+  showErrorToast(summary, detail);
+}
