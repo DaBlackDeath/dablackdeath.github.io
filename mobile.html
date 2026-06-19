@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitte Desktop nutzen</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .icon-container {
+            margin-bottom: 24px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            fill: none;
+            stroke: #818cf8;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: #94a3b8;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(129, 140, 248, 0.1);
+            color: #a5b4fc;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(129, 140, 248, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        /* Versteckt die Meldung auf großen Bildschirmen */
+        @media (min-width: 1024px) {
+            body {
+                background: #0f172a;
+            }
+            .card {
+                max-width: 500px;
+            }
+            h1::before {
+                content: "Bereit! ";
+                -webkit-text-fill-color: #initial;
+                background: none;
+            }
+            h1 {
+                background: none;
+                -webkit-text-fill-color: #fff;
+            }
+            p {
+                display: none;
+            }
+            .icon-container, .badge {
+                display: none;
+            }
+            .desktop-content {
+                display: block !important;
+            }
+        }
+
+        .desktop-content {
+            display: none;
+            color: #34d399;
+            font-size: 18px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon-container">
+            <svg class="icon" viewBox="0 0 24 24">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+        </div>
+
+        <h1>Großer Bildschirm benötigt</h1>
+        <p>Diese Anwendung ist für die Nutzung auf einem Desktop-PC optimiert. Bitte öffne den Link an deinem Computer erneut.</p>
+        
+        <span class="badge">Desktop-Ansicht erforderlich</span>
+
+        <div class="desktop-content">
+            Du hast die Seite erfolgreich auf einem Desktop-PC geöffnet!
+        </div>
+    </div>
+
+</body>
+</html>
