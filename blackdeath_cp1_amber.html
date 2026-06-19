@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BLACKDEATH // CRT TERMINAL</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+:root{
+    --crt-line:0px;
+}
+
+body{
+
+    background:#050401;
+
+    color:#ffb000;
+
+    font-family:'VT323', monospace;
+    font-size: 22px;
+
+    overflow:hidden;
+
+    letter-spacing:1px;
+
+    text-shadow:
+        0 0 1px rgba(255,176,0,0.9),
+        0 0 3px rgba(255,176,0,0.4);
+
+    animation:crtFlicker 0.12s infinite;
+}
+
+/* =========================================================
+   THEME SWITCH (Taktisch angepasst)
+========================================================= */
+.theme-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.theme-switch a {
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 18px;
+    text-decoration: none;
+    background: rgba(255, 208, 0, 0.1);
+    border: 1px solid #ffbb00;
+    color: #ffbb00;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+    letter-spacing: 1px;
+}
+
+.theme-switch a:hover {
+    border: 0px;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+}
+
+
+/* =========================================================
+   CRT SCANLINES
+========================================================= */
+body::before{
+
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,176,0,0.05) 0px,
+            rgba(255,176,0,0.05) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+
+    opacity:0.32;
+
+    z-index:100;
+}
+
+/* =========================================================
+   CRT VIGNETTE
+========================================================= */
+body::after{
+
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at center,
+            transparent 38%,
+            rgba(0,0,0,0.92) 100%
+        );
+
+    z-index:101;
+}
+
+/* =========================================================
+   TITLE
+========================================================= */
+.title{
+
+    position:fixed;
+
+    top:40px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:4rem;
+
+    color:#ffb000;
+
+    letter-spacing:8px;
+
+    font-weight:normal;
+
+    text-shadow:
+        0 0 2px rgba(255,176,0,0.9),
+        0 0 8px rgba(255,176,0,0.35);
+
+    opacity:0.95;
+}
+
+.title-ascii {
+    position:fixed;
+
+    top:80px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-family: 'Lucida Console', Lucida Console, monospace;
+    font-size: 16px;
+    line-height: 1;
+    white-space: pre; /* Behält alle Leerzeichen und Umbrüche bei */
+    overflow-x: auto; /* Erlaubt Scrollen, falls der Bildschirm zu klein ist */
+}
+
+/* =========================================================
+   CRT REFRESH BAR
+========================================================= */
+.crt-roll{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    overflow:hidden;
+
+    z-index:120;
+
+    opacity:0.85;
+}
+
+.crt-roll::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-5%;
+
+    width:110%;
+
+    height:260px;
+
+    top:var(--crt-line);
+
+    background:
+        linear-gradient(
+            to bottom,
+
+            transparent 0%,
+
+            rgba(255,255,255,0.015) 10%,
+
+            rgba(255,180,40,0.05) 22%,
+
+            rgba(255,190,60,0.12) 35%,
+
+            rgba(255,210,120,0.20) 50%,
+
+            rgba(255,190,60,0.12) 65%,
+
+            rgba(255,180,40,0.05) 78%,
+
+            rgba(255,255,255,0.015) 90%,
+
+            transparent 100%
+        );
+
+    filter:blur(22px);
+
+    mix-blend-mode:screen;
+}
+
+/* =========================================================
+   PLAYER BOX
+========================================================= */
+.cyber-player-box{
+
+    position:fixed;
+
+    top:calc(50% + 80px);;
+    left:50%;
+
+    transform:
+        translate(-50%,-50%)
+        perspective(900px)
+        rotateX(2deg);
+
+    width:760px;
+
+    background:#090601;
+
+    border:2px solid #5a3d00;
+
+    padding:18px;
+
+    overflow:hidden;
+
+    will-change:transform;
+
+    border-radius:
+        30px
+        30px
+        30px
+        30px
+        /
+        18px
+        18px
+        25px
+        25px;
+
+    box-shadow:
+        inset 0 0 50px rgba(255,176,0,0.08),
+        inset 0 0 140px rgba(255,176,0,0.03),
+        0 0 15px rgba(255,176,0,0.14),
+        0 0 80px rgba(255,176,0,0.05),
+        0 40px 120px rgba(0,0,0,0.8);
+
+    animation:
+        crtFlicker 0.12s infinite;
+}
+
+/* =========================================================
+   CRT CURVATURE
+========================================================= */
+.cyber-player-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 35%,
+            rgba(0,0,0,0.25) 100%
+        );
+
+    z-index:2;
+}
+
+/* =========================================================
+   CRT GLASS REFLECTION
+========================================================= */
+.cyber-player-box::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:-20%;
+
+    width:60%;
+    height:100%;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            115deg,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.02),
+            transparent
+        );
+
+    filter:blur(12px);
+
+    opacity:0.10;
+
+    transform:skewX(-12deg);
+
+    z-index:3;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+.cyber-player-title{
+
+    text-align:center;
+
+    margin-bottom:14px;
+
+    font-size:1.5rem;
+
+    color:#ffb000;
+
+    border-bottom:
+        1px solid rgba(255,176,0,0.25);
+
+    padding-bottom:6px;
+}
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+.cyber-player-controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin-bottom:14px;
+}
+
+.cyber-btn{
+
+    background:#120c02;
+
+    color:#ffb000;
+
+    border:1px solid #6b4900;
+
+    padding:5px 14px;
+
+    font-family:'VT323', monospace;
+
+    font-size:1.2rem;
+
+    cursor:pointer;
+
+    transition:0.08s;
+
+    box-shadow:
+        inset 0 0 4px rgba(255,176,0,0.05);
+}
+
+.cyber-btn:hover{
+
+    background:#2a1b00;
+
+    box-shadow:
+        0 0 8px rgba(255,176,0,0.15);
+}
+
+/* =========================================================
+   LOOP LABEL
+========================================================= */
+.cyber-loop-label{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    font-size:1.1rem;
+}
+
+.cyber-loop-label input{
+    accent-color:#ffb000;
+}
+
+/* =========================================================
+   SEEK BAR
+========================================================= */
+.cyber-seek{
+
+    width:100%;
+
+    background:
+        linear-gradient(
+            to right,
+            #5a3900,
+            #795507,
+            #5a3900
+        );
+
+    appearance:none;
+
+    margin-bottom:12px;
+}
+
+.cyber-seek::-webkit-slider-thumb{
+
+    -webkit-appearance:none;
+
+    width:10px;
+    height:22px;
+
+    background:
+        linear-gradient(
+            to right,
+            #5a3900,
+            #ffb000,
+            #5a3900
+        );
+
+    border:1px solid #ffd36a;
+
+    border-radius:1px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 0 6px rgba(255,176,0,0.5);
+}
+
+/* =========================================================
+   PLAYLIST
+========================================================= */
+.cyber-playlist{
+
+    margin-top:10px;
+
+    max-height:160px;
+
+    overflow-y:auto;
+
+    border:
+        1px solid rgba(255,176,0,0.15);
+}
+
+.cyber-track{
+
+    text-align: center;
+    padding:8px;
+
+    border-bottom:
+        1px solid rgba(255,176,0,0.1);
+
+    cursor:pointer;
+
+    transition:0.08s;
+}
+
+.cyber-track:hover{
+    background:rgba(255,176,0,0.08);
+}
+
+.cyber-track.active{
+    background:rgba(255,176,0,0.15);
+}
+
+/* =========================================================
+   VISUALIZER
+========================================================= */
+#cyberVisualizer{
+
+    margin-top:14px;
+
+    width:100%;
+    height:140px;
+
+    background:#050300;
+
+    border:2px solid #3d2800;
+
+    box-shadow:
+        inset 0 0 40px rgba(0,0,0,0.95),
+        inset 0 0 12px rgba(255,176,0,0.05),
+        0 0 10px rgba(255,176,0,0.08);
+
+    image-rendering:pixelated;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#5f3f00;
+}
+
+::-webkit-scrollbar-track{
+    background:#140d02;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+@keyframes crtFlicker{
+
+    0%{opacity:0.985;}
+    50%{opacity:1;}
+    100%{opacity:0.975;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div>
+<pre class="title-ascii">
+   __________.__                 __   ________                 __  .__
+   \______   \  | _____    ____ |  | _\______ \   ____ _____ _/  |_|  |__
+    |    |  _/  | \__  \ _/ ___\|  |/ /|    |  \_/ __ \\__  \\   __\  |  \
+    |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |   Y  \
+    |______  /____(____  /\___  >__|_ \_______  /\___  >____  /__| |___|  /
+           \/          \/     \/     \/       \/     \/     \/          \/
+</pre>
+</div>
+
+<div class="cyber-player-box">
+
+    <div class="cyber-player-title">
+        AUDIO TERMINAL v1.0
+    </div>
+
+    <div class="cyber-player-controls">
+
+        <button class="cyber-btn prev">⏮ PREV</button>
+        <button class="cyber-btn play">▶ PLAY</button>
+        <button class="cyber-btn pause">⏸ PAUSE</button>
+        <button class="cyber-btn stop">⏹ STOP</button>
+        <button class="cyber-btn next">⏭ NEXT</button>
+
+    </div>
+
+    <label class="cyber-loop-label">
+
+        <input type="checkbox"
+               class="loop"
+               checked>
+
+        LOOP ENABLED
+
+    </label>
+
+    <input type="range"
+           class="cyber-seek"
+           value="0"
+           min="0"
+           max="100"
+           step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer"
+            width="800"
+            height="140"></canvas>
+
+</div>
+
+<div class="crt-roll"></div>
+
+<script>
+
+/* =========================================================
+   PLAYER
+========================================================= */
+class CyberPlaylistPlayer{
+
+    constructor(root,playlist){
+
+        this.root = root;
+        this.playlist = playlist;
+
+        this.currentIndex = 0;
+
+        this.ctx = null;
+        this.source = null;
+
+        // Speicher für bereits decodierte Audio-Buffer (Preload Cache)
+        this.audioCache = {}; 
+
+        this.analyser = null;
+        this.dataArray = null;
+
+        this.startTime = 0;
+        this.pauseTime = 0;
+
+        this.loop = true;
+
+        this.buildRefs();
+        
+        // Initialen Track laden
+        this.loadTrack(0);
+    }
+
+    buildRefs(){
+
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+
+        this.playBtn.onclick = ()=>this.play();
+        this.pauseBtn.onclick = ()=>this.pause();
+        this.stopBtn.onclick = ()=>this.stop();
+        this.prevBtn.onclick = ()=>this.prevTrack();
+        this.nextBtn.onclick = ()=>this.nextTrack();
+
+        this.loopToggle.onchange = ()=> {
+            this.loop = this.loopToggle.checked;
+            if(this.source) {
+                this.source.loop = this.loop;
+            }
+        };
+
+        this.seek.oninput = ()=>{
+            const buffer = this.audioCache[this.currentIndex];
+            if(!buffer){ return; }
+            this.pauseTime = (this.seek.value / 100) * buffer.duration;
+        };
+
+        this.seek.onchange = ()=>{
+            if(!this.audioCache[this.currentIndex]){ return; }
+            if(this.source){
+                try{ this.source.stop(0); }catch(e){}
+                this.source.disconnect();
+                this.source = null;
+            }
+            this.play();
+        };
+
+        this.renderPlaylist();
+    }
+
+    renderPlaylist(){
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track,i)=>{
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i===this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = ()=>this.loadTrack(i,true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive(){
+        this.listBox.querySelectorAll(".cyber-track").forEach((el,i)=>{
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    async init(){
+        if(!this.ctx){
+            this.ctx = new AudioContext();
+        }
+    }
+
+    // Hilfsfunktion: Lädt und decodiert einen Track im Hintergrund
+    async preloadTrack(index) {
+    await this.init();
+
+    const jobs = this.playlist.map(async (item, i) => {
+        if (this.audioCache[i]) return;
+
+        try {
+            const data = await fetch(item.src).then(r => r.arrayBuffer());
+            const decoded = await this.ctx.decodeAudioData(data);
+            this.audioCache[i] = decoded;
+        } catch (e) {
+            console.error("Fehler:", item.src, e);
+        }
+    });
+
+    await Promise.all(jobs);
+    console.log("Alle Tracks vorgeladen.");
+    }
+
+    async loadTrack(index, autoplay=false){
+        this.stop();
+        this.currentIndex = index;
+        this.highlightActive();
+        await this.init();
+
+        this.pauseTime = 0;
+        this.seek.value = 0;
+
+        // Falls der Track noch nicht im Cache ist (z.B. beim ersten Start), jetzt laden
+        if (!this.audioCache[index]) {
+            await this.preloadTrack(index);
+        }
+
+        if(autoplay){
+            this.play();
+        }
+
+        // Strategisches Preloading: Den NÄCHSTEN und VORHERIGEN Track heimlich im Hintergrund laden
+        const nextIndex = (index + 1) % this.playlist.length;
+        const prevIndex = (index - 1 + this.playlist.length) % this.playlist.length;
+        this.preloadTrack(nextIndex);
+        this.preloadTrack(prevIndex);
+    }
+
+    play(){
+        const buffer = this.audioCache[this.currentIndex];
+        if(!buffer){ return; }
+
+        if(this.source){
+            try{ this.source.stop(0); }catch(e){}
+            this.source.disconnect();
+            this.source = null;
+        }
+
+        this.source = this.ctx.createBufferSource();
+        this.source.buffer = buffer;
+        this.source.loop = this.loop;
+
+        if(!this.analyser){
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+        }
+
+        this.source.connect(this.analyser);
+        this.analyser.connect(this.ctx.destination);
+
+        this.startTime = this.ctx.currentTime - this.pauseTime;
+        this.source.start(0, this.pauseTime);
+
+        this.updateSeek();
+        renderVisualizer(this);
+    }
+
+    pause(){
+        if(!this.source){ return; }
+        const pos = this.ctx.currentTime - this.startTime;
+        this.pauseTime = pos;
+        try{ this.source.stop(0); }catch(e){}
+        this.source.disconnect();
+        this.source = null;
+    }
+
+    stop(){
+        if(this.source){
+            try{ this.source.stop(0); }catch(e){}
+            this.source.disconnect();
+        }
+        this.source = null;
+        this.pauseTime = 0;
+        this.seek.value = 0;
+    }
+
+    nextTrack(){
+        this.stop();
+        this.loadTrack((this.currentIndex+1) % this.playlist.length, true);
+    }
+
+    prevTrack(){
+        this.stop();
+        this.loadTrack((this.currentIndex-1 + this.playlist.length) % this.playlist.length, true);
+    }
+
+updateSeek(){
+        if(!this.source){ return; }
+        const buffer = this.audioCache[this.currentIndex];
+        if(!buffer) return;
+
+        const pos = this.ctx.currentTime - this.startTime;
+
+        if (pos >= buffer.duration) {
+            if (this.loop) {
+                // Wenn Loop an ist: Song von vorne starten
+                this.pauseTime = 0;
+                this.play();
+            } else {
+                // Wenn Loop aus ist: Track beenden, Seekbar auf 100 stellen und stoppen ohne weiterzuspringen
+                this.seek.value = 100;
+                this.stop();
+            }
+        } else {
+            // Song läuft ganz normal weiter
+            this.seek.value = (pos / buffer.duration) * 100;
+            requestAnimationFrame(()=>this.updateSeek());
+        }
+    }
+
+}
+
+/* =========================================================
+   VISUALIZER
+========================================================= */
+const vizCanvas =
+    document.getElementById(
+        "cyberVisualizer"
+    );
+
+const vizCtx =
+    vizCanvas.getContext("2d");
+
+function renderVisualizer(player){
+
+    if(!player || !player.analyser){
+        return;
+    }
+
+    player.analyser.getByteFrequencyData(
+        player.dataArray
+    );
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+
+    vizCtx.clearRect(0,0,w,h);
+
+    const bgGradient =
+        vizCtx.createLinearGradient(0,0,0,h);
+
+    bgGradient.addColorStop(0,"#120b02");
+    bgGradient.addColorStop(1,"#020100");
+
+    vizCtx.fillStyle = bgGradient;
+
+    vizCtx.fillRect(0,0,w,h);
+
+    const columns = 16;
+    const spacing = 10;
+
+    const columnWidth =
+        (w - spacing * (columns + 1))
+        / columns;
+
+    const segmentHeight = 8;
+    const segmentGap = 4;
+    const maxSegments = 11;
+
+    for(let i=0;i<columns;i++){
+
+        const dataIndex =
+            Math.floor(
+                i * (
+                    player.dataArray.length
+                    / columns
+                )
+            );
+
+        const value =
+            player.dataArray[dataIndex] / 255;
+
+        const activeSegments =
+            Math.floor(value * maxSegments);
+
+        const x =
+            spacing
+            + i * (columnWidth + spacing);
+
+        for(let s=0;s<maxSegments;s++){
+
+            const y =
+                h - 10
+                - (s * (
+                    segmentHeight + segmentGap
+                ));
+
+            const lit =
+                s < activeSegments;
+
+            let alpha = 0.08;
+
+            if(lit){
+
+                alpha =
+                    0.25
+                    + (s / maxSegments) * 0.75;
+            }
+
+            const brightness =
+                120 + (s * 10);
+
+            vizCtx.fillStyle =
+                `rgba(
+                    255,
+                    ${brightness},
+                    20,
+                    ${alpha}
+                )`;
+
+            if(lit){
+
+                vizCtx.shadowBlur = 12;
+
+                vizCtx.shadowColor =
+                    `rgba(
+                        255,
+                        ${brightness},
+                        20,
+                        0.8
+                    )`;
+
+            }else{
+
+                vizCtx.shadowBlur = 0;
+            }
+
+            vizCtx.fillRect(
+                x,
+                y,
+                columnWidth,
+                segmentHeight
+            );
+        }
+    }
+
+    const glass =
+        vizCtx.createLinearGradient(0,0,w,0);
+
+    glass.addColorStop(
+        0,
+        "rgba(255,255,255,0.02)"
+    );
+
+    glass.addColorStop(
+        0.5,
+        "rgba(255,255,255,0.06)"
+    );
+
+    glass.addColorStop(
+        1,
+        "rgba(255,255,255,0.01)"
+    );
+
+    vizCtx.fillStyle = glass;
+
+    vizCtx.fillRect(0,0,w,h);
+
+    requestAnimationFrame(
+        ()=>renderVisualizer(player)
+    );
+}
+
+/* =========================================================
+   CRT SYNC GLITCH
+========================================================= */
+const playerBox =
+    document.querySelector(
+        ".cyber-player-box"
+    );
+
+function crtSyncGlitch(){
+
+    const t =
+        performance.now() * 0.1;
+
+    const linePos =
+        (t % (window.innerHeight + 400))
+        - 300;
+
+    document.documentElement
+        .style.setProperty(
+            "--crt-line",
+            `${linePos}px`
+        );
+
+    const rect =
+        playerBox.getBoundingClientRect();
+
+    const center =
+        rect.top + rect.height / 2;
+
+    const distance =
+        Math.abs(center - linePos);
+
+    if(distance < 180){
+
+        const strength =
+            (180 - distance) / 180;
+
+        const offset =
+            (Math.random() - 0.5)
+            * 8
+            * strength;
+
+        playerBox.style.transform =
+            `
+            translate(
+                calc(-50% + ${offset/3}px),
+                -50%
+            )
+            perspective(900px)
+            rotateX(2deg)
+            `;
+
+    }else{
+
+        playerBox.style.transform =
+            `
+            translate(-50%,-50%)
+            perspective(900px)
+            rotateX(2deg)
+            `;
+    }
+
+    requestAnimationFrame(
+        crtSyncGlitch
+    );
+}
+
+crtSyncGlitch();
+
+/* =========================================================
+   PLAYLIST INIT
+========================================================= */
+async function initPlayer() {
+    try {
+        window.history.replaceState({}, document.title, "/");
+
+        const response = await fetch("assets/playlist.json");
+        const playlist = await response.json();
+
+        // Player instanziieren und an das DOM-Element binden
+        const playerRoot = document.querySelector(".cyber-player-box");
+        const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+    } catch (e) {
+        console.error("Kritischer Fehler beim Initialisieren des Players:", e);
+    }
+}
+
+// Startet das Skript nach dem Laden der Seite
+initPlayer();
+</script>
+
+</body>
+<div class="theme-switch">
+    <a href="blackdeath_cp1_amber.html">AMBER</a>
+    <a href="blackdeath_cp2_synthwave.html">SYNTHWAVE</a>
+    <a href="blackdeath_cp3_darktech.html">DARKTECH</a>
+    <a href="blackdeath_cp4_kawaii.html">KAWAII</a>
+    <a href="blackdeath_cp5_holo.html">HOLO</a>
+</html>

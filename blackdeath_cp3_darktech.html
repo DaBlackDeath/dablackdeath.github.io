@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>SECTION 9 // DEVIANT AUDIO NODE</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   GLOBAL (GitS Tonal Shift)
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #05070a;
+    font-family: 'Inconsolata', sans-serif;
+    overflow: hidden;
+    color: #a4dbcc;
+    scrollbar-color: rgba(0,255,102,0.6) rgba(0,255,102,0.1);
+}
+
+/* =========================================================
+   THEME SWITCH (Taktisch angepasst)
+========================================================= */
+.theme-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.theme-switch a {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    font-weight: 700;
+    background: rgba(0,255,102,0.1);
+    border: 1px solid rgba(0,255,102,0.4);
+    color: #00ff66;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+    letter-spacing: 1px;
+}
+
+.theme-switch a:hover {
+    background: rgba(0,255,102,0.4);
+    box-shadow: 0 0 10px rgba(0,255,102,0.3);
+}
+
+/* =========================================================
+   STARFIELD BACKGROUND
+========================================================= */
+#starfield {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none; /* FIX: Canvas ignoriert Maus-Events, Playlist scrollbar! */
+}
+
+/* =========================================================
+   TITLE (Tactical Minimal)
+========================================================= */
+.title {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    letter-spacing: 14px;
+    color: #00ff66;
+    text-align: center;
+    text-shadow:
+        0 0 4px rgba(0,255,102,0.6),
+        0 0 12px rgba(0,235,212,0.4);
+}
+
+/* =========================================================
+   PLAYER BOX (SECTION 9 DARKTECH)
+========================================================= */
+.cyber-player-box {
+    position: fixed;
+    top: calc(35% + 80px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 500px;
+    width: 50%;
+    max-width: 900px;
+    z-index: 10; /* FIX: Player aktiv über den Hintergrund heben */
+
+    background: rgba(5,7,10,0.85);
+    border: 1px solid rgba(0,255,102,0.2);
+    border-radius: 6px;
+    padding: 16px 20px 12px 20px;
+
+    box-shadow:
+        0 0 20px rgba(0,255,102,0.1),
+        inset 0 0 20px rgba(0,0,0,0.9);
+
+    backdrop-filter: blur(10px);
+}
+
+.cyber-player-title {
+    text-align: center;
+    font-size: 0.9rem;
+    letter-spacing: 5px;
+    margin-bottom: 12px;
+    color: #00ff66;
+    text-shadow: 0 0 6px rgba(0,255,102,0.5);
+}
+
+/* =========================================================
+   BUTTONS (Militärisches Interface)
+========================================================= */
+.cyber-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.cyber-btn {
+    background: rgba(0,255,102,0.05);
+    color: #a4dbcc;
+    border: 1px solid rgba(0,255,102,0.3);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.cyber-btn:hover {
+    background: rgba(0,255,102,0.15);
+    border-color: #00ff66;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,255,102,0.2);
+}
+
+/* =========================================================
+   LOOP + SEEK
+========================================================= */
+.cyber-loop-label {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    color: #00ebd4;
+    letter-spacing: 1px;
+}
+
+.cyber-loop-label input {
+    accent-color: #00ff66;
+}
+
+.cyber-seek {
+    width: 100%;
+    height: 4px;
+    border-radius: 0px;
+    background: linear-gradient(90deg, #05070a, #005522, #00ff66);
+    margin-bottom: 12px;
+    -webkit-appearance: none;
+}
+
+.cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 0px;
+    background: #ff6600;
+    border: 1px solid #00ff66;
+    box-shadow: 0 0 8px #ff6600;
+    cursor: pointer;
+}
+
+/* =========================================================
+   PLAYLIST
+========================================================= */
+.cyber-playlist {
+    text-align: center;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: rgba(0,255,102,0.02);
+    border: 1px solid rgba(0,255,102,0.05);
+    cursor: pointer;
+    transition: 0.15s;
+    color: #a4dbcc;
+    font-size: 0.85rem;
+}
+
+.cyber-track:hover {
+    background: rgba(0,255,102,0.08);
+    color: #00ff66;
+}
+
+.cyber-track.active {
+    background: rgba(0,255,102,0.25);
+    color: #00ff66;
+    font-weight: bold;
+    border-color: #00ff66;
+    box-shadow: 0 0 10px rgba(0,255,102,0.3);
+}
+
+/* =========================================================
+   VISUALIZER
+========================================================= */
+#cyberVisualizer {
+    width: 100%;
+    height: 140px;
+    background: rgba(2, 4, 6, 0.8);
+    border: 1px solid rgba(0,255,102,0.2);
+    border-radius: 4px;
+    margin-top: 10px;
+    box-shadow:
+        0 0 15px rgba(0,255,102,0.05),
+        inset 0 0 18px rgba(0,0,0,0.9);
+}
+
+.logo{
+    opacity: 0.95;
+    position:fixed;
+    left:50%;
+    top:25%;
+    transform:translate(-50%, -50%);
+    width:min(30vw, 30vh);
+    z-index:10;
+    animation:float 5s ease-in-out infinite;
+    filter:
+        drop-shadow(0 0 20px rgba(50, 224, 195, 0.7))
+        drop-shadow(0 0 40px #6ee4ec)
+        drop-shadow(0 0 60px #88e5f5);
+}
+
+@keyframes float{
+    0%,100%{ transform: translate(-50%, -50%) translateY(0px); }
+    50%{ transform: translate(-50%, -50%) translateY(-25px); }
+}
+</style>
+</head>
+<body>
+
+<div class="theme-switch">
+    <a href="blackdeath_cp1_amber.html">AMBER</a>
+    <a href="blackdeath_cp2_synthwave.html">SYNTHWAVE</a>
+    <a href="blackdeath_cp3_darktech.html">DARKTECH</a>
+    <a href="blackdeath_cp4_kawaii.html">KAWAII</a>
+    <a href="blackdeath_cp5_holo.html">HOLO</a>
+</div>
+
+<canvas id="starfield"></canvas>
+
+<img
+    class="logo"
+    src="assets/img_player/dark_tech.webp"
+    alt="Logo"
+>
+
+<div class="cyber-player-box">
+    <div class="cyber-player-title">// AUDIO NETCONNECT: ACTIVE</div>
+
+    <div class="cyber-player-controls">
+        <button class="cyber-btn prev">⏮ PREV</button>
+        <button class="cyber-btn play">▶ PLAY</button>
+        <button class="cyber-btn pause">⏸ PAUSE</button>
+        <button class="cyber-btn stop">⏹ STOP</button>
+        <button class="cyber-btn next">⏭ NEXT</button>
+    </div>
+
+    <label class="cyber-loop-label">
+        <input type="checkbox" class="loop" checked>
+        CYBER-LINK REPEAT
+    </label>
+
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer" width="800" height="140"></canvas>
+</div>
+
+<script>
+/* =========================================================
+   STARFIELD
+========================================================= */
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+
+const numParticles = 150; 
+const maxDistance = 120;  
+const baseSpeed = 0.8;    
+const particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    particles.forEach(p => p.reset());
+}
+
+class Particle {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * baseSpeed;
+        this.vy = (Math.random() - 0.5) * baseSpeed;
+        this.size = Math.random() * 2 + 1.5;
+        this.hue = Math.random() > 0.5 ? 145 : 180; 
+        this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+        this.twinkleOffset = Math.random() * Math.PI * 2;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw() {
+        const twinkle = Math.sin(performance.now() * this.twinkleSpeed + this.twinkleOffset) * 0.3 + 0.7;
+        ctx.fillStyle = `hsla(${this.hue}, 90%, 65%, ${twinkle})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function drawNetwork() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < maxDistance) {
+                const alpha = (1 - dist / maxDistance) * 0.4;
+                ctx.strokeStyle = `hsla(${p1.hue}, 90%, 65%, ${alpha})`;
+                ctx.lineWidth = 0.8;
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function animateNetwork() {
+    ctx.fillStyle = 'rgba(5, 7, 10, 0.4)'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) p.update();
+    drawNetwork();
+    for (let p of particles) p.draw();
+    requestAnimationFrame(animateNetwork);
+}
+animateNetwork();
+
+/* =========================================================
+   CYBERPUNK PLAYER (CP3 DARKTECH GitS MOD)
+========================================================= */
+class CyberPlaylistPlayer{
+    constructor(root,playlist){
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+
+        this.ctx = null;
+        this.source = null;
+        this.audioCache = {}; 
+
+        this.analyser = null;
+        this.dataArray = null;
+
+        this.startTime = 0;
+        this.pauseTime = 0;
+        this.loop = true;
+
+        this.buildRefs();
+        this.loadTrack(0);
+    }
+
+    buildRefs(){
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+
+        this.playBtn.onclick = ()=>this.play();
+        this.pauseBtn.onclick = ()=>this.pause();
+        this.stopBtn.onclick = ()=>this.stop();
+        this.prevBtn.onclick = ()=>this.prevTrack();
+        this.nextBtn.onclick = ()=>this.nextTrack();
+
+        this.loopToggle.onchange = ()=> {
+            this.loop = this.loopToggle.checked;
+            if(this.source) {
+                this.source.loop = this.loop;
+            }
+        };
+
+        this.seek.oninput = ()=>{
+            const buffer = this.audioCache[this.currentIndex];
+            if(!buffer){ return; }
+            this.pauseTime = (this.seek.value / 100) * buffer.duration;
+        };
+
+        this.seek.onchange = ()=>{
+            if(!this.audioCache[this.currentIndex]){ return; }
+            if(this.source){
+                this.source.onended = null;
+                try{ this.source.stop(0); }catch(e){}
+                this.source.disconnect();
+                this.source = null;
+            }
+            this.play();
+        };
+
+        this.renderPlaylist();
+    }
+
+    renderPlaylist(){
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track,i)=>{
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i===this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = ()=>this.loadTrack(i,true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive(){
+        this.listBox.querySelectorAll(".cyber-track").forEach((el,i)=>{
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    async init(){
+        if(!this.ctx){
+            this.ctx = new AudioContext();
+        }
+    }
+
+    async preloadTrack(index) {
+            await this.init();
+
+    const jobs = this.playlist.map(async (item, i) => {
+        if (this.audioCache[i]) return;
+
+        try {
+            const data = await fetch(item.src).then(r => r.arrayBuffer());
+            const decoded = await this.ctx.decodeAudioData(data);
+            this.audioCache[i] = decoded;
+        } catch (e) {
+            console.error("Fehler:", item.src, e);
+        }
+    });
+
+    await Promise.all(jobs);
+    console.log("Alle Tracks vorgeladen.");
+    }
+
+    async loadTrack(index, autoplay=false){
+        this.stop();
+        this.currentIndex = index;
+        this.highlightActive();
+        await this.init();
+
+        this.pauseTime = 0;
+        this.seek.value = 0;
+
+        if (!this.audioCache[index]) {
+            await this.preloadTrack(index);
+        }
+
+        if(autoplay){
+            this.play();
+        }
+
+        const nextIndex = (index + 1) % this.playlist.length;
+        const prevIndex = (index - 1 + this.playlist.length) % this.playlist.length;
+        this.preloadTrack(nextIndex);
+        this.preloadTrack(prevIndex);
+    }
+
+    play(){
+        const buffer = this.audioCache[this.currentIndex];
+        if(!buffer){ return; }
+
+        if(this.source){
+            this.source.onended = null;
+            try{ this.source.stop(0); }catch(e){}
+            this.source.disconnect();
+            this.source = null;
+        }
+
+        this.source = this.ctx.createBufferSource();
+        this.source.buffer = buffer;
+        this.source.loop = this.loop;
+
+        if(!this.analyser){
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+        }
+
+        this.source.connect(this.analyser);
+        this.analyser.connect(this.ctx.destination);
+
+        // FIX 1: onended Handler eingebaut, damit this.source sauber zurückgesetzt wird
+        this.source.onended = () => {
+            if (!this.loop) {
+                if (this.source) {
+                    this.source.onended = null;
+                }
+                this.source = null;
+                this.pauseTime = 0;
+                this.seek.value = 0;
+                
+                const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+                this.loadTrack(nextIndex, true);
+            }
+        };
+
+        this.startTime = this.ctx.currentTime - this.pauseTime;
+        this.source.start(0, this.pauseTime);
+
+        this.updateSeek();
+        renderVisualizer(this);
+    }
+
+    pause(){
+        if(!this.source){ return; }
+        const pos = this.ctx.currentTime - this.startTime;
+        this.pauseTime = pos;
+        this.source.onended = null;
+        try{ this.source.stop(0); }catch(e){}
+        this.source.disconnect();
+        this.source = null;
+    }
+
+    stop(){
+        if(this.source){
+            this.source.onended = null;
+            try{ this.source.stop(0); }catch(e){}
+            this.source.disconnect();
+        }
+        this.source = null;
+        this.pauseTime = 0;
+        this.seek.value = 0;
+    }
+
+    nextTrack(){
+        this.stop();
+        this.loadTrack((this.currentIndex+1) % this.playlist.length, true);
+    }
+
+    prevTrack(){
+        this.stop();
+        this.loadTrack((this.currentIndex-1 + this.playlist.length) % this.playlist.length, true);
+    }
+
+    updateSeek(){
+        // FIX 2: Da this.source nun durch onended auf null springt, bricht die Schleife hier sauber ab!
+        if(!this.source){ return; }
+        const buffer = this.audioCache[this.currentIndex];
+        if(!buffer) return;
+
+        const pos = (this.ctx.currentTime - this.startTime) % buffer.duration;
+        this.seek.value = (pos / buffer.duration) * 100;
+
+        requestAnimationFrame(()=>this.updateSeek());
+    }
+}
+
+/* =========================================================
+   VISUALIZER
+========================================================= */
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    player.analyser.getByteFrequencyData(player.dataArray);
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    vizCtx.clearRect(0, 0, w, h);
+
+    const barCount = player.dataArray.length * 0.75; 
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * (h - 20);
+
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        let r, g, b;
+        if (t < 0.5) {
+            const k = t / 0.5; 
+            r = 0;
+            g = Math.floor(255 - (50 * k));       
+            b = Math.floor(0 + (212 * k));        
+        } else {
+            const k = (t - 0.5) / 0.5; 
+            r = 0;
+            g = Math.floor(205 + (50 * k));       
+            b = Math.floor(212 - (212 * k));      
+        }
+
+        const alpha = 0.3 + v * 0.7;
+        vizCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+
+        const radius = 1;
+        const bw = barWidth * 0.85;
+        const bx = x + (barWidth - bw) / 2;
+
+        vizCtx.beginPath();
+        vizCtx.moveTo(bx + radius, y);
+        vizCtx.lineTo(bx + bw - radius, y);
+        vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+        vizCtx.lineTo(bx + bw, y + barHeight - radius);
+        vizCtx.quadraticCurveTo(bx + bw, y + barHeight, bx + bw - radius, y + barHeight);
+        vizCtx.lineTo(bx + radius, y + barHeight);
+        vizCtx.quadraticCurveTo(bx, y + barHeight, bx, y + barHeight - radius);
+        vizCtx.lineTo(bx, y + radius);
+        vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+        vizCtx.closePath();
+        vizCtx.fill();
+    }
+
+    requestAnimationFrame(() => renderVisualizer(player));
+}
+
+/* =========================================================
+   PLAYLIST + PLAYER INIT
+========================================================= */
+async function initPlayer() {
+    try {
+	window.history.replaceState({}, document.title, "/");
+        const response = await fetch("assets/playlist.json");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".cyber-player-box");
+        const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+    } catch (e) {
+        console.error("Kritischer Fehler beim Initialisieren des Players:", e);
+    }
+}
+initPlayer();
+</script>
+
+</body>
+</html>
