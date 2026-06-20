@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+<style>
+html { visibility: hidden; }
+</style>
+
+<script>
+// --- Smartphone-Erkennung so früh wie möglich ---
+(function() {
+    const isSmartphone =
+        window.matchMedia("(pointer: coarse)").matches &&
+        window.matchMedia("(max-width: 768px)").matches;
+
+    if (isSmartphone) {
+        window.location.replace("mobile.html");
+    } else {
+        // Desktop / TV / Box → Seite anzeigen
+        document.documentElement.style.visibility = "visible";
+    }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CRT Edition - Boot, Parallax & Symmetrical Visualizer</title>
@@ -346,7 +365,6 @@ setTimeout(() => {
     tryFinishBoot();
 }, 12000);
 
-
 /* --- CLICK LOGIK: BOOT BEENDEN ODER WEITERLEITEN --- */
 document.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -366,7 +384,7 @@ document.addEventListener('click', e => {
             player.ctx.resume();
         }
 
-        // Burnout Animation ausführen
+        // Burnout Animation
         bootText.style.animation = "none";
         void bootText.offsetWidth; 
         bootText.style.animation = "";
@@ -380,18 +398,22 @@ document.addEventListener('click', e => {
                 boot.style.display = "none"; 
             }, 700);
         }, 800);
-        
+
+        return;
+    }
+
+    // --- SMARTPHONE ERKENNUNG ---
+    const isSmartphone =
+        window.matchMedia("(pointer: coarse)").matches &&
+        window.matchMedia("(max-width: 768px)").matches;
+
+    if (isSmartphone) {
+        window.location.href = "mobile.html";
     } else {
-        if (player && player.ctx && player.ctx.state === 'suspended') {
-            player.ctx.resume();
-        }
-        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            window.location.href = "mobile.html";
-        } else {
-            window.location.href = 'blackdeath_cp1_amber.html';
-        }
+        window.location.href = "blackdeath_cp1_amber.html";
     }
 });
+
 
 
 /* --- AUDIO PLAYER & GESPIEGELTER VISUALIZER --- */
