@@ -601,7 +601,8 @@ function renderVisualizer(player) {
 ========================================================= */
 async function initPlayer() {
     try {
-window.history.replaceState({}, document.title, "/");
+	localStorage.setItem("lastCyberPlayer", "blackdeath_cp4_kawaii.html");
+	window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");

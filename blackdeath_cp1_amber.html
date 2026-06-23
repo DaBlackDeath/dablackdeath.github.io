@@ -758,7 +758,8 @@ crtSyncGlitch();
 ========================================================= */
 async function initPlayer() {
     try {
-        window.history.replaceState({}, document.title, "/");
+        localStorage.setItem("lastCyberPlayer", "blackdeath_cp1_amber.html");
+	window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
 

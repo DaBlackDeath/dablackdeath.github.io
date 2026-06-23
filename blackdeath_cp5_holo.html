@@ -677,6 +677,7 @@ function renderVisualizer(player) {
 ========================================================= */
 async function initPlayer() {
     try {
+	localStorage.setItem("lastCyberPlayer", "blackdeath_cp5_holo.html");
 	window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();

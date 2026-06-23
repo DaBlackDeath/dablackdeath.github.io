@@ -402,17 +402,47 @@ document.addEventListener('click', e => {
         return;
     }
 
-    // --- SMARTPHONE ERKENNUNG ---
+   // --- SMARTPHONE ERKENNUNG ---
+
     const isSmartphone =
+
         window.matchMedia("(pointer: coarse)").matches &&
+
         window.matchMedia("(max-width: 768px)").matches;
 
+
+
     if (isSmartphone) {
+
         window.location.href = "mobile.html";
+
     } else {
-        window.location.href = "blackdeath_cp1_amber.html";
+
+        // Ermittle den letzten Player aus dem LocalStorage
+
+const lastPlayer = localStorage.getItem("lastCyberPlayer");
+
+
+
+if (lastPlayer) {
+
+    // Wenn ein Player gespeichert wurde, leite dorthin weiter
+
+    window.location.replace(lastPlayer);
+
+} else {
+
+    // Fallback: Wenn die Seite zum ersten Mal besucht wird -> Amber-Player
+
+    window.location.replace("blackdeath_cp1_amber.html");
+
+}
+
     }
-});
+
+}); 
+
+
 
 
 
