@@ -21,7 +21,6 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-
 }
 
 :root{
@@ -29,27 +28,20 @@
 }
 
 body{
-
     background:#050401;
-
     color:#ffb000;
-
     font-family:'VT323', monospace;
     font-size: 22px;
-
     overflow:hidden;
-
     letter-spacing:1px;
-
     text-shadow:
         0 0 1px rgba(255,176,0,0.9),
         0 0 3px rgba(255,176,0,0.4);
-
     animation:crtFlicker 0.12s infinite;
 }
 
 /* =========================================================
-   THEME SWITCH (Taktisch angepasst)
+   THEME SWITCH
 ========================================================= */
 .theme-switch {
     position: fixed;
@@ -78,19 +70,14 @@ body{
     box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
 }
 
-
 /* =========================================================
    CRT SCANLINES
 ========================================================= */
 body::before{
-
     content:"";
-
     position:fixed;
     inset:0;
-
     pointer-events:none;
-
     background:
         repeating-linear-gradient(
             to bottom,
@@ -99,9 +86,7 @@ body::before{
             transparent 2px,
             transparent 4px
         );
-
     opacity:0.32;
-
     z-index:100;
 }
 
@@ -109,21 +94,16 @@ body::before{
    CRT VIGNETTE
 ========================================================= */
 body::after{
-
     content:"";
-
     position:fixed;
     inset:0;
-
     pointer-events:none;
-
     background:
         radial-gradient(
             circle at center,
             transparent 38%,
             rgba(0,0,0,0.92) 100%
         );
-
     z-index:101;
 }
 
@@ -131,101 +111,65 @@ body::after{
    TITLE
 ========================================================= */
 .title{
-
     position:fixed;
-
     top:40px;
     left:50%;
-
     transform:translateX(-50%);
-
     font-size:4rem;
-
     color:#ffb000;
-
     letter-spacing:8px;
-
     font-weight:normal;
-
     text-shadow:
         0 0 2px rgba(255,176,0,0.9),
         0 0 8px rgba(255,176,0,0.35);
-
     opacity:0.95;
 }
 
 .title-ascii {
     position:fixed;
-
     top:80px;
     left:50%;
-
     transform:translateX(-50%);
-
     font-family: 'Lucida Console', Lucida Console, monospace;
     font-size: 16px;
     line-height: 1;
-    white-space: pre; /* Behält alle Leerzeichen und Umbrüche bei */
-    overflow-x: auto; /* Erlaubt Scrollen, falls der Bildschirm zu klein ist */
+    white-space: pre; 
+    overflow-x: auto; 
 }
 
 /* =========================================================
    CRT REFRESH BAR
 ========================================================= */
 .crt-roll{
-
     position:fixed;
-
     inset:0;
-
     pointer-events:none;
-
     overflow:hidden;
-
     z-index:120;
-
     opacity:0.85;
 }
 
 .crt-roll::before{
-
     content:"";
-
     position:absolute;
-
     left:-5%;
-
     width:110%;
-
     height:260px;
-
     top:var(--crt-line);
-
     background:
         linear-gradient(
             to bottom,
-
             transparent 0%,
-
             rgba(255,255,255,0.015) 10%,
-
             rgba(255,180,40,0.05) 22%,
-
             rgba(255,190,60,0.12) 35%,
-
             rgba(255,210,120,0.20) 50%,
-
             rgba(255,190,60,0.12) 65%,
-
             rgba(255,180,40,0.05) 78%,
-
             rgba(255,255,255,0.015) 90%,
-
             transparent 100%
         );
-
     filter:blur(22px);
-
     mix-blend-mode:screen;
 }
 
@@ -233,29 +177,19 @@ body::after{
    PLAYER BOX
 ========================================================= */
 .cyber-player-box{
-
     position:fixed;
-
-    top:calc(50% + 80px);;
+    top:calc(50% + 80px);
     left:50%;
-
     transform:
         translate(-50%,-50%)
         perspective(900px)
         rotateX(2deg);
-
     width:760px;
-
     background:#090601;
-
     border:2px solid #5a3d00;
-
     padding:18px;
-
     overflow:hidden;
-
     will-change:transform;
-
     border-radius:
         30px
         30px
@@ -266,58 +200,37 @@ body::after{
         18px
         25px
         25px;
-
     box-shadow:
         inset 0 0 50px rgba(255,176,0,0.08),
         inset 0 0 140px rgba(255,176,0,0.03),
         0 0 15px rgba(255,176,0,0.14),
         0 0 80px rgba(255,176,0,0.05),
         0 40px 120px rgba(0,0,0,0.8);
-
-    animation:
-        crtFlicker 0.12s infinite;
+    animation:crtFlicker 0.12s infinite;
 }
 
-/* =========================================================
-   CRT CURVATURE
-========================================================= */
 .cyber-player-box::before{
-
     content:"";
-
     position:absolute;
-
     inset:0;
-
     pointer-events:none;
-
     background:
         radial-gradient(
             ellipse at center,
             transparent 35%,
             rgba(0,0,0,0.25) 100%
         );
-
     z-index:2;
 }
 
-/* =========================================================
-   CRT GLASS REFLECTION
-========================================================= */
 .cyber-player-box::after{
-
     content:"";
-
     position:absolute;
-
     top:0;
     left:-20%;
-
     width:60%;
     height:100%;
-
     pointer-events:none;
-
     background:
         linear-gradient(
             115deg,
@@ -325,13 +238,9 @@ body::after{
             rgba(255,255,255,0.02),
             transparent
         );
-
     filter:blur(12px);
-
     opacity:0.10;
-
     transform:skewX(-12deg);
-
     z-index:3;
 }
 
@@ -339,18 +248,11 @@ body::after{
    HEADER
 ========================================================= */
 .cyber-player-title{
-
     text-align:center;
-
     margin-bottom:14px;
-
     font-size:1.5rem;
-
     color:#ffb000;
-
-    border-bottom:
-        1px solid rgba(255,176,0,0.25);
-
+    border-bottom:1px solid rgba(255,176,0,0.25);
     padding-bottom:6px;
 }
 
@@ -358,59 +260,37 @@ body::after{
    CONTROLS
 ========================================================= */
 .cyber-player-controls{
-
     display:flex;
-
     justify-content:center;
-
     gap:8px;
-
     margin-bottom:14px;
 }
 
 .cyber-btn{
-
     background:#120c02;
-
     color:#ffb000;
-
     border:1px solid #6b4900;
-
     padding:5px 14px;
-
     font-family:'VT323', monospace;
-
     font-size:1.2rem;
-
     cursor:pointer;
-
     transition:0.08s;
-
-    box-shadow:
-        inset 0 0 4px rgba(255,176,0,0.05);
+    box-shadow:inset 0 0 4px rgba(255,176,0,0.05);
 }
 
 .cyber-btn:hover{
-
     background:#2a1b00;
-
-    box-shadow:
-        0 0 8px rgba(255,176,0,0.15);
+    box-shadow:0 0 8px rgba(255,176,0,0.15);
 }
 
 /* =========================================================
    LOOP LABEL
 ========================================================= */
 .cyber-loop-label{
-
     display:flex;
-
     justify-content:center;
-
     gap:8px;
-
     margin-bottom:10px;
-
     font-size:1.1rem;
 }
 
@@ -422,72 +302,38 @@ body::after{
    SEEK BAR
 ========================================================= */
 .cyber-seek{
-
     width:100%;
-
-    background:
-        linear-gradient(
-            to right,
-            #5a3900,
-            #795507,
-            #5a3900
-        );
-
+    background:linear-gradient(to right, #5a3900, #795507, #5a3900);
     appearance:none;
-
     margin-bottom:12px;
 }
 
 .cyber-seek::-webkit-slider-thumb{
-
     -webkit-appearance:none;
-
     width:10px;
     height:22px;
-
-    background:
-        linear-gradient(
-            to right,
-            #5a3900,
-            #ffb000,
-            #5a3900
-        );
-
+    background:linear-gradient(to right, #5a3900, #ffb000, #5a3900);
     border:1px solid #ffd36a;
-
     border-radius:1px;
-
     cursor:pointer;
-
-    box-shadow:
-        0 0 6px rgba(255,176,0,0.5);
+    box-shadow:0 0 6px rgba(255,176,0,0.5);
 }
 
 /* =========================================================
    PLAYLIST
 ========================================================= */
 .cyber-playlist{
-
     margin-top:10px;
-
     max-height:160px;
-
     overflow-y:auto;
-
-    border:
-        1px solid rgba(255,176,0,0.15);
+    border:1px solid rgba(255,176,0,0.15);
 }
 
 .cyber-track{
-
     text-align: center;
     padding:8px;
-
-    border-bottom:
-        1px solid rgba(255,176,0,0.1);
-
+    border-bottom:1px solid rgba(255,176,0,0.1);
     cursor:pointer;
-
     transition:0.08s;
 }
 
@@ -503,21 +349,15 @@ body::after{
    VISUALIZER
 ========================================================= */
 #cyberVisualizer{
-
     margin-top:14px;
-
     width:100%;
     height:140px;
-
     background:#050300;
-
     border:2px solid #3d2800;
-
     box-shadow:
         inset 0 0 40px rgba(0,0,0,0.95),
         inset 0 0 12px rgba(255,176,0,0.05),
         0 0 10px rgba(255,176,0,0.08);
-
     image-rendering:pixelated;
 }
 
@@ -540,7 +380,6 @@ body::after{
    ANIMATIONS
 ========================================================= */
 @keyframes crtFlicker{
-
     0%{opacity:0.985;}
     50%{opacity:1;}
     100%{opacity:0.975;}
@@ -563,66 +402,42 @@ body::after{
 </div>
 
 <div class="cyber-player-box">
-
-    <div class="cyber-player-title">
-        AUDIO TERMINAL v1.0
-    </div>
+    <div class="cyber-player-title">AUDIO TERMINAL v1.0</div>
 
     <div class="cyber-player-controls">
-
         <button class="cyber-btn prev">⏮ PREV</button>
         <button class="cyber-btn play">▶ PLAY</button>
         <button class="cyber-btn pause">⏸ PAUSE</button>
         <button class="cyber-btn stop">⏹ STOP</button>
         <button class="cyber-btn next">⏭ NEXT</button>
-
     </div>
 
     <label class="cyber-loop-label">
-
-        <input type="checkbox"
-               class="loop"
-               checked>
-
-        LOOP ENABLED
-
+        <input type="checkbox" class="loop" checked> LOOP ENABLED
     </label>
 
-    <input type="range"
-           class="cyber-seek"
-           value="0"
-           min="0"
-           max="100"
-           step="0.1">
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
 
     <div class="cyber-playlist"></div>
 
-    <canvas id="cyberVisualizer"
-            width="800"
-            height="140"></canvas>
-
+    <canvas id="cyberVisualizer" width="800" height="140"></canvas>
 </div>
 
 <div class="crt-roll"></div>
 
 <script>
-
 /* =========================================================
-   PLAYER
+   PLAYER CORE ENGINE (Stabilisiert auf Holo-Stand)
 ========================================================= */
 class CyberPlaylistPlayer{
 
     constructor(root,playlist){
-
         this.root = root;
         this.playlist = playlist;
-
         this.currentIndex = 0;
 
         this.ctx = null;
         this.source = null;
-
-        // Speicher für bereits decodierte Audio-Buffer (Preload Cache)
         this.audioCache = {}; 
 
         this.analyser = null;
@@ -630,17 +445,13 @@ class CyberPlaylistPlayer{
 
         this.startTime = 0;
         this.pauseTime = 0;
-
         this.loop = true;
 
         this.buildRefs();
-        
-        // Initialen Track laden
         this.loadTrack(0);
     }
 
     buildRefs(){
-
         this.playBtn = this.root.querySelector(".play");
         this.pauseBtn = this.root.querySelector(".pause");
         this.stopBtn = this.root.querySelector(".stop");
@@ -672,6 +483,7 @@ class CyberPlaylistPlayer{
         this.seek.onchange = ()=>{
             if(!this.audioCache[this.currentIndex]){ return; }
             if(this.source){
+                this.source.onended = null;
                 try{ this.source.stop(0); }catch(e){}
                 this.source.disconnect();
                 this.source = null;
@@ -705,28 +517,24 @@ class CyberPlaylistPlayer{
 
     async init(){
         if(!this.ctx){
-            this.ctx = new AudioContext();
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
     }
 
-    // Hilfsfunktion: Lädt und decodiert einen Track im Hintergrund
     async preloadTrack(index) {
-    await this.init();
-
-    const jobs = this.playlist.map(async (item, i) => {
-        if (this.audioCache[i]) return;
-
-        try {
-            const data = await fetch(item.src).then(r => r.arrayBuffer());
-            const decoded = await this.ctx.decodeAudioData(data);
-            this.audioCache[i] = decoded;
-        } catch (e) {
-            console.error("Fehler:", item.src, e);
-        }
-    });
-
-    await Promise.all(jobs);
-    console.log("Alle Tracks vorgeladen.");
+        await this.init();
+        const jobs = this.playlist.map(async (item, i) => {
+            if (this.audioCache[i]) return;
+            try {
+                const data = await fetch(item.src).then(r => r.arrayBuffer());
+                const decoded = await this.ctx.decodeAudioData(data);
+                this.audioCache[i] = decoded;
+            } catch (e) {
+                console.error("Fehler:", item.src, e);
+            }
+        });
+        await Promise.all(jobs);
+        console.log("Alle Tracks vorgeladen.");
     }
 
     async loadTrack(index, autoplay=false){
@@ -738,7 +546,6 @@ class CyberPlaylistPlayer{
         this.pauseTime = 0;
         this.seek.value = 0;
 
-        // Falls der Track noch nicht im Cache ist (z.B. beim ersten Start), jetzt laden
         if (!this.audioCache[index]) {
             await this.preloadTrack(index);
         }
@@ -747,7 +554,6 @@ class CyberPlaylistPlayer{
             this.play();
         }
 
-        // Strategisches Preloading: Den NÄCHSTEN und VORHERIGEN Track heimlich im Hintergrund laden
         const nextIndex = (index + 1) % this.playlist.length;
         const prevIndex = (index - 1 + this.playlist.length) % this.playlist.length;
         this.preloadTrack(nextIndex);
@@ -759,6 +565,7 @@ class CyberPlaylistPlayer{
         if(!buffer){ return; }
 
         if(this.source){
+            this.source.onended = null;
             try{ this.source.stop(0); }catch(e){}
             this.source.disconnect();
             this.source = null;
@@ -777,6 +584,20 @@ class CyberPlaylistPlayer{
         this.source.connect(this.analyser);
         this.analyser.connect(this.ctx.destination);
 
+        this.source.onended = () => {
+            if (!this.loop) {
+                if (this.source) {
+                    this.source.onended = null;
+                }
+                this.source = null;
+                this.pauseTime = 0;
+                this.seek.value = 0;
+                
+                const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+                this.loadTrack(nextIndex, true);
+            }
+        };
+
         this.startTime = this.ctx.currentTime - this.pauseTime;
         this.source.start(0, this.pauseTime);
 
@@ -788,6 +609,7 @@ class CyberPlaylistPlayer{
         if(!this.source){ return; }
         const pos = this.ctx.currentTime - this.startTime;
         this.pauseTime = pos;
+        this.source.onended = null;
         try{ this.source.stop(0); }catch(e){}
         this.source.disconnect();
         this.source = null;
@@ -795,6 +617,7 @@ class CyberPlaylistPlayer{
 
     stop(){
         if(this.source){
+            this.source.onended = null;
             try{ this.source.stop(0); }catch(e){}
             this.source.disconnect();
         }
@@ -813,248 +636,119 @@ class CyberPlaylistPlayer{
         this.loadTrack((this.currentIndex-1 + this.playlist.length) % this.playlist.length, true);
     }
 
-updateSeek(){
-        if(!this.source){ return; }
+    updateSeek(){
+        if(!this.source) return;
+
         const buffer = this.audioCache[this.currentIndex];
         if(!buffer) return;
 
-        const pos = this.ctx.currentTime - this.startTime;
-
-        if (pos >= buffer.duration) {
-            if (this.loop) {
-                // Wenn Loop an ist: Song von vorne starten
-                this.pauseTime = 0;
-                this.play();
-            } else {
-                // Wenn Loop aus ist: Track beenden, Seekbar auf 100 stellen und stoppen ohne weiterzuspringen
-                this.seek.value = 100;
-                this.stop();
-            }
-        } else {
-            // Song läuft ganz normal weiter
-            this.seek.value = (pos / buffer.duration) * 100;
-            requestAnimationFrame(()=>this.updateSeek());
-        }
+        const pos = (this.ctx.currentTime - this.startTime) % buffer.duration;
+        this.seek.value = (pos / buffer.duration) * 100;
+        requestAnimationFrame(()=>this.updateSeek());
     }
-
 }
 
 /* =========================================================
    VISUALIZER
 ========================================================= */
-const vizCanvas =
-    document.getElementById(
-        "cyberVisualizer"
-    );
-
-const vizCtx =
-    vizCanvas.getContext("2d");
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
 
 function renderVisualizer(player){
-
     if(!player || !player.analyser){
         return;
     }
 
-    player.analyser.getByteFrequencyData(
-        player.dataArray
-    );
+    player.analyser.getByteFrequencyData(player.dataArray);
 
     const w = vizCanvas.width;
     const h = vizCanvas.height;
-
     vizCtx.clearRect(0,0,w,h);
 
-    const bgGradient =
-        vizCtx.createLinearGradient(0,0,0,h);
-
+    const bgGradient = vizCtx.createLinearGradient(0,0,0,h);
     bgGradient.addColorStop(0,"#120b02");
     bgGradient.addColorStop(1,"#020100");
-
     vizCtx.fillStyle = bgGradient;
-
     vizCtx.fillRect(0,0,w,h);
 
     const columns = 16;
     const spacing = 10;
-
-    const columnWidth =
-        (w - spacing * (columns + 1))
-        / columns;
+    const columnWidth = (w - spacing * (columns + 1)) / columns;
 
     const segmentHeight = 8;
     const segmentGap = 4;
     const maxSegments = 11;
 
     for(let i=0;i<columns;i++){
-
-        const dataIndex =
-            Math.floor(
-                i * (
-                    player.dataArray.length
-                    / columns
-                )
-            );
-
-        const value =
-            player.dataArray[dataIndex] / 255;
-
-        const activeSegments =
-            Math.floor(value * maxSegments);
-
-        const x =
-            spacing
-            + i * (columnWidth + spacing);
+        const dataIndex = Math.floor(i * (player.dataArray.length / columns));
+        const value = player.dataArray[dataIndex] / 255;
+        const activeSegments = Math.floor(value * maxSegments);
+        const x = spacing + i * (columnWidth + spacing);
 
         for(let s=0;s<maxSegments;s++){
-
-            const y =
-                h - 10
-                - (s * (
-                    segmentHeight + segmentGap
-                ));
-
-            const lit =
-                s < activeSegments;
-
+            const y = h - 10 - (s * (segmentHeight + segmentGap));
+            const lit = s < activeSegments;
             let alpha = 0.08;
 
             if(lit){
-
-                alpha =
-                    0.25
-                    + (s / maxSegments) * 0.75;
+                alpha = 0.25 + (s / maxSegments) * 0.75;
             }
 
-            const brightness =
-                120 + (s * 10);
-
-            vizCtx.fillStyle =
-                `rgba(
-                    255,
-                    ${brightness},
-                    20,
-                    ${alpha}
-                )`;
+            const brightness = 120 + (s * 10);
+            vizCtx.fillStyle = `rgba(255, ${brightness}, 20, ${alpha})`;
 
             if(lit){
-
                 vizCtx.shadowBlur = 12;
-
-                vizCtx.shadowColor =
-                    `rgba(
-                        255,
-                        ${brightness},
-                        20,
-                        0.8
-                    )`;
-
+                vizCtx.shadowColor = `rgba(255, ${brightness}, 20, 0.8)`;
             }else{
-
                 vizCtx.shadowBlur = 0;
             }
 
-            vizCtx.fillRect(
-                x,
-                y,
-                columnWidth,
-                segmentHeight
-            );
+            vizCtx.fillRect(x, y, columnWidth, segmentHeight);
         }
     }
 
-    const glass =
-        vizCtx.createLinearGradient(0,0,w,0);
-
-    glass.addColorStop(
-        0,
-        "rgba(255,255,255,0.02)"
-    );
-
-    glass.addColorStop(
-        0.5,
-        "rgba(255,255,255,0.06)"
-    );
-
-    glass.addColorStop(
-        1,
-        "rgba(255,255,255,0.01)"
-    );
-
+    const glass = vizCtx.createLinearGradient(0,0,w,0);
+    glass.addColorStop(0, "rgba(255,255,255,0.02)");
+    glass.addColorStop(0.5, "rgba(255,255,255,0.06)");
+    glass.addColorStop(1, "rgba(255,255,255,0.01)");
     vizCtx.fillStyle = glass;
-
     vizCtx.fillRect(0,0,w,h);
 
-    requestAnimationFrame(
-        ()=>renderVisualizer(player)
-    );
+    requestAnimationFrame(()=>renderVisualizer(player));
 }
 
 /* =========================================================
    CRT SYNC GLITCH
 ========================================================= */
-const playerBox =
-    document.querySelector(
-        ".cyber-player-box"
-    );
+const playerBox = document.querySelector(".cyber-player-box");
 
 function crtSyncGlitch(){
+    const t = performance.now() * 0.1;
+    const linePos = (t % (window.innerHeight + 400)) - 300;
 
-    const t =
-        performance.now() * 0.1;
+    document.documentElement.style.setProperty("--crt-line", `${linePos}px`);
 
-    const linePos =
-        (t % (window.innerHeight + 400))
-        - 300;
-
-    document.documentElement
-        .style.setProperty(
-            "--crt-line",
-            `${linePos}px`
-        );
-
-    const rect =
-        playerBox.getBoundingClientRect();
-
-    const center =
-        rect.top + rect.height / 2;
-
-    const distance =
-        Math.abs(center - linePos);
+    const rect = playerBox.getBoundingClientRect();
+    const center = rect.top + rect.height / 2;
+    const distance = Math.abs(center - linePos);
 
     if(distance < 180){
-
-        const strength =
-            (180 - distance) / 180;
-
-        const offset =
-            (Math.random() - 0.5)
-            * 8
-            * strength;
-
-        playerBox.style.transform =
-            `
-            translate(
-                calc(-50% + ${offset/3}px),
-                -50%
-            )
+        const strength = (180 - distance) / 180;
+        const offset = (Math.random() - 0.5) * 8 * strength;
+        playerBox.style.transform = `
+            translate(calc(-50% + ${offset/3}px), -50%)
             perspective(900px)
             rotateX(2deg)
-            `;
-
+        `;
     }else{
-
-        playerBox.style.transform =
-            `
+        playerBox.style.transform = `
             translate(-50%,-50%)
             perspective(900px)
             rotateX(2deg)
-            `;
+        `;
     }
-
-    requestAnimationFrame(
-        crtSyncGlitch
-    );
+    requestAnimationFrame(crtSyncGlitch);
 }
 
 crtSyncGlitch();
@@ -1065,11 +759,9 @@ crtSyncGlitch();
 async function initPlayer() {
     try {
         window.history.replaceState({}, document.title, "/");
-
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
 
-        // Player instanziieren und an das DOM-Element binden
         const playerRoot = document.querySelector(".cyber-player-box");
         const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
     } catch (e) {
@@ -1077,7 +769,6 @@ async function initPlayer() {
     }
 }
 
-// Startet das Skript nach dem Laden der Seite
 initPlayer();
 </script>
 
@@ -1088,4 +779,5 @@ initPlayer();
     <a href="blackdeath_cp3_darktech.html">DARKTECH</a>
     <a href="blackdeath_cp4_kawaii.html">KAWAII</a>
     <a href="blackdeath_cp5_holo.html">HOLO</a>
+</div>
 </html>

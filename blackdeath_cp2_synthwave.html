@@ -21,14 +21,13 @@
     body {
         background: #000;
         font-family: 'Orbitron', sans-serif;
-        overflow: hidden; /* Verhindert Scrollbalken für das reine Fullscreen-Erlebnis */
+        overflow: hidden; 
         color: #ff00ff;
-        /* Neon-Farben für den Scrollbalken innerhalb der Playlist */
         scrollbar-color: rgb(22, 206, 252, 0.7) rgb(176, 19, 190, 0.3);
     }
 
     /* =========================================================
-       THEME SWITCH (Navigations-Menü oben rechts)
+       THEME SWITCH
     ========================================================= */
     .theme-switch {
         position: fixed;
@@ -36,7 +35,7 @@
         right: 20px;
         display: flex;
         gap: 10px;
-        z-index: 9999; /* Immer im Vordergrund */
+        z-index: 9999; 
     }
 
     .theme-switch a {
@@ -48,7 +47,7 @@
         background: rgba(176, 19, 190, 0.3);
         border: 1px solid rgba(255, 150, 200, 0.6);
         color: #ff6fb7;
-        backdrop-filter: blur(6px); /* Glaseffekt */
+        backdrop-filter: blur(6px); 
         transition: all 0.15s ease-in-out;
     }
 
@@ -59,7 +58,7 @@
     }
 
     /* =========================================================
-       SYNTHWAVE SONNE (Zentraler Hintergrund-Effekt)
+       SYNTHWAVE SONNE
     ========================================================= */
     .sun {
         position: fixed;
@@ -69,9 +68,7 @@
         width: 420px;
         height: 420px;
         border-radius: 50%;
-        /* Klassischer Outrun-Farbverlauf von Gelb nach Magenta */
         background: linear-gradient(to bottom, #ffea00, #ff9900, #ff0066);
-        /* Intensiver Neon-Glüheffekt nach außen */
         box-shadow:
             0 0 40px #ff00aa,
             0 0 120px #ff0066,
@@ -80,7 +77,6 @@
         overflow: hidden;
     }
 
-    /* Horizontale Linien-Struktur innerhalb der Sonne (Jalousien-Effekt) */
     .sun::after {
         content: '';
         position: absolute;
@@ -95,7 +91,7 @@
     }
 
     /* =========================================================
-       3D PERSPEKTIV-GITTER (Grid am Boden)
+       3D PERSPEKTIV-GITTER
     ========================================================= */
     .grid {
         position: fixed;
@@ -103,15 +99,12 @@
         bottom: 0%;
         width: 200%;
         height: 100%;
-        /* Erzeugt das neon-pinke Linienraster */
         background-image:
             linear-gradient(rgba(255, 0, 255, 0.4) 2px, transparent 2px),
             linear-gradient(90deg, rgba(255, 0, 255, 0.4) 2px, transparent 2px);
         background-size: 80px 80px;
-        /* Drückt das Gitter flach in den Raum (3D-Perspektive) */
         transform: perspective(1000px) rotateX(80deg);
         transform-origin: bottom;
-        /* Endlos-Animation für die Vorwärtsbewegung */
         animation: gridMove 10s linear infinite;
         z-index: 0;
     }
@@ -122,12 +115,12 @@
     }
 
     /* =========================================================
-       VHS RETRO-EFFEKT (Scanlines über dem gesamten Bildschirm)
+       VHS RETRO-EFFEKT
     ========================================================= */
     .vhs {
         position: fixed;
         inset: 0;
-        pointer-events: none; /* Klicks gehen durch den Effekt hindurch */
+        pointer-events: none; 
         background: repeating-linear-gradient(
             to bottom,
             rgba(255, 255, 255, 0.2),
@@ -141,7 +134,7 @@
     }
 
     /* =========================================================
-       HINTERGRUND: STARFIELD CANVAS
+       STARFIELD CANVAS
     ========================================================= */
     #starfield {
         position: fixed;
@@ -150,7 +143,7 @@
     }
 
     /* =========================================================
-       TITEL (Neon Glow Text)
+       TITEL
     ========================================================= */
     .title {
         position: fixed;
@@ -185,7 +178,7 @@
         box-shadow:
             0 0 25px rgba(255, 0, 255, 0.25),
             inset 0 0 20px rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(14px); /* Milchglas-Effekt */
+        backdrop-filter: blur(14px); 
         z-index: 20;
     }
 
@@ -199,7 +192,7 @@
     }
 
     /* =========================================================
-       PLAYER BUTTONS (Neon Verlauf)
+       PLAYER BUTTONS
     ========================================================= */
     .cyber-player-controls {
         display: flex;
@@ -231,7 +224,7 @@
     }
 
     /* =========================================================
-       LOOP CHECKBOX & PROGRESS-BAR (Seekbar)
+       LOOP & SEEKBAR
     ========================================================= */
     .cyber-loop-label {
         display: flex;
@@ -244,7 +237,7 @@
     }
 
     .cyber-loop-label input {
-        accent-color: #ff00ff; /* Färbt die Checkbox pink */
+        accent-color: #ff00ff; 
     }
 
     .cyber-seek {
@@ -257,7 +250,6 @@
         cursor: pointer;
     }
 
-    /* Styling des Schiebereglers (Slider Handle) */
     .cyber-seek::-webkit-slider-thumb {
         -webkit-appearance: none;
         width: 14px;
@@ -269,7 +261,7 @@
     }
 
     /* =========================================================
-       PLAYLIST-ANZEIGE
+       PLAYLIST
     ========================================================= */
     .cyber-playlist {
         text-align: center;
@@ -294,7 +286,6 @@
         background: rgba(255, 0, 255, 0.15);
     }
 
-    /* Aktiver Track in der Playlist */
     .cyber-track.active {
         background: linear-gradient(90deg, rgba(0, 255, 255, 0.4), rgba(255, 0, 255, 0.4));
         color: #fff;
@@ -319,7 +310,7 @@
     }
 
     /* =========================================================
-       DEKORATIVE GRAFIKEN & LOGO (Mit Floating-Animationen)
+       LOGO
     ========================================================= */
     .logo {
         position: fixed;
@@ -335,7 +326,6 @@
             drop-shadow(0 0 60px #d60df1);
     }
 
-    /* Sanfte Auf- und Abwärtsbewegung über die CSS 'translate'-Eigenschaft */
     @keyframes float {
         0%, 100% { translate: 0 0px; }
         50%      { translate: 0 -15px; }
@@ -384,7 +374,7 @@
 
 <script>
 /* =============================================================================
-   1. STERNENHIMMEL ANIMATION (Canvas-basiert)
+   1. STERNENHIMMEL ANIMATION
    ============================================================================= */
 const canvas = document.getElementById('starfield');
 const ctx = canvas.getContext('2d');
@@ -469,11 +459,10 @@ window.addEventListener('resize', resizeCanvas);
 
 
 /* =============================================================================
-   2. AUDIO CORE ENGINE (Web Audio API Player für .json Playlists)
+   2. AUDIO CORE ENGINE (Stabile Version aus Holo-Player)
    ============================================================================= */
-class CyberPlaylistPlayer{
-
-    constructor(root,playlist){
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
         this.root = root;
         this.playlist = playlist;
         this.currentIndex = 0;
@@ -493,7 +482,7 @@ class CyberPlaylistPlayer{
         this.loadTrack(0);
     }
 
-    buildRefs(){
+    buildRefs() {
         this.playBtn = this.root.querySelector(".play");
         this.pauseBtn = this.root.querySelector(".pause");
         this.stopBtn = this.root.querySelector(".stop");
@@ -503,27 +492,30 @@ class CyberPlaylistPlayer{
         this.loopToggle = this.root.querySelector(".loop");
         this.listBox = this.root.querySelector(".cyber-playlist");
 
-        this.playBtn.onclick = ()=>this.play();
-        this.pauseBtn.onclick = ()=>this.pause();
-        this.stopBtn.onclick = ()=>this.stop();
-        this.prevBtn.onclick = ()=>this.prevTrack();
-        this.nextBtn.onclick = ()=>this.nextTrack();
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
 
-        this.loopToggle.onchange = ()=> {
+        this.loopToggle.onchange = () => {
             this.loop = this.loopToggle.checked;
-            // Native source.loop wird hier bewusst NICHT angefasst, um Ton-Abbrüche zu verhindern.
+            if (this.source) {
+                this.source.loop = this.loop;
+            }
         };
 
-        this.seek.oninput = ()=>{
+        this.seek.oninput = () => {
             const buffer = this.audioCache[this.currentIndex];
-            if(!buffer){ return; }
+            if (!buffer) return;
             this.pauseTime = (this.seek.value / 100) * buffer.duration;
         };
 
-        this.seek.onchange = ()=>{
-            if(!this.audioCache[this.currentIndex]){ return; }
-            if(this.source){
-                try{ this.source.stop(0); }catch(e){}
+        this.seek.onchange = () => {
+            if (!this.audioCache[this.currentIndex]) return;
+            if (this.source) {
+                this.source.onended = null;
+                try { this.source.stop(0); } catch(e) {}
                 this.source.disconnect();
                 this.source = null;
             }
@@ -533,19 +525,19 @@ class CyberPlaylistPlayer{
         this.renderPlaylist();
     }
 
-    renderPlaylist(){
+    renderPlaylist() {
         this.listBox.innerHTML = "";
-        this.playlist.forEach((track,i)=>{
+        this.playlist.forEach((track, i) => {
             const item = document.createElement("div");
-            item.className = "cyber-track" + (i===this.currentIndex ? " active" : "");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
             item.textContent = track.name;
-            item.onclick = ()=>this.loadTrack(i,true);
+            item.onclick = () => this.loadTrack(i, true);
             this.listBox.appendChild(item);
         });
     }
 
-    highlightActive(){
-        this.listBox.querySelectorAll(".cyber-track").forEach((el,i)=>{
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
             const isActive = i === this.currentIndex;
             el.classList.toggle("active", isActive);
             if (isActive) {
@@ -554,32 +546,29 @@ class CyberPlaylistPlayer{
         });
     }
 
-    async init(){
-        if(!this.ctx){
-            this.ctx = new AudioContext();
+    async init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
     }
 
     async preloadTrack(index) {
-            await this.init();
-
-    const jobs = this.playlist.map(async (item, i) => {
-        if (this.audioCache[i]) return;
-
-        try {
-            const data = await fetch(item.src).then(r => r.arrayBuffer());
-            const decoded = await this.ctx.decodeAudioData(data);
-            this.audioCache[i] = decoded;
-        } catch (e) {
-            console.error("Fehler:", item.src, e);
-        }
-    });
-
-    await Promise.all(jobs);
-    console.log("Alle Tracks vorgeladen.");
+        await this.init();
+        const jobs = this.playlist.map(async (item, i) => {
+            if (this.audioCache[i]) return;
+            try {
+                const data = await fetch(item.src).then(r => r.arrayBuffer());
+                const decoded = await this.ctx.decodeAudioData(data);
+                this.audioCache[i] = decoded;
+            } catch (e) {
+                console.error("Fehler:", item.src, e);
+            }
+        });
+        await Promise.all(jobs);
+        console.log("Alle Tracks vorgeladen.");
     }
 
-    async loadTrack(index, autoplay=false){
+    async loadTrack(index, autoplay = false) {
         this.stop();
         this.currentIndex = index;
         this.highlightActive();
@@ -592,7 +581,7 @@ class CyberPlaylistPlayer{
             await this.preloadTrack(index);
         }
 
-        if(autoplay){
+        if (autoplay) {
             this.play();
         }
 
@@ -602,28 +591,43 @@ class CyberPlaylistPlayer{
         this.preloadTrack(prevIndex);
     }
 
-    play(){
+    play() {
         const buffer = this.audioCache[this.currentIndex];
-        if(!buffer){ return; }
+        if (!buffer) return;
 
-        if(this.source){
-            try{ this.source.stop(0); }catch(e){}
+        if (this.source) {
+            this.source.onended = null;
+            try { this.source.stop(0); } catch(e) {}
             this.source.disconnect();
             this.source = null;
         }
 
         this.source = this.ctx.createBufferSource();
         this.source.buffer = buffer;
-        this.source.loop = false; // Wird fest auf false gesetzt, wir managen den Loop selbst in updateSeek
+        this.source.loop = this.loop;
 
-        if(!this.analyser){
+        if (!this.analyser) {
             this.analyser = this.ctx.createAnalyser();
-            this.analyser.fftSize = 128;
+            this.analyser.fftSize = 256;
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
         }
 
         this.source.connect(this.analyser);
         this.analyser.connect(this.ctx.destination);
+
+        this.source.onended = () => {
+            if (!this.loop) {
+                if (this.source) {
+                    this.source.onended = null;
+                }
+                this.source = null;
+                this.pauseTime = 0;
+                this.seek.value = 0;
+                
+                const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+                this.loadTrack(nextIndex, true);
+            }
+        };
 
         this.startTime = this.ctx.currentTime - this.pauseTime;
         this.source.start(0, this.pauseTime);
@@ -632,18 +636,20 @@ class CyberPlaylistPlayer{
         renderVisualizer(this);
     }
 
-    pause(){
-        if(!this.source){ return; }
+    pause() {
+        if (!this.source) return;
         const pos = this.ctx.currentTime - this.startTime;
         this.pauseTime = pos;
-        try{ this.source.stop(0); }catch(e){}
+        this.source.onended = null;
+        try { this.source.stop(0); } catch(e) {}
         this.source.disconnect();
         this.source = null;
     }
 
-    stop(){
-        if(this.source){
-            try{ this.source.stop(0); }catch(e){}
+    stop() {
+        if (this.source) {
+            this.source.onended = null;
+            try { this.source.stop(0); } catch(e) {}
             this.source.disconnect();
         }
         this.source = null;
@@ -651,51 +657,37 @@ class CyberPlaylistPlayer{
         this.seek.value = 0;
     }
 
-    nextTrack(){
+    nextTrack() {
         this.stop();
-        this.loadTrack((this.currentIndex+1) % this.playlist.length, true);
+        this.loadTrack((this.currentIndex + 1) % this.playlist.length, true);
     }
 
-    prevTrack(){
+    prevTrack() {
         this.stop();
-        this.loadTrack((this.currentIndex-1 + this.playlist.length) % this.playlist.length, true);
+        this.loadTrack((this.currentIndex - 1 + this.playlist.length) % this.playlist.length, true);
     }
 
-    updateSeek(){
-        if(!this.source){ return; }
+    updateSeek() {
+        if (!this.source) return;
+
         const buffer = this.audioCache[this.currentIndex];
-        if(!buffer) return;
+        if (!buffer) return;
 
-        const pos = this.ctx.currentTime - this.startTime;
-
-        if (pos >= buffer.duration) {
-            if (this.loop) {
-                // Wenn Loop an ist: Song von vorne starten
-                this.pauseTime = 0;
-                this.play();
-            } else {
-                // Wenn Loop aus ist: Track beenden, Seekbar auf 100 stellen und stoppen ohne weiterzuspringen
-                this.seek.value = 100;
-                this.stop();
-            }
-        } else {
-            // Song läuft ganz normal weiter
-            this.seek.value = (pos / buffer.duration) * 100;
-            requestAnimationFrame(()=>this.updateSeek());
-        }
+        const pos = (this.ctx.currentTime - this.startTime) % buffer.duration;
+        this.seek.value = (pos / buffer.duration) * 100;
+        requestAnimationFrame(() => this.updateSeek());
     }
 }
 
 
 /* =============================================================================
-   3. AUDIO VISUALIZER GRAPHICS (Canvas Frequenz-Zeichnung)
+   3. AUDIO VISUALIZER GRAPHICS
    ============================================================================= */
 const vizCanvas = document.getElementById("cyberVisualizer");
 const vizCtx = vizCanvas.getContext("2d");
 
 function renderVisualizer(player) {
     if (!player || !player.analyser || !player.source) {
-        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
         return;
     }
 
@@ -760,7 +752,7 @@ function renderVisualizer(player) {
    ============================================================================= */
 async function initPlayer() {
     try {
-	window.history.replaceState({}, document.title, "/");
+        window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
 
