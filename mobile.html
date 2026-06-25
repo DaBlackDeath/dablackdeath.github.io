@@ -96,6 +96,32 @@ body {
     align-items: center;
 }
 
+.cyber-btn::before {
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+.prev::before {
+    content: "<<";
+}
+
+.play::before {
+    content: "▶";
+}
+
+.pause::before {
+    content: "❚❚";
+    letter-spacing: -2px;
+}
+
+.stop::before {
+    content: "■";
+}
+
+.next::before {
+    content: ">>";
+}
+
 .cyber-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #e5b4c8, 0 0 14px rgba(255, 150, 200, 0.9);
@@ -198,11 +224,11 @@ body {
     <div class="cyber-player-title">AUDIO NODE // KAWAII MODE</div>
 
     <div class="cyber-player-controls">
-    <button class="cyber-btn prev">&#9198;</button> 
-    <button class="cyber-btn play">&#9654;</button>
-    <button class="cyber-btn pause">&#9208;</button>
-    <button class="cyber-btn stop">&#9209;</button>
-    <button class="cyber-btn next">&#9197;</button>
+    <button class="cyber-btn prev"></button>
+    <button class="cyber-btn play"></button>
+    <button class="cyber-btn pause"></button>
+    <button class="cyber-btn stop"></button>
+    <button class="cyber-btn next"></button>
 </div>
 
     <label class="cyber-loop-label">
