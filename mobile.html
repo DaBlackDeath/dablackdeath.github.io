@@ -1,153 +1,600 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitte Desktop nutzen</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACKDEATH – CP4 KAWAII</title>
 
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px 30px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.8s ease-out;
-        }
+<style>
+/* =========================================================
+    GLOBAL & LAYOUT (Zentrierung & 10px Rand)
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .icon-container {
-            margin-bottom: 24px;
-            position: relative;
-            display: inline-block;
-        }
+body {
+    background: #fff6fb;
+    font-family: 'Nunito', sans-serif;
+    color: #ff8ac9;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+}
 
-        .icon {
-            width: 80px;
-            height: 80px;
-            fill: none;
-            stroke: #818cf8;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            animation: pulse 2s infinite ease-in-out;
-        }
+/* =========================================================
+    KAWAII BACKGROUND
+========================================================= */
+#kawaii-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+}
 
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            background: linear-gradient(to right, #ffffff, #c7d2fe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
+/* =========================================================
+    PLAYER BOX (Auf Hochformat fixiert)
+========================================================= */
+.cyber-player-box {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(255, 180, 220, 0.6);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow:
+        0 0 25px rgba(255, 180, 220, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(14px);
+    position: relative;
+    z-index: 10;
+}
 
-        p {
-            color: #94a3b8;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
+.cyber-player-title {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    color: #ff6fb7;
+    font-weight: 900;
+    text-shadow: 0 0 10px #ffc8e8, 0 0 20px #ffb7d5;
+}
 
-        .badge {
-            display: inline-block;
-            background: rgba(129, 140, 248, 0.1);
-            color: #a5b4fc;
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 500;
-            border: 1px solid rgba(129, 140, 248, 0.2);
-        }
+/* =========================================================
+    CONTROLS & BUTTONS
+========================================================= */
+.cyber-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.cyber-btn {
+    background: linear-gradient(135deg, #ffc8e8, #ffd8b8, #c8fff1);
+    color: #7a4a5a;
+    border: none;
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 4px 0 #e5b4c8, 0 0 10px rgba(255, 180, 220, 0.6);
+    transition: 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
+.cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #e5b4c8, 0 0 14px rgba(255, 150, 200, 0.9);
+}
 
-        /* Versteckt die Meldung auf großen Bildschirmen */
-        @media (min-width: 1024px) {
-            body {
-                background: #0f172a;
-            }
-            .card {
-                max-width: 500px;
-            }
-            h1::before {
-                content: "Bereit! ";
-                -webkit-text-fill-color: #initial;
-                background: none;
-            }
-            h1 {
-                background: none;
-                -webkit-text-fill-color: #fff;
-            }
-            p {
-                display: none;
-            }
-            .icon-container, .badge {
-                display: none;
-            }
-            .desktop-content {
-                display: block !important;
-            }
-        }
+.cyber-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #e5b4c8, 0 0 6px rgba(255, 150, 200, 0.6);
+}
 
-        .desktop-content {
-            display: none;
-            color: #34d399;
-            font-size: 18px;
-            font-weight: 500;
-        }
-    </style>
+/* =========================================================
+    SEEK & LOOP
+========================================================= */
+.cyber-loop-label {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cyber-loop-label input {
+    accent-color: #ff8ac9;
+    cursor: pointer;
+}
+
+.cyber-seek {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ff8ac9;
+    box-shadow: 0 0 10px #ff8ac9;
+}
+
+/* =========================================================
+    PLAYLIST & VISUALIZER
+========================================================= */
+.cyber-playlist {
+    text-align: center;
+    max-height: calc(93vh - 280px);
+    overflow-y: auto;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ffc8e8 rgba(255,255,255,0.3);
+}
+
+.cyber-playlist::-webkit-scrollbar { width: 6px; }
+.cyber-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 10px; }
+.cyber-playlist::-webkit-scrollbar-thumb { background-color: #ffc8e8; border-radius: 10px; }
+
+.cyber-track {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 180, 220, 0.4);
+    cursor: pointer;
+    color: #7a4a5a;
+    font-weight: 700;
+    transition: 0.15s;
+}
+
+.cyber-track:hover { background: rgba(255, 200, 230, 0.8); }
+.cyber-track.active {
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+    color: #7a4a5a;
+    border-color: #ff8ac9;
+    box-shadow: 0 0 12px #ffc8e8, 0 0 18px #ffb7d5;
+}
+
+#cyberVisualizer {
+    width: 100%;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(255, 180, 220, 0.4);
+    border-radius: 16px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.9);
+}
+</style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="icon-container">
-            <svg class="icon" viewBox="0 0 24 24">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-        </div>
+<canvas id="kawaii-bg"></canvas>
 
-        <h1>Großer Bildschirm benötigt</h1>
-        <p>Diese Anwendung ist für die Nutzung auf einem Desktop-PC optimiert. Bitte öffne den Link an deinem Computer erneut.</p>
-        
-        <span class="badge">Desktop-Ansicht erforderlich</span>
+<div class="cyber-player-box">
+    <div class="cyber-player-title">AUDIO NODE // KAWAII MODE</div>
 
-        <div class="desktop-content">
-            Du hast die Seite erfolgreich auf einem Desktop-PC geöffnet!
-        </div>
+    <div class="cyber-player-controls">
+        <button class="cyber-btn prev">⏮</button>
+        <button class="cyber-btn play">▶</button>
+        <button class="cyber-btn pause">⏸</button>
+        <button class="cyber-btn stop">⏹</button>
+        <button class="cyber-btn next">⏭</button>
     </div>
+
+    <label class="cyber-loop-label">
+        <input type="checkbox" class="loop" checked>
+        LOOP ENABLED
+    </label>
+
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer" width="400" height="80"></canvas>
+</div>
+
+<script>
+/* =========================================================
+    AUDIO LOGIC
+========================================================= */
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+        this.ctx = null;
+        this.source = null;
+        this.audioCache = {}; 
+        this.analyser = null;
+        this.dataArray = null;
+        this.startTime = 0;
+        this.pauseTime = 0;
+        this.loop = true;
+        this.visualizerAnimationId = null;
+
+        this.buildRefs();
+        this.loadTrack(0);
+    }
+
+    buildRefs() {
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
+
+        this.loopToggle.onchange = () => {
+            this.loop = this.loopToggle.checked;
+            if (this.source) this.source.loop = this.loop;
+        };
+
+        this.seek.oninput = () => {
+            const buffer = this.audioCache[this.currentIndex];
+            if (!buffer) return;
+            this.pauseTime = (this.seek.value / 100) * buffer.duration;
+        };
+
+        this.seek.onchange = () => {
+            if (!this.audioCache[this.currentIndex]) return;
+            if (this.source) {
+                this.source.onended = null;
+                try { this.source.stop(0); } catch(e) {}
+                this.source.disconnect();
+                this.source = null;
+            }
+            this.play();
+        };
+
+        this.renderPlaylist();
+    }
+
+    renderPlaylist() {
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track, i) => {
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = () => this.loadTrack(i, true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+    }
+
+    async initAudioContext() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+            await this.ctx.resume();
+        }
+    }
+
+    async preloadTrack(index) {
+        await this.initAudioContext();
+        if (this.audioCache[index]) return;
+
+        const item = this.playlist[index];
+        if (!item) return;
+
+        try {
+            const response = await fetch(item.src);
+            const arrayBuffer = await response.arrayBuffer();
+            this.audioCache[index] = await this.ctx.decodeAudioData(arrayBuffer);
+        } catch (e) {
+            console.error("Fehler beim Vorladen von:", item.src, e);
+        }
+    }
+
+    async loadTrack(index, autoplay = false) {
+        this.stop();
+        this.currentIndex = index;
+        this.highlightActive();
+        
+        this.pauseTime = 0;
+        this.seek.value = 0;
+
+        await this.initAudioContext();
+
+        if (!this.audioCache[index]) {
+            await this.preloadTrack(index);
+        }
+
+        if (autoplay) this.play();
+
+        const nextIndex = (index + 1) % this.playlist.length;
+        const prevIndex = (index - 1 + this.playlist.length) % this.playlist.length;
+        this.preloadTrack(nextIndex);
+        this.preloadTrack(prevIndex);
+    }
+
+    play() {
+        this.initAudioContext().then(() => {
+            const buffer = this.audioCache[this.currentIndex];
+            if (!buffer) return;
+
+            if (this.source) {
+                this.source.onended = null;
+                try { this.source.stop(0); } catch(e) {}
+                this.source.disconnect();
+                this.source = null;
+            }
+
+            this.source = this.ctx.createBufferSource();
+            this.source.buffer = buffer;
+            this.source.loop = this.loop;
+
+            if (!this.analyser) {
+                this.analyser = this.ctx.createAnalyser();
+                this.analyser.fftSize = 128;
+                this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            }
+
+            this.source.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+
+            this.source.onended = () => {
+                if (!this.loop) this.nextTrack();
+            };
+
+            this.startTime = this.ctx.currentTime - this.pauseTime;
+            this.source.start(0, this.pauseTime);
+
+            this.updateSeek();
+            if (!this.visualizerAnimationId) renderVisualizer(this);
+        });
+    }
+
+    pause() {
+        if (!this.source) return;
+        this.pauseTime = this.ctx.currentTime - this.startTime;
+        this.source.onended = null;
+        try { this.source.stop(0); } catch(e) {}
+        this.source.disconnect();
+        this.source = null;
+        if (this.visualizerAnimationId) {
+            cancelAnimationFrame(this.visualizerAnimationId);
+            this.visualizerAnimationId = null;
+        }
+    }
+
+    stop() {
+        if (this.source) {
+            this.source.onended = null;
+            try { this.source.stop(0); } catch(e) {}
+            this.source.disconnect();
+        }
+        this.source = null;
+        this.pauseTime = 0;
+        this.seek.value = 0;
+        if (this.visualizerAnimationId) {
+            cancelAnimationFrame(this.visualizerAnimationId);
+            this.visualizerAnimationId = null;
+        }
+        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+    }
+
+    nextTrack() {
+        this.stop();
+        this.loadTrack((this.currentIndex + 1) % this.playlist.length, true);
+    }
+
+    prevTrack() {
+        this.stop();
+        this.loadTrack((this.currentIndex - 1 + this.playlist.length) % this.playlist.length, true);
+    }
+
+    updateSeek() {
+        if (!this.source) return;
+        const buffer = this.audioCache[this.currentIndex];
+        if (!buffer) return;
+
+        const currentTime = this.ctx.currentTime - this.startTime;
+        const pos = currentTime % buffer.duration;
+        this.seek.value = (pos / buffer.duration) * 100;
+
+        requestAnimationFrame(() => this.updateSeek());
+    }
+}
+
+/* =========================================================
+    VISUALIZER RENDERER
+========================================================= */
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser || !player.source) {
+        player.visualizerAnimationId = null;
+        return;
+    }
+
+    player.visualizerAnimationId = requestAnimationFrame(() => renderVisualizer(player));
+    player.analyser.getByteFrequencyData(player.dataArray);
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    vizCtx.clearRect(0, 0, w, h);
+
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        let r, g, b;
+        if (t < 0.5) {
+            const k = t / 0.5;
+            r = 255; g = 200 - (200 - 216) * k; b = 230 - (230 - 184) * k;
+        } else {
+            const k = (t - 0.5) / 0.5;
+            r = 255 - (255 - 200) * k; g = 216 - (216 - 255) * k; b = 184 - (184 - 241) * k;
+        }
+
+        vizCtx.fillStyle = `rgba(${r},${g},${b},${0.4 + v * 0.6})`;
+        const radius = 3;
+        const bw = barWidth * 0.75;
+        const bx = x + (barWidth - bw) / 2;
+
+        if (barHeight > radius * 2) {
+            vizCtx.beginPath();
+            vizCtx.moveTo(bx + radius, y);
+            vizCtx.lineTo(bx + bw - radius, y);
+            vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+            vizCtx.lineTo(bx + bw, y + barHeight);
+            vizCtx.lineTo(bx, y + barHeight);
+            vizCtx.lineTo(bx, y + radius);
+            vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+            vizCtx.closePath();
+            vizCtx.fill();
+        } else if (barHeight > 0) {
+             vizCtx.fillRect(bx, y, bw, barHeight);
+        }
+    }
+}
+
+/* =========================================================
+    ANIMATED BACKGROUND LOGIC (PERFEKT VERTEILT)
+========================================================= */
+const bgCanvas = document.getElementById("kawaii-bg");
+const bgCtx = bgCanvas.getContext("2d");
+
+// Dimensionen setzen vor Partikel-Generierung
+bgCanvas.width = window.innerWidth;
+bgCanvas.height = window.innerHeight;
+
+const kawaiiSprites = [
+    {emoji: "💖", size: 24}, {emoji: "☁️", size: 28}, {emoji: "⭐", size: 20},
+    {emoji: "🌈", size: 26}, {emoji: "🍰", size: 22}, {emoji: "🎀", size: 22},
+    {emoji: "🐰", size: 22}, {emoji: "🐭", size: 22}, {emoji: "🧸", size: 22},
+    {emoji: "🐼", size: 22}, {emoji: "🐸", size: 22}, {emoji: "🐱", size: 22}
+];
+
+function createParticle(isInitial = false) {
+    return {
+        x: Math.random() * bgCanvas.width,
+        // Nutzt garantiert die volle aktuelle Canvas-Höhe beim ersten Laden
+        y: isInitial ? Math.random() * bgCanvas.height : bgCanvas.height + 40,
+        speed: 0.4 + Math.random() * 0.8,
+        sprite: kawaiiSprites[Math.floor(Math.random() * kawaiiSprites.length)],
+        opacity: 0.4 + Math.random() * 0.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.01 + Math.random() * 0.02
+    };
+}
+
+// Initial 40 Partikel gleichmäßig über den gesamten Schirm verteilen
+const particles = Array.from({length: 40}, () => createParticle(true));
+
+function resizeBg() {
+    const oldWidth = bgCanvas.width;
+    const oldHeight = bgCanvas.height;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+    
+    bgCanvas.width = newWidth;
+    bgCanvas.height = newHeight;
+    
+    // Bestehende Icons proportional an das neue Layout anpassen
+    particles.forEach(p => {
+        p.x = (p.x / oldWidth) * newWidth;
+        p.y = (p.y / oldHeight) * newHeight;
+    });
+}
+window.addEventListener("resize", resizeBg);
+
+function drawBackground() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.textBaseline = "middle";
+    bgCtx.textAlign = "center";
+
+    particles.forEach(p => {
+        bgCtx.globalAlpha = p.opacity;
+        bgCtx.font = `${p.sprite.size}px sans-serif`;
+        
+        const xFinal = p.x + Math.sin(p.wobble) * 15;
+        bgCtx.fillText(p.sprite.emoji, xFinal, p.y);
+        
+        p.y -= p.speed;
+        p.wobble += p.wobbleSpeed;
+        
+        if (p.y < -40) {
+            Object.assign(p, createParticle(false));
+        }
+    });
+    
+    bgCtx.globalAlpha = 1.0;
+    requestAnimationFrame(drawBackground);
+}
+
+drawBackground();
+
+/* =========================================================
+    INIT PLAYER
+========================================================= */
+async function initPlayer() {
+    try {
+        const response = await fetch("assets/playlist.json");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+    } catch (e) {
+        console.error("Fehler beim Laden der Playlist:", e);
+        const fallbackPlaylist = [{name: "assets/playlist.json fehlt!", src: ""}];
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, fallbackPlaylist);
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPlayer);
+} else {
+    initPlayer();
+}
+</script>
 
 </body>
 </html>
