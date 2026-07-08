@@ -167,6 +167,7 @@ body {
     background: linear-gradient(90deg, #00fff0, #a066ff, #ffffff);
     margin-bottom: 10px;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .cyber-seek::-webkit-slider-thumb {
@@ -177,6 +178,7 @@ body {
     background: #ffffff;
     border: 2px solid #00fff0;
     box-shadow: 0 0 10px #00fff0;
+    cursor: pointer;
 }
 
 /* =========================================================
@@ -241,16 +243,8 @@ body {
 }
 
 @keyframes float{
-    0%,100%{
-        transform:
-            translate(-50%, -50%)
-            translateY(0px);
-    }
-    50%{
-        transform:
-            translate(-50%, -50%)
-            translateY(-25px);
-    }
+    0%,100%{ transform: translate(-50%, -50%) translateY(0px); }
+    50%{ transform: translate(-50%, -50%) translateY(-25px); }
 }
 </style>
 </head>
@@ -385,7 +379,7 @@ function animateStarfield() {
 animateStarfield();
 
 /* =========================================================
-   CYBERPUNK PLAYER (HOLOGRAM)
+   CYBERPUNK PLAYER (HOLOGRAM - Streaming Node)
 ========================================================= */
 class CyberPlaylistPlayer {
     constructor(root, playlist) {
@@ -393,17 +387,18 @@ class CyberPlaylistPlayer {
         this.playlist = playlist;
         this.currentIndex = 0;
 
+        // HTML5 Audio Engine für direktes Streaming
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
         this.ctx = null;
         this.sourceNode = null;
         this.analyser = null;
         this.dataArray = null;
         
-        this.audioBuffer = null; 
-        this.isPlaying = false;
-        this.startTime = 0;      
-        this.pauseTime = 0;      
         this.loop = true;
         this.isDragging = false;
+        this.visualizerActive = false;
 
         this.buildRefs();
         this.renderPlaylist();
@@ -428,32 +423,26 @@ class CyberPlaylistPlayer {
 
         this.loopToggle.onchange = () => {
             this.loop = this.loopToggle.checked;
-            if (this.sourceNode) {
-                this.sourceNode.loop = this.loop;
-            }
+            this.audio.loop = this.loop;
         };
 
         this.seek.oninput = () => { this.isDragging = true; };
         this.seek.onchange = () => {
-            if (!this.audioBuffer) return;
-            const targetTime = (this.seek.value / 100) * this.audioBuffer.duration;
-            if (this.isPlaying) {
-                this.stopSource();
-                this.play(targetTime);
-            } else {
-                this.pauseTime = targetTime;
-            }
+            if (isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
             this.isDragging = false;
         };
 
         this.seek.onmouseup = () => { this.isDragging = false; };
         this.seek.ontouchend = () => { this.isDragging = false; };
         
-        const updateProgress = () => {
-            this.updateSeek();
-            requestAnimationFrame(updateProgress);
+        // Native Events für Fortschrittsanzeige koppeln
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
         };
-        requestAnimationFrame(updateProgress);
     }
 
     renderPlaylist() {
@@ -483,60 +472,34 @@ class CyberPlaylistPlayer {
             this.analyser = this.ctx.createAnalyser();
             this.analyser.fftSize = 128;
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            // Verknüpfe den Audio-Stream mit der Web Audio API
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
             this.analyser.connect(this.ctx.destination);
         }
     }
 
-    async loadTrack(index, autoplay = false) {
+    loadTrack(index, autoplay = false) {
         this.currentIndex = index;
         this.highlightActive();
-        this.initAudioEngine();
-        this.stopSource();
         
-        this.audioBuffer = null;
-        this.pauseTime = 0;
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
         this.seek.value = 0;
 
-        if (this.playlist && this.playlist[index]) {
-            try {
-                const response = await fetch(this.playlist[index].src);
-                const arrayBuffer = await response.arrayBuffer();
-                this.audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
-                
-                if (autoplay) {
-                    this.play();
-                }
-            } catch (e) {
-                console.error("Fehler beim Dekodieren der Audiodatei:", e);
-            }
+        if (autoplay) {
+            this.play();
         }
     }
 
-    play(resumeTime = null) {
+    play() {
         this.initAudioEngine();
         if (this.ctx.state === 'suspended') {
             this.ctx.resume();
         }
 
-        if (!this.audioBuffer || this.isPlaying) return;
-
-        this.sourceNode = this.ctx.createBufferSource();
-        this.sourceNode.buffer = this.audioBuffer;
-        this.sourceNode.loop = this.loop;
-        this.sourceNode.connect(this.analyser);
-
-        const offset = resumeTime !== null ? resumeTime : this.pauseTime;
-        this.sourceNode.start(0, offset);
-        
-        this.startTime = this.ctx.currentTime - offset;
-        this.isPlaying = true;
-
-        this.sourceNode.onended = () => {
-            if (!this.sourceNode.loop && this.isPlaying && (this.ctx.currentTime - this.startTime >= this.audioBuffer.duration - 0.1)) {
-                this.isPlaying = false;
-                this.nextTrack();
-            }
-        };
+        this.audio.play().catch(e => console.error("Streaming-Fehler:", e));
 
         if (!this.visualizerActive) {
             this.visualizerActive = true;
@@ -545,51 +508,23 @@ class CyberPlaylistPlayer {
     }
 
     pause() {
-        if (this.isPlaying) {
-            this.pauseTime = this.ctx.currentTime - this.startTime;
-            this.stopSource();
-        }
+        this.audio.pause();
     }
 
     stop() {
-        this.pauseTime = 0;
-        this.stopSource();
+        this.audio.pause();
+        this.audio.currentTime = 0;
         this.seek.value = 0;
     }
 
-    stopSource() {
-        if (this.sourceNode) {
-            try { this.sourceNode.stop(); } catch(e){}
-            this.sourceNode.disconnect();
-            this.sourceNode = null;
-        }
-        this.isPlaying = false;
-    }
-
-    nextTrack() {
-        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
-        this.loadTrack(nextIndex, true);
-    }
-
-    prevTrack() {
-        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
-        this.loadTrack(prevIndex, true);
-    }
-
     updateSeek() {
-        if (this.isDragging || !this.isPlaying || !this.audioBuffer) return;
-
-        let currentPosition = this.ctx.currentTime - this.startTime;
-        if (this.loop) {
-            currentPosition = currentPosition % this.audioBuffer.duration;
-        }
-        this.seek.value = (currentPosition / this.audioBuffer.duration) * 100;
+        if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
     }
 }
 
-
 /* =========================================================
-   VISUALIZER
+   VISUALIZER WITH SMOOTH FALLOFF
 ========================================================= */
 const vizCanvas = document.getElementById("cyberVisualizer");
 const vizCtx = vizCanvas.getContext("2d");
@@ -597,7 +532,15 @@ const vizCtx = vizCanvas.getContext("2d");
 function renderVisualizer(player) {
     if (!player || !player.analyser) return;
 
-    player.analyser.getByteFrequencyData(player.dataArray);
+    // Wenn der Player läuft, lade die echten Frequenzen
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else {
+        // Falloff-Effekt: Wenn pausiert/gestoppt, dämpfe die alten Werte mathematisch ab
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
+    }
 
     const w = vizCanvas.width;
     const h = vizCanvas.height;
@@ -656,12 +599,15 @@ function renderVisualizer(player) {
 ========================================================= */
 async function initPlayer() {
     try {
-	localStorage.setItem("lastCyberPlayer", "blackdeath_cp5_holo.html");
-	window.history.replaceState({}, document.title, "/");
+        localStorage.setItem("lastCyberPlayer", "blackdeath_cp5_holo.html");
+        window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
         const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Starte den Render-Loop einmalig global
+        renderVisualizer(cyberPlayer);
     } catch (e) {
         console.error("Kritischer Fehler beim Initialisieren des Players:", e);
     }

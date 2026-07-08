@@ -24,7 +24,7 @@
 }
 
 :root{
-    --crt-line:0px;
+    var(--crt-line):0px;
 }
 
 body{
@@ -390,13 +390,21 @@ body::after{
 
 <body>
 
+<div class="theme-switch">
+    <a href="blackdeath_cp1_amber.html">AMBER</a>
+    <a href="blackdeath_cp2_synthwave.html">SYNTHWAVE</a>
+    <a href="blackdeath_cp3_darktech.html">DARKTECH</a>
+    <a href="blackdeath_cp4_kawaii.html">KAWAII</a>
+    <a href="blackdeath_cp5_holo.html">HOLO</a>
+</div>
+
 <div>
 <pre class="title-ascii">
-   __________.__                 __   ________                 __  .__
-   \______   \  | _____    ____ |  | _\______ \   ____ _____ _/  |_|  |__
-    |    |  _/  | \__  \ _/ ___\|  |/ /|    |  \_/ __ \\__  \\   __\  |  \
-    |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |   Y  \
-    |______  /____(____  /\___  >__|_ \_______  /\___  >____  /__| |___|  /
+    __________.__                 __   ___________                 __  .__
+    \______   \  | _____    ____ |  | _\______   \   ____ _____ _/  |_|  |__
+     |    |   /  | \__  \ _/ ___\|  |/ /|    |   /\_/ __ \\__  \\  __\  |  \
+     |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |  Y  \
+    /______  /____(____  /\___  >__|_ \_______  /\___  >____  /__| |___|  /
            \/          \/     \/     \/       \/     \/     \/          \/
 </pre>
 </div>
@@ -427,7 +435,7 @@ body::after{
 
 <script>
 /* =========================================================
-   PLAYER CORE ENGINE (Stabilisiert auf Web Audio API Buffer)
+   PLAYER CORE ENGINE (Streaming Version über HTML5 Audio)
 ========================================================= */
 class CyberPlaylistPlayer{
 
@@ -436,15 +444,14 @@ class CyberPlaylistPlayer{
         this.playlist = playlist;
         this.currentIndex = 0;
 
+        // Natives Audio-Element für sofortiges Streaming
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
         this.ctx = null;
         this.sourceNode = null;
         this.analyser = null;
         this.dataArray = null;
-
-        this.audioBuffer = null;
-        this.isPlaying = false;
-        this.startTime = 0;
-        this.pauseTime = 0;
 
         this.loop = true;
         this.isDragging = false;
@@ -473,9 +480,7 @@ class CyberPlaylistPlayer{
 
         this.loopToggle.onchange = ()=> {
             this.loop = this.loopToggle.checked;
-            if(this.sourceNode) {
-                this.sourceNode.loop = this.loop;
-            }
+            this.audio.loop = this.loop;
         };
 
         this.seek.oninput = ()=>{
@@ -483,25 +488,21 @@ class CyberPlaylistPlayer{
         };
 
         this.seek.onchange = ()=>{
-            if(!this.audioBuffer) return;
-            const targetTime = (this.seek.value / 100) * this.audioBuffer.duration;
-            if(this.isPlaying) {
-                this.stopSource();
-                this.play(targetTime);
-            } else {
-                this.pauseTime = targetTime;
-            }
+            if(isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
             this.isDragging = false;
         };
 
         this.seek.onmouseup = () => { this.isDragging = false; };
         this.seek.ontouchend = () => { this.isDragging = false; };
 
-        const updateProgress = () => {
-            this.updateSeek();
-            requestAnimationFrame(updateProgress);
+        // Die Zeit-Updates kommen jetzt direkt vom Audio-Event
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
         };
-        requestAnimationFrame(updateProgress);
     }
 
     renderPlaylist(){
@@ -531,84 +532,50 @@ class CyberPlaylistPlayer{
             this.analyser = this.ctx.createAnalyser();
             this.analyser.fftSize = 128;
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            // Verknüpft das streamende HTML5-Audio-Element mit dem Web Audio Visualizer
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
             this.analyser.connect(this.ctx.destination);
         }
     }
 
-    async loadTrack(index, autoplay=false){
+    loadTrack(index, autoplay=false){
         this.currentIndex = index;
         this.highlightActive();
-        this.initAudioEngine();
-        this.stopSource();
-
-        this.audioBuffer = null;
-        this.pauseTime = 0;
+        
+        // Kein Fetch mehr! Der Browser streamt die Source direkt an.
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
         this.seek.value = 0;
 
-        if (this.playlist && this.playlist[index]) {
-            try {
-                const response = await fetch(this.playlist[index].src);
-                const arrayBuffer = await response.arrayBuffer();
-                this.audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
-                if(autoplay){
-                    this.play();
-                }
-            } catch (e) {
-                console.error("Audio Ladefehler:", e);
-            }
+        if(autoplay){
+            this.play();
         }
     }
 
-    play(resumeTime = null){
+    play() {
         this.initAudioEngine();
-        if(this.ctx.state === 'suspended') {
+        if (this.ctx.state === 'suspended') {
             this.ctx.resume();
         }
-        if (!this.audioBuffer || this.isPlaying) return;
 
-        this.sourceNode = this.ctx.createBufferSource();
-        this.sourceNode.buffer = this.audioBuffer;
-        this.sourceNode.loop = this.loop;
-        this.sourceNode.connect(this.analyser);
+        this.audio.play().catch(e => console.error("Audio Startfehler:", e));
 
-        const offset = resumeTime !== null ? resumeTime : this.pauseTime;
-        this.sourceNode.start(0, offset);
-        this.startTime = this.ctx.currentTime - offset;
-        this.isPlaying = true;
-
-        this.sourceNode.onended = () => {
-            if (!this.sourceNode.loop && this.isPlaying && (this.ctx.currentTime - this.startTime >= this.audioBuffer.duration - 0.1)) {
-                this.isPlaying = false;
-                this.nextTrack();
-            }
-        };
-
-        if(!this.visualizerActive) {
+        if (!this.visualizerActive) {
             this.visualizerActive = true;
             renderVisualizer(this);
         }
     }
 
     pause(){
-        if(this.isPlaying){
-            this.pauseTime = this.ctx.currentTime - this.startTime;
-            this.stopSource();
-        }
+        this.audio.pause();
     }
 
     stop(){
-        this.pauseTime = 0;
-        this.stopSource();
+        this.audio.pause();
+        this.audio.currentTime = 0;
         this.seek.value = 0;
-    }
-
-    stopSource(){
-        if(this.sourceNode){
-            try { this.sourceNode.stop(); } catch(e){}
-            this.sourceNode.disconnect();
-            this.sourceNode = null;
-        }
-        this.isPlaying = false;
     }
 
     nextTrack(){
@@ -622,13 +589,8 @@ class CyberPlaylistPlayer{
     }
 
     updateSeek(){
-        if(this.isDragging || !this.isPlaying || !this.audioBuffer) return;
-
-        let pos = this.ctx.currentTime - this.startTime;
-        if(this.loop) {
-            pos = pos % this.audioBuffer.duration;
-        }
-        this.seek.value = (pos / this.audioBuffer.duration) * 100;
+        if(this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
     }
 }
 
@@ -638,14 +600,18 @@ class CyberPlaylistPlayer{
 const vizCanvas = document.getElementById("cyberVisualizer");
 const vizCtx = vizCanvas.getContext("2d");
 
-function renderVisualizer(player){
-    if(!player || !player.analyser || !player.sourceNode){
-        player.visualizerActive = false;
-        return;
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    // Wenn Musik läuft, echte Daten ziehen; wenn pausiert/gestoppt, mathematisch dämpfen
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else if (player.dataArray) {
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
     }
-
-    player.analyser.getByteFrequencyData(player.dataArray);
-
+    
     const w = vizCanvas.width;
     const h = vizCanvas.height;
     vizCtx.clearRect(0,0,w,h);
@@ -700,7 +666,7 @@ function renderVisualizer(player){
     vizCtx.fillStyle = glass;
     vizCtx.fillRect(0,0,w,h);
 
-    requestAnimationFrame(()=>renderVisualizer(player));
+    requestAnimationFrame(() => renderVisualizer(player));
 }
 
 /* =========================================================
@@ -759,11 +725,4 @@ initPlayer();
 </script>
 
 </body>
-<div class="theme-switch">
-    <a href="blackdeath_cp1_amber.html">AMBER</a>
-    <a href="blackdeath_cp2_synthwave.html">SYNTHWAVE</a>
-    <a href="blackdeath_cp3_darktech.html">DARKTECH</a>
-    <a href="blackdeath_cp4_kawaii.html">KAWAII</a>
-    <a href="blackdeath_cp5_holo.html">HOLO</a>
-</div>
 </html>
