@@ -459,7 +459,7 @@ window.addEventListener('resize', resizeCanvas);
 
 
 /* =============================================================================
-   2. AUDIO CORE ENGINE (Stabile Version aus Holo-Player)
+   2. AUDIO CORE ENGINE (Stabile Version aus Holo-Player – Ohne Preload)
    ============================================================================= */
 class CyberPlaylistPlayer {
     constructor(root, playlist) {
@@ -478,6 +478,7 @@ class CyberPlaylistPlayer {
         this.pauseTime = 0;      
         this.loop = true;
         this.isDragging = false;
+        this.visualizerActive = false;
 
         this.buildRefs();
         this.renderPlaylist();
@@ -571,6 +572,10 @@ class CyberPlaylistPlayer {
         this.pauseTime = 0;
         this.seek.value = 0;
 
+        if (!autoplay) {
+            return; 
+        }
+
         if (this.playlist && this.playlist[index]) {
             try {
                 const response = await fetch(this.playlist[index].src);
@@ -592,7 +597,12 @@ class CyberPlaylistPlayer {
             this.ctx.resume();
         }
 
-        if (!this.audioBuffer || this.isPlaying) return;
+        if (!this.audioBuffer) {
+            this.loadTrack(this.currentIndex, true);
+            return;
+        }
+
+        if (this.isPlaying) return;
 
         this.sourceNode = this.ctx.createBufferSource();
         this.sourceNode.buffer = this.audioBuffer;
@@ -669,7 +679,8 @@ const vizCanvas = document.getElementById("cyberVisualizer");
 const vizCtx = vizCanvas.getContext("2d");
 
 function renderVisualizer(player) {
-    if (!player || !player.analyser || !player.source) {
+    if (!player || !player.analyser || !player.sourceNode) {
+        player.visualizerActive = false;
         return;
     }
 
@@ -735,7 +746,7 @@ function renderVisualizer(player) {
 async function initPlayer() {
     try {
         localStorage.setItem("lastCyberPlayer", "blackdeath_cp2_synthwave.html");
-	window.history.replaceState({}, document.title, "/");
+        window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
 
