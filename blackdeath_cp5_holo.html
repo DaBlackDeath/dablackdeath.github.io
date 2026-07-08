@@ -517,6 +517,16 @@ class CyberPlaylistPlayer {
         this.seek.value = 0;
     }
 
+        nextTrack() {
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
+    }
+
+    prevTrack() {
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
+    }
+
     updateSeek() {
         if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
         this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
