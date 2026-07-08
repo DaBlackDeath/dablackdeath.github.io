@@ -377,24 +377,24 @@ animateNetwork();
    CYBERPUNK PLAYER (CP3 DARKTECH GitS MOD)
 ========================================================= */
 class CyberPlaylistPlayer{
+
     constructor(root,playlist){
         this.root = root;
         this.playlist = playlist;
         this.currentIndex = 0;
 
         this.ctx = null;
+        this.audioElement = null;
         this.source = null;
-        this.audioCache = {}; 
-
         this.analyser = null;
         this.dataArray = null;
 
-        this.startTime = 0;
-        this.pauseTime = 0;
         this.loop = true;
+        this.isDragging = false;
 
         this.buildRefs();
-        this.loadTrack(0);
+        this.renderPlaylist();
+        this.loadTrack(0, false);
     }
 
     buildRefs(){
@@ -415,29 +415,24 @@ class CyberPlaylistPlayer{
 
         this.loopToggle.onchange = ()=> {
             this.loop = this.loopToggle.checked;
-            if(this.source) {
-                this.source.loop = this.loop;
+            if(this.audioElement) {
+                this.audioElement.loop = this.loop;
             }
         };
 
         this.seek.oninput = ()=>{
-            const buffer = this.audioCache[this.currentIndex];
-            if(!buffer){ return; }
-            this.pauseTime = (this.seek.value / 100) * buffer.duration;
+            this.isDragging = true;
         };
 
         this.seek.onchange = ()=>{
-            if(!this.audioCache[this.currentIndex]){ return; }
-            if(this.source){
-                this.source.onended = null;
-                try{ this.source.stop(0); }catch(e){}
-                this.source.disconnect();
-                this.source = null;
-            }
-            this.play();
+            if(!this.audioElement) return;
+            const targetTime = (this.seek.value / 100) * this.audioElement.duration;
+            this.audioElement.currentTime = targetTime;
+            this.isDragging = false;
         };
 
-        this.renderPlaylist();
+        this.seek.onmouseup = () => { this.isDragging = false; };
+        this.seek.ontouchend = () => { this.isDragging = false; };
     }
 
     renderPlaylist(){
@@ -461,141 +456,92 @@ class CyberPlaylistPlayer{
         });
     }
 
-    async init(){
+    initAudioEngine(){
         if(!this.ctx){
-            this.ctx = new AudioContext();
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            this.audioElement = new Audio();
+            this.audioElement.crossOrigin = "anonymous";
+            this.audioElement.loop = this.loop;
+
+            this.source = this.ctx.createMediaElementSource(this.audioElement);
+            
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+
+            this.source.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+
+            this.audioElement.onended = () => {
+                if (!this.loop) {
+                    this.nextTrack();
+                }
+            };
+
+            this.audioElement.ontimeupdate = () => {
+                this.updateSeek();
+            };
         }
     }
 
-    async preloadTrack(index) {
-            await this.init();
-
-    const jobs = this.playlist.map(async (item, i) => {
-        if (this.audioCache[i]) return;
-
-        try {
-            const data = await fetch(item.src).then(r => r.arrayBuffer());
-            const decoded = await this.ctx.decodeAudioData(data);
-            this.audioCache[i] = decoded;
-        } catch (e) {
-            console.error("Fehler:", item.src, e);
-        }
-    });
-
-    await Promise.all(jobs);
-    console.log("Alle Tracks vorgeladen.");
-    }
-
-    async loadTrack(index, autoplay=false){
-        this.stop();
+    loadTrack(index, autoplay=false){
         this.currentIndex = index;
         this.highlightActive();
-        await this.init();
+        this.initAudioEngine();
 
-        this.pauseTime = 0;
-        this.seek.value = 0;
-
-        if (!this.audioCache[index]) {
-            await this.preloadTrack(index);
+        if (this.playlist && this.playlist[index]) {
+            this.audioElement.src = this.playlist[index].src;
+            this.audioElement.load();
         }
+        this.seek.value = 0;
 
         if(autoplay){
             this.play();
         }
-
-        const nextIndex = (index + 1) % this.playlist.length;
-        const prevIndex = (index - 1 + this.playlist.length) % this.playlist.length;
-        this.preloadTrack(nextIndex);
-        this.preloadTrack(prevIndex);
     }
 
     play(){
-        const buffer = this.audioCache[this.currentIndex];
-        if(!buffer){ return; }
-
-        if(this.source){
-            this.source.onended = null;
-            try{ this.source.stop(0); }catch(e){}
-            this.source.disconnect();
-            this.source = null;
+        this.initAudioEngine();
+        if(this.ctx.state === 'suspended') {
+            this.ctx.resume();
         }
-
-        this.source = this.ctx.createBufferSource();
-        this.source.buffer = buffer;
-        this.source.loop = this.loop;
-
-        if(!this.analyser){
-            this.analyser = this.ctx.createAnalyser();
-            this.analyser.fftSize = 128;
-            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+        if (this.audioElement) {
+            this.audioElement.play().catch(e => console.log("Abspiel-Fehler:", e));
         }
-
-        this.source.connect(this.analyser);
-        this.analyser.connect(this.ctx.destination);
-
-        // FIX 1: onended Handler eingebaut, damit this.source sauber zurückgesetzt wird
-        this.source.onended = () => {
-            if (!this.loop) {
-                if (this.source) {
-                    this.source.onended = null;
-                }
-                this.source = null;
-                this.pauseTime = 0;
-                this.seek.value = 0;
-                
-                const nextIndex = (this.currentIndex + 1) % this.playlist.length;
-                this.loadTrack(nextIndex, true);
-            }
-        };
-
-        this.startTime = this.ctx.currentTime - this.pauseTime;
-        this.source.start(0, this.pauseTime);
-
-        this.updateSeek();
         renderVisualizer(this);
     }
 
     pause(){
-        if(!this.source){ return; }
-        const pos = this.ctx.currentTime - this.startTime;
-        this.pauseTime = pos;
-        this.source.onended = null;
-        try{ this.source.stop(0); }catch(e){}
-        this.source.disconnect();
-        this.source = null;
+        if(this.audioElement){
+            this.audioElement.pause();
+        }
     }
 
     stop(){
-        if(this.source){
-            this.source.onended = null;
-            try{ this.source.stop(0); }catch(e){}
-            this.source.disconnect();
+        if(this.audioElement){
+            this.audioElement.pause();
+            this.audioElement.currentTime = 0;
+            this.seek.value = 0;
         }
-        this.source = null;
-        this.pauseTime = 0;
-        this.seek.value = 0;
     }
 
     nextTrack(){
-        this.stop();
-        this.loadTrack((this.currentIndex+1) % this.playlist.length, true);
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
     }
 
     prevTrack(){
-        this.stop();
-        this.loadTrack((this.currentIndex-1 + this.playlist.length) % this.playlist.length, true);
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
     }
 
     updateSeek(){
-        // FIX 2: Da this.source nun durch onended auf null springt, bricht die Schleife hier sauber ab!
-        if(!this.source){ return; }
-        const buffer = this.audioCache[this.currentIndex];
-        if(!buffer) return;
+        if(this.isDragging || !this.audioElement) return;
 
-        const pos = (this.ctx.currentTime - this.startTime) % buffer.duration;
-        this.seek.value = (pos / buffer.duration) * 100;
-
-        requestAnimationFrame(()=>this.updateSeek());
+        if(this.audioElement.duration) {
+            this.seek.value = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+        }
     }
 }
 
