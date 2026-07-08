@@ -427,7 +427,7 @@ body::after{
 
 <script>
 /* =========================================================
-   PLAYER CORE ENGINE (Stabilisiert auf Holo-Stand)
+   PLAYER CORE ENGINE (Stabilisiert auf Web Audio API Buffer)
 ========================================================= */
 class CyberPlaylistPlayer{
 
@@ -437,13 +437,18 @@ class CyberPlaylistPlayer{
         this.currentIndex = 0;
 
         this.ctx = null;
-        this.audioElement = null;
-        this.source = null;
+        this.sourceNode = null;
         this.analyser = null;
         this.dataArray = null;
 
+        this.audioBuffer = null;
+        this.isPlaying = false;
+        this.startTime = 0;
+        this.pauseTime = 0;
+
         this.loop = true;
         this.isDragging = false;
+        this.visualizerActive = false;
 
         this.buildRefs();
         this.renderPlaylist();
@@ -468,8 +473,8 @@ class CyberPlaylistPlayer{
 
         this.loopToggle.onchange = ()=> {
             this.loop = this.loopToggle.checked;
-            if(this.audioElement) {
-                this.audioElement.loop = this.loop;
+            if(this.sourceNode) {
+                this.sourceNode.loop = this.loop;
             }
         };
 
@@ -478,14 +483,25 @@ class CyberPlaylistPlayer{
         };
 
         this.seek.onchange = ()=>{
-            if(!this.audioElement) return;
-            const targetTime = (this.seek.value / 100) * this.audioElement.duration;
-            this.audioElement.currentTime = targetTime;
+            if(!this.audioBuffer) return;
+            const targetTime = (this.seek.value / 100) * this.audioBuffer.duration;
+            if(this.isPlaying) {
+                this.stopSource();
+                this.play(targetTime);
+            } else {
+                this.pauseTime = targetTime;
+            }
             this.isDragging = false;
         };
 
         this.seek.onmouseup = () => { this.isDragging = false; };
         this.seek.ontouchend = () => { this.isDragging = false; };
+
+        const updateProgress = () => {
+            this.updateSeek();
+            requestAnimationFrame(updateProgress);
+        };
+        requestAnimationFrame(updateProgress);
     }
 
     renderPlaylist(){
@@ -512,76 +528,87 @@ class CyberPlaylistPlayer{
     initAudioEngine(){
         if(!this.ctx){
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            this.audioElement = new Audio();
-            this.audioElement.crossOrigin = "anonymous";
-            this.audioElement.loop = this.loop;
-
-            this.source = this.ctx.createMediaElementSource(this.audioElement);
-            
             this.analyser = this.ctx.createAnalyser();
             this.analyser.fftSize = 128;
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-
-            this.source.connect(this.analyser);
             this.analyser.connect(this.ctx.destination);
-
-            this.audioElement.onended = () => {
-                if (!this.loop) {
-                    this.nextTrack();
-                }
-            };
-
-            this.audioElement.ontimeupdate = () => {
-                this.updateSeek();
-            };
         }
     }
 
-    loadTrack(index, autoplay=false){
+    async loadTrack(index, autoplay=false){
         this.currentIndex = index;
         this.highlightActive();
         this.initAudioEngine();
+        this.stopSource();
 
-        if (this.playlist && this.playlist[index]) {
-            this.audioElement.src = this.playlist[index].src;
-            this.audioElement.load();
-        }
+        this.audioBuffer = null;
+        this.pauseTime = 0;
         this.seek.value = 0;
 
-        if(autoplay){
-            this.play();
+        if (this.playlist && this.playlist[index]) {
+            try {
+                const response = await fetch(this.playlist[index].src);
+                const arrayBuffer = await response.arrayBuffer();
+                this.audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+                if(autoplay){
+                    this.play();
+                }
+            } catch (e) {
+                console.error("Audio Ladefehler:", e);
+            }
         }
     }
 
-    play(){
-    this.initAudioEngine();
-    if(this.ctx.state === 'suspended') {
-        this.ctx.resume();
+    play(resumeTime = null){
+        this.initAudioEngine();
+        if(this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        if (!this.audioBuffer || this.isPlaying) return;
+
+        this.sourceNode = this.ctx.createBufferSource();
+        this.sourceNode.buffer = this.audioBuffer;
+        this.sourceNode.loop = this.loop;
+        this.sourceNode.connect(this.analyser);
+
+        const offset = resumeTime !== null ? resumeTime : this.pauseTime;
+        this.sourceNode.start(0, offset);
+        this.startTime = this.ctx.currentTime - offset;
+        this.isPlaying = true;
+
+        this.sourceNode.onended = () => {
+            if (!this.sourceNode.loop && this.isPlaying && (this.ctx.currentTime - this.startTime >= this.audioBuffer.duration - 0.1)) {
+                this.isPlaying = false;
+                this.nextTrack();
+            }
+        };
+
+        if(!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
+        }
     }
-    if (this.audioElement) {
-        this.audioElement.play().catch(e => console.log("Abspiel-Fehler:", e));
-    }
-    
-    // STARTET DEN VISUALIZER NUR, WENN ER NICHT SCHON LÄUFT:
-    if (!this.visualizerActive) {
-        this.visualizerActive = true;
-        renderVisualizer(this);
-    }
-}
 
     pause(){
-        if(this.audioElement){
-            this.audioElement.pause();
+        if(this.isPlaying){
+            this.pauseTime = this.ctx.currentTime - this.startTime;
+            this.stopSource();
         }
     }
 
     stop(){
-        if(this.audioElement){
-            this.audioElement.pause();
-            this.audioElement.currentTime = 0;
-            this.seek.value = 0;
+        this.pauseTime = 0;
+        this.stopSource();
+        this.seek.value = 0;
+    }
+
+    stopSource(){
+        if(this.sourceNode){
+            try { this.sourceNode.stop(); } catch(e){}
+            this.sourceNode.disconnect();
+            this.sourceNode = null;
         }
+        this.isPlaying = false;
     }
 
     nextTrack(){
@@ -595,11 +622,13 @@ class CyberPlaylistPlayer{
     }
 
     updateSeek(){
-        if(this.isDragging || !this.audioElement) return;
+        if(this.isDragging || !this.isPlaying || !this.audioBuffer) return;
 
-        if(this.audioElement.duration) {
-            this.seek.value = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+        let pos = this.ctx.currentTime - this.startTime;
+        if(this.loop) {
+            pos = pos % this.audioBuffer.duration;
         }
+        this.seek.value = (pos / this.audioBuffer.duration) * 100;
     }
 }
 
@@ -610,7 +639,8 @@ const vizCanvas = document.getElementById("cyberVisualizer");
 const vizCtx = vizCanvas.getContext("2d");
 
 function renderVisualizer(player){
-    if(!player || !player.analyser){
+    if(!player || !player.analyser || !player.sourceNode){
+        player.visualizerActive = false;
         return;
     }
 
@@ -714,7 +744,7 @@ crtSyncGlitch();
 async function initPlayer() {
     try {
         localStorage.setItem("lastCyberPlayer", "blackdeath_cp1_amber.html");
-	window.history.replaceState({}, document.title, "/");
+        window.history.replaceState({}, document.title, "/");
         const response = await fetch("assets/playlist.json");
         const playlist = await response.json();
 

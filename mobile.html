@@ -277,19 +277,21 @@ body {
 /* =========================================================
     AUDIO LOGIC
 ========================================================= */
-class CyberPlaylistPlayer{
-
-    constructor(root,playlist){
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
         this.root = root;
         this.playlist = playlist;
         this.currentIndex = 0;
 
         this.ctx = null;
-        this.audioElement = null;
-        this.source = null;
+        this.sourceNode = null;
         this.analyser = null;
         this.dataArray = null;
-
+        
+        this.audioBuffer = null; 
+        this.isPlaying = false;
+        this.startTime = 0;      
+        this.pauseTime = 0;      
         this.loop = true;
         this.isDragging = false;
 
@@ -298,7 +300,7 @@ class CyberPlaylistPlayer{
         this.loadTrack(0, false);
     }
 
-    buildRefs(){
+    buildRefs() {
         this.playBtn = this.root.querySelector(".play");
         this.pauseBtn = this.root.querySelector(".pause");
         this.stopBtn = this.root.querySelector(".stop");
@@ -308,47 +310,55 @@ class CyberPlaylistPlayer{
         this.loopToggle = this.root.querySelector(".loop");
         this.listBox = this.root.querySelector(".cyber-playlist");
 
-        this.playBtn.onclick = ()=>this.play();
-        this.pauseBtn.onclick = ()=>this.pause();
-        this.stopBtn.onclick = ()=>this.stop();
-        this.prevBtn.onclick = ()=>this.prevTrack();
-        this.nextBtn.onclick = ()=>this.nextTrack();
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
 
-        this.loopToggle.onchange = ()=> {
+        this.loopToggle.onchange = () => {
             this.loop = this.loopToggle.checked;
-            if(this.audioElement) {
-                this.audioElement.loop = this.loop;
+            if (this.sourceNode) {
+                this.sourceNode.loop = this.loop;
             }
         };
 
-        this.seek.oninput = ()=>{
-            this.isDragging = true;
-        };
-
-        this.seek.onchange = ()=>{
-            if(!this.audioElement) return;
-            const targetTime = (this.seek.value / 100) * this.audioElement.duration;
-            this.audioElement.currentTime = targetTime;
+        this.seek.oninput = () => { this.isDragging = true; };
+        this.seek.onchange = () => {
+            if (!this.audioBuffer) return;
+            const targetTime = (this.seek.value / 100) * this.audioBuffer.duration;
+            if (this.isPlaying) {
+                this.stopSource();
+                this.play(targetTime);
+            } else {
+                this.pauseTime = targetTime;
+            }
             this.isDragging = false;
         };
 
         this.seek.onmouseup = () => { this.isDragging = false; };
         this.seek.ontouchend = () => { this.isDragging = false; };
+        
+        const updateProgress = () => {
+            this.updateSeek();
+            requestAnimationFrame(updateProgress);
+        };
+        requestAnimationFrame(updateProgress);
     }
 
-    renderPlaylist(){
+    renderPlaylist() {
         this.listBox.innerHTML = "";
-        this.playlist.forEach((track,i)=>{
+        this.playlist.forEach((track, i) => {
             const item = document.createElement("div");
-            item.className = "cyber-track" + (i===this.currentIndex ? " active" : "");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
             item.textContent = track.name;
-            item.onclick = ()=>this.loadTrack(i,true);
+            item.onclick = () => this.loadTrack(i, true);
             this.listBox.appendChild(item);
         });
     }
 
-    highlightActive(){
-        this.listBox.querySelectorAll(".cyber-track").forEach((el,i)=>{
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
             const isActive = i === this.currentIndex;
             el.classList.toggle("active", isActive);
             if (isActive) {
@@ -357,99 +367,116 @@ class CyberPlaylistPlayer{
         });
     }
 
-    initAudioEngine(){
-        if(!this.ctx){
+    initAudioEngine() {
+        if (!this.ctx) {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            this.audioElement = new Audio();
-            this.audioElement.crossOrigin = "anonymous";
-            this.audioElement.loop = this.loop;
-
-            this.source = this.ctx.createMediaElementSource(this.audioElement);
-            
             this.analyser = this.ctx.createAnalyser();
             this.analyser.fftSize = 128;
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-
-            this.source.connect(this.analyser);
             this.analyser.connect(this.ctx.destination);
-
-            this.audioElement.onended = () => {
-                if (!this.loop) {
-                    this.nextTrack();
-                }
-            };
-
-            this.audioElement.ontimeupdate = () => {
-                this.updateSeek();
-            };
         }
     }
 
-    loadTrack(index, autoplay=false){
+    async loadTrack(index, autoplay = false) {
         this.currentIndex = index;
         this.highlightActive();
         this.initAudioEngine();
-
-        if (this.playlist && this.playlist[index]) {
-            this.audioElement.src = this.playlist[index].src;
-            this.audioElement.load();
-        }
+        this.stopSource();
+        
+        this.audioBuffer = null;
+        this.pauseTime = 0;
         this.seek.value = 0;
 
-        if(autoplay){
-            this.play();
+        if (this.playlist && this.playlist[index]) {
+            try {
+                const response = await fetch(this.playlist[index].src);
+                const arrayBuffer = await response.arrayBuffer();
+                this.audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+                
+                if (autoplay) {
+                    this.play();
+                }
+            } catch (e) {
+                console.error("Fehler beim Dekodieren der Audiodatei:", e);
+            }
         }
     }
 
-    play(){
-    this.initAudioEngine();
-    if(this.ctx.state === 'suspended') {
-        this.ctx.resume();
-    }
-    if (this.audioElement) {
-        this.audioElement.play().catch(e => console.log("Abspiel-Fehler:", e));
-    }
-    
-    // STARTET DEN VISUALIZER NUR, WENN ER NICHT SCHON LÄUFT:
-    if (!this.visualizerActive) {
-        this.visualizerActive = true;
-        renderVisualizer(this);
-    }
-}
+    play(resumeTime = null) {
+        this.initAudioEngine();
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
 
-    pause(){
-        if(this.audioElement){
-            this.audioElement.pause();
+        if (!this.audioBuffer || this.isPlaying) return;
+
+        this.sourceNode = this.ctx.createBufferSource();
+        this.sourceNode.buffer = this.audioBuffer;
+        this.sourceNode.loop = this.loop;
+        this.sourceNode.connect(this.analyser);
+
+        const offset = resumeTime !== null ? resumeTime : this.pauseTime;
+        this.sourceNode.start(0, offset);
+        
+        this.startTime = this.ctx.currentTime - offset;
+        this.isPlaying = true;
+
+        this.sourceNode.onended = () => {
+            if (!this.sourceNode.loop && this.isPlaying && (this.ctx.currentTime - this.startTime >= this.audioBuffer.duration - 0.1)) {
+                this.isPlaying = false;
+                this.nextTrack();
+            }
+        };
+
+        if (!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
         }
     }
 
-    stop(){
-        if(this.audioElement){
-            this.audioElement.pause();
-            this.audioElement.currentTime = 0;
-            this.seek.value = 0;
+    pause() {
+        if (this.isPlaying) {
+            this.pauseTime = this.ctx.currentTime - this.startTime;
+            this.stopSource();
         }
     }
 
-    nextTrack(){
+    stop() {
+        this.pauseTime = 0;
+        this.stopSource();
+        this.seek.value = 0;
+    }
+
+    stopSource() {
+        if (this.sourceNode) {
+            try { this.sourceNode.stop(); } catch(e){}
+            this.sourceNode.disconnect();
+            this.sourceNode = null;
+        }
+        this.isPlaying = false;
+    }
+
+    nextTrack() {
         const nextIndex = (this.currentIndex + 1) % this.playlist.length;
         this.loadTrack(nextIndex, true);
     }
 
-    prevTrack(){
+    prevTrack() {
         const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
         this.loadTrack(prevIndex, true);
     }
 
-    updateSeek(){
-        if(this.isDragging || !this.audioElement) return;
+    updateSeek() {
+        if (this.isDragging || !this.isPlaying || !this.audioBuffer) return;
 
-        if(this.audioElement.duration) {
-            this.seek.value = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+        let currentPosition = this.ctx.currentTime - this.startTime;
+        if (this.loop) {
+            currentPosition = currentPosition % this.audioBuffer.duration;
         }
+        this.seek.value = (currentPosition / this.audioBuffer.duration) * 100;
     }
 }
+
 
 /* =========================================================
     VISUALIZER RENDERER
