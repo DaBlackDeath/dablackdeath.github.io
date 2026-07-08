@@ -154,7 +154,7 @@ body, html {
     bottom: 0;
     left: 0;
     width: 100%; 
-    height: 120px; /* Leicht erhöht für bessere Sichtbarkeit am unteren Rand */
+    height: 120px; 
     display: block; 
     z-index: 20000; 
     pointer-events: none; 
@@ -185,7 +185,6 @@ body, html {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Skalierung verhindert weiße Ränder beim Verschieben durch Parallax */
     transform: scale(1.1); 
     filter: blur(0.3px) brightness(0.95); 
 }
@@ -415,54 +414,31 @@ document.addEventListener('click', e => {
     }
 
    // --- SMARTPHONE ERKENNUNG ---
-
-    const isSmartphone =
-
+   const isSmartphone =
         window.matchMedia("(pointer: coarse)").matches &&
-
         window.matchMedia("(max-width: 768px)").matches;
 
-
-
     if (isSmartphone) {
-
         window.location.href = "mobile.html";
-
     } else {
-
         // Ermittle den letzten Player aus dem LocalStorage
+        const lastPlayer = localStorage.getItem("lastCyberPlayer");
 
-const lastPlayer = localStorage.getItem("lastCyberPlayer");
-
-
-
-if (lastPlayer) {
-
-    // Wenn ein Player gespeichert wurde, leite dorthin weiter
-
-    window.location.replace(lastPlayer);
-
-} else {
-
-    // Fallback: Wenn die Seite zum ersten Mal besucht wird -> Amber-Player
-
-    window.location.replace("blackdeath_cp1_amber.html");
-
-}
-
+        if (lastPlayer) {
+            window.location.replace(lastPlayer);
+        } else {
+            window.location.replace("blackdeath_cp1_amber.html");
+        }
     }
-
 }); 
 
 
-
-
-
-/* --- AUDIO PLAYER & GESPIEGELTER VISUALIZER --- */
+/* --- AUDIO PLAYER (STREAM & OPTIMIZED FOR NO-PRELOAD) --- */
 class BLKDTHAudioPlayer {
     constructor(audioSrc) {
         this.audioSrc = audioSrc;
         this.ctx = null;
+        this.audioElement = null;
         this.source = null;
         this.analyser = null;
         this.dataArray = null;
@@ -470,35 +446,37 @@ class BLKDTHAudioPlayer {
     }
 
     async loadAndPlay() {
-        if (this.source) { 
-            try { this.source.stop(); } catch(e){} 
-            this.source.disconnect(); 
-        }
-
         if (!this.ctx) {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            this.analyser = this.ctx.createAnalyser();
             
+            this.audioElement = new Audio();
+            this.audioElement.crossOrigin = "anonymous";
+            this.audioElement.preload = "none"; // Absolutes Preload-Verbot für Streams
+            this.audioElement.loop = true;
+            this.audioElement.src = this.audioSrc;
+
+            this.analyser = this.ctx.createAnalyser();
             this.analyser.fftSize = 512;                 
             this.analyser.smoothingTimeConstant = 0.88;  
             
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            // Verbinde das HTML5-Audio-Element mit der Web Audio API Engine
+            this.source = this.ctx.createMediaElementSource(this.audioElement);
+            this.source.connect(this.analyser);
             this.analyser.connect(this.ctx.destination);
         }
 
+        if (this.ctx.state === 'suspended') {
+            await this.ctx.resume();
+        }
+
         try {
-            const data = await fetch(this.audioSrc).then(r => r.arrayBuffer());
-            const buffer = await this.ctx.decodeAudioData(data);
-
-            this.source = this.ctx.createBufferSource();
-            this.source.buffer = buffer;
-            this.source.loop = true;
-            this.source.connect(this.analyser);
-            this.source.start(0);
-
+            // Spielt den Stream erst exakt ab jetzt ab, ohne vorher Daten zu blockieren
+            await this.audioElement.play();
             renderVisualizer(this);
         } catch (error) {
-            console.error("Audio-Fehler:", error);
+            console.error("Audio-Fehler beim Stream-Start:", error);
         }
     }
 }
@@ -641,7 +619,6 @@ function animate() {
 
     layers.forEach(layer => {
         const depth = parseFloat(layer.dataset.depth);
-        // Begrenzung der Bewegung, damit das skalierte Bild nicht über die Ränder rutscht
         const moveX = currentX * windowWidth * depth * 0.5;
         const moveY = currentY * windowHeight * depth * 0.5;
         layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
