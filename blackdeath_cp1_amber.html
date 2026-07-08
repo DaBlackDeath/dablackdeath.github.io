@@ -555,15 +555,20 @@ class CyberPlaylistPlayer{
     }
 
     play(){
-        this.initAudioEngine();
-        if(this.ctx.state === 'suspended') {
-            this.ctx.resume();
-        }
-        if (this.audioElement) {
-            this.audioElement.play().catch(e => console.log("Abspiel-Fehler:", e));
-        }
+    this.initAudioEngine();
+    if(this.ctx.state === 'suspended') {
+        this.ctx.resume();
+    }
+    if (this.audioElement) {
+        this.audioElement.play().catch(e => console.log("Abspiel-Fehler:", e));
+    }
+    
+    // STARTET DEN VISUALIZER NUR, WENN ER NICHT SCHON LÄUFT:
+    if (!this.visualizerActive) {
+        this.visualizerActive = true;
         renderVisualizer(this);
     }
+}
 
     pause(){
         if(this.audioElement){
