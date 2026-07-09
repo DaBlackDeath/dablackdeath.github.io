@@ -51,6 +51,33 @@ body {
     box-shadow: 0 0 10px rgba(255,150,200,0.6);
 }
 
+.playlist-switch {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.playlist-switch a {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    font-weight: 700;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,150,200,0.6);
+    color: #ff6fb7;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+}
+
+.playlist-switch a:hover {
+    background: rgba(255,200,230,0.9);
+    box-shadow: 0 0 10px rgba(255,150,200,0.6);
+}
+
 /* =========================================================
    STARFIELD BACKGROUND
 ========================================================= */
@@ -270,6 +297,11 @@ body {
     <a href="blackdeath_cp5_holo.html">HOLO</a>
 </div>
 
+<div class="playlist-switch">
+    <a href="assets/loops.json">Loops</a>
+    <a href="assets/webradio.json">WebRadio</a>
+</div>
+
 <canvas id="starfield"></canvas>
 
 <img
@@ -378,6 +410,21 @@ class CyberPlaylistPlayer {
             item.onclick = () => this.loadTrack(i, true);
             this.listBox.appendChild(item);
         });
+    }
+
+    updatePlaylist(newPlaylist) {
+    // 1. Aktuelle Wiedergabe stoppen
+    this.stop();
+    
+    // 2. Die neue Playlist zuweisen und Index zurücksetzen
+    this.playlist = newPlaylist;
+    this.currentIndex = 0;
+    
+    // 3. Die Playlist im HTML neu rendern
+    this.renderPlaylist();
+    
+    // 4. Den ersten Track der neuen Playlist laden (ohne Autoplay)
+    this.loadTrack(0, false);
     }
 
     highlightActive() {
@@ -539,18 +586,62 @@ function renderVisualizer(player) {
 /* =========================================================
    PLAYLIST INIT
 ========================================================= */
+let cyberPlayer = null;
+
 async function initPlayer() {
     try {
         localStorage.setItem("lastCyberPlayer", "blackdeath_cp4_kawaii.html");
         window.history.replaceState({}, document.title, "/");
-        const response = await fetch("assets/playlist.json");
+        // Erste Playlist (Standard) laden
+        const response = await fetch("assets/loops.json");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
-        const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Player-Instanz globaler Variable zuweisen
+        cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Starte den Render-Loop einmalig global
+        renderVisualizer(cyberPlayer);
+
+        // --- HIER NEU: Playlist-Switch Event-Listener einrichten ---
+        setupPlaylistSwitch();
+
     } catch (e) {
-        console.error("Fehler beim Laden des Players:", e);
+        console.error("Kritischer Fehler beim Initialisieren des Players:", e);
     }
 }
+
+// Funktion, die die Links abfängt
+function setupPlaylistSwitch() {
+    const switchLinks = document.querySelectorAll(".playlist-switch a");
+    
+    switchLinks.forEach(link => {
+        link.addEventListener("click", async (event) => {
+            // Verhindert, dass der Browser die JSON-Datei als Textseite öffnet
+            event.preventDefault(); 
+            
+            // Holt den Pfad aus dem href-Attribut (z.B. "assets/webradio.json")
+            const jsonUrl = link.getAttribute("href");
+            
+            try {
+                // Neue JSON-Datei fetchen
+                const response = await fetch(jsonUrl);
+                if (!response.ok) throw new Error(`Fehler beim Laden von ${jsonUrl}`);
+                
+                const newPlaylist = await response.json();
+                
+                // Neue Playlist in den Player einspeisen
+                if (cyberPlayer) {
+                    cyberPlayer.updatePlaylist(newPlaylist);
+                    console.log(`Playlist erfolgreich gewechselt zu: ${jsonUrl}`);
+                }
+            } catch (error) {
+                console.error("Fehler beim Wechseln der Playlist:", error);
+            }
+        });
+    });
+}
+
 initPlayer();
 </script>
 

@@ -404,6 +404,12 @@ document.addEventListener('click', e => {
         setTimeout(() => {
             boot.style.transition = "opacity 0.6s ease-out";
             boot.style.opacity = "0";
+            
+            if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch((err) => {
+                console.error(`Fehler beim Aktivieren des Vollbildmodus: ${err.message}`);
+            });
+        }
 
             setTimeout(() => {
                 boot.style.display = "none"; 

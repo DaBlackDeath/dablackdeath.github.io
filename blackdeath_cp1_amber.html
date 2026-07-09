@@ -24,7 +24,7 @@
 }
 
 :root{
-    var(--crt-line):0px;
+    --crt-line:0px;
 }
 
 body{
@@ -70,6 +70,32 @@ body{
     box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
 }
 
+.playlist-switch {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.playlist-switch a {
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 18px;
+    text-decoration: none;
+    background: rgba(255, 208, 0, 0.1);
+    border: 1px solid #ffbb00;
+    color: #ffbb00;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+    letter-spacing: 1px;
+}
+
+.playlist-switch a:hover {
+    border: 0px;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+}
 /* =========================================================
    CRT SCANLINES
 ========================================================= */
@@ -398,13 +424,18 @@ body::after{
     <a href="blackdeath_cp5_holo.html">HOLO</a>
 </div>
 
+<div class="playlist-switch">
+    <a href="assets/loops.json">Loops</a>
+    <a href="assets/webradio.json">WebRadio</a>
+</div>
+
 <div>
 <pre class="title-ascii">
-    __________.__                 __   ___________                 __  .__
-    \______   \  | _____    ____ |  | _\______   \   ____ _____ _/  |_|  |__
-     |    |   /  | \__  \ _/ ___\|  |/ /|    |   /\_/ __ \\__  \\  __\  |  \
-     |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |  Y  \
-    /______  /____(____  /\___  >__|_ \_______  /\___  >____  /__| |___|  /
+   __________.__                 __   ________                 __  .__
+   \______   \  | _____    ____ |  | _\______ \   ____ _____ _/  |_|  |__
+    |    |  _/  | \__  \ _/ ___\|  |/ /|    |  \_/ __ \\__  \\   __\  |  \
+    |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |   Y  \
+    |______  /____(____  /\___  >__|_ Y_______  /\___  >____  /__| |___|  /
            \/          \/     \/     \/       \/     \/     \/          \/
 </pre>
 </div>
@@ -515,6 +546,21 @@ class CyberPlaylistPlayer{
             this.listBox.appendChild(item);
         });
     }
+
+    updatePlaylist(newPlaylist) {
+    // 1. Aktuelle Wiedergabe stoppen
+    this.stop();
+    
+    // 2. Die neue Playlist zuweisen und Index zurücksetzen
+    this.playlist = newPlaylist;
+    this.currentIndex = 0;
+    
+    // 3. Die Playlist im HTML neu rendern
+    this.renderPlaylist();
+    
+    // 4. Den ersten Track der neuen Playlist laden (ohne Autoplay)
+    this.loadTrack(0, false);
+}
 
     highlightActive(){
         this.listBox.querySelectorAll(".cyber-track").forEach((el,i)=>{
@@ -707,18 +753,60 @@ crtSyncGlitch();
 /* =========================================================
    PLAYLIST INIT
 ========================================================= */
+let cyberPlayer = null;
+
 async function initPlayer() {
     try {
         localStorage.setItem("lastCyberPlayer", "blackdeath_cp1_amber.html");
         window.history.replaceState({}, document.title, "/");
-        const response = await fetch("assets/playlist.json");
+        // Erste Playlist (Standard) laden
+        const response = await fetch("assets/loops.json");
         const playlist = await response.json();
-
         const playerRoot = document.querySelector(".cyber-player-box");
-        const cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Player-Instanz globaler Variable zuweisen
+        cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Starte den Render-Loop einmalig global
+        renderVisualizer(cyberPlayer);
+
+        // --- HIER NEU: Playlist-Switch Event-Listener einrichten ---
+        setupPlaylistSwitch();
+
     } catch (e) {
         console.error("Kritischer Fehler beim Initialisieren des Players:", e);
     }
+}
+
+// Funktion, die die Links abfängt
+function setupPlaylistSwitch() {
+    const switchLinks = document.querySelectorAll(".playlist-switch a");
+    
+    switchLinks.forEach(link => {
+        link.addEventListener("click", async (event) => {
+            // Verhindert, dass der Browser die JSON-Datei als Textseite öffnet
+            event.preventDefault(); 
+            
+            // Holt den Pfad aus dem href-Attribut (z.B. "assets/webradio.json")
+            const jsonUrl = link.getAttribute("href");
+            
+            try {
+                // Neue JSON-Datei fetchen
+                const response = await fetch(jsonUrl);
+                if (!response.ok) throw new Error(`Fehler beim Laden von ${jsonUrl}`);
+                
+                const newPlaylist = await response.json();
+                
+                // Neue Playlist in den Player einspeisen
+                if (cyberPlayer) {
+                    cyberPlayer.updatePlaylist(newPlaylist);
+                    console.log(`Playlist erfolgreich gewechselt zu: ${jsonUrl}`);
+                }
+            } catch (error) {
+                console.error("Fehler beim Wechseln der Playlist:", error);
+            }
+        });
+    });
 }
 
 initPlayer();
