@@ -13,7 +13,7 @@ html { visibility: hidden; }
         window.matchMedia("(max-width: 768px)").matches;
 
     if (isSmartphone) {
-        window.location.replace("mobile.html");
+        window.location.replace("blackdeath_mobile_player.html");
     } else {
         // Desktop / TV / Box → Seite anzeigen
         document.documentElement.style.visibility = "visible";
@@ -29,7 +29,7 @@ window.addEventListener("load", () => {
         /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
     if (isMobile) {
-        window.location.replace("mobile.html");
+        window.location.replace("blackdeath_mobile_player.html");
     }
 
 });
@@ -425,7 +425,7 @@ document.addEventListener('click', e => {
         window.matchMedia("(max-width: 768px)").matches;
 
     if (isSmartphone) {
-        window.location.href = "mobile.html";
+        window.location.href = "blackdeath_mobile_player.html";
     } else {
         // Ermittle den letzten Player aus dem LocalStorage
         const lastPlayer = localStorage.getItem("lastCyberPlayer");
@@ -433,7 +433,7 @@ document.addEventListener('click', e => {
         if (lastPlayer) {
             window.location.replace(lastPlayer);
         } else {
-            window.location.replace("blackdeath_cp1_amber.html");
+            window.location.replace("blackdeath_player.html");
         }
     }
 }); 

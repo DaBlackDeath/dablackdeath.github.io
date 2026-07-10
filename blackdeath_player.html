@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">BLACKDEATH // AUDIO TERMINAL</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@400;700;900&family=Nunito:wght@400;700;900&family=Inconsolata:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   GLOBAL / RESET
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root { --crt-line: 0px; }
+
+html, body { height: 100%; }
+
+body {
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* =========================================================
+   THEME SWITCH (neutral, funktioniert auf jedem Theme)
+========================================================= */
+.theme-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 62vw;
+    z-index: 9999;
+}
+
+.theme-switch button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+}
+
+.theme-switch button:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.theme-switch button.active {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.playlist-switch {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.playlist-switch a {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+    letter-spacing: 1px;
+}
+
+.playlist-switch a:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* =========================================================
+   HINTERGRUND-LAYER (per Theme ein-/ausgeblendet)
+========================================================= */
+#bgCanvas, #kawaii-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    display: none;
+}
+
+.sun {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #ffea00, #ff9900, #ff0066);
+    box-shadow: 0 0 40px #ff00aa, 0 0 120px #ff0066, 0 0 200px rgba(255,0,120,0.5);
+    z-index: 0;
+    overflow: hidden;
+    display: none;
+}
+
+.sun::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 12px, rgba(0,0,0,0.25) 12px, rgba(0,0,0,0.25) 18px);
+}
+
+.grid {
+    position: fixed;
+    left: -50%;
+    bottom: 0%;
+    width: 200%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(255,0,255,0.4) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255,0,255,0.4) 2px, transparent 2px);
+    background-size: 80px 80px;
+    transform: perspective(1000px) rotateX(80deg);
+    transform-origin: bottom;
+    animation: gridMove 10s linear infinite;
+    z-index: 0;
+    display: none;
+}
+
+@keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 80px; } }
+
+.vhs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 1px, transparent 1px, transparent 4px);
+    mix-blend-mode: overlay;
+    opacity: 0.6;
+    z-index: 999;
+    display: none;
+}
+
+.crt-scanlines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(255,176,0,0.05) 0px, rgba(255,176,0,0.05) 1px, transparent 2px, transparent 4px);
+    opacity: 0.32;
+    z-index: 100;
+    display: none;
+}
+
+.crt-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at center, transparent 38%, rgba(0,0,0,0.92) 100%);
+    z-index: 101;
+    display: none;
+}
+
+.crt-roll {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 120;
+    opacity: 0.85;
+    display: none;
+}
+
+.crt-roll::before {
+    content: "";
+    position: absolute;
+    left: -5%;
+    width: 110%;
+    height: 260px;
+    top: var(--crt-line);
+    background: linear-gradient(to bottom,
+        transparent 0%, rgba(255,255,255,0.015) 10%, rgba(255,180,40,0.05) 22%,
+        rgba(255,190,60,0.12) 35%, rgba(255,210,120,0.20) 50%, rgba(255,190,60,0.12) 65%,
+        rgba(255,180,40,0.05) 78%, rgba(255,255,255,0.015) 90%, transparent 100%);
+    filter: blur(22px);
+    mix-blend-mode: screen;
+}
+
+.title-ascii {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Lucida Console', Lucida Console, monospace;
+    font-size: 16px;
+    line-height: 1;
+    white-space: pre;
+    overflow-x: auto;
+    color: #ffb000;
+    text-shadow: 0 0 2px rgba(255,176,0,0.9), 0 0 8px rgba(255,176,0,0.35);
+    display: none;
+    z-index: 5;
+}
+
+.logo {
+    position: fixed;
+    left: 50%;
+    top: 23%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    animation: float 5s ease-in-out infinite;
+    display: none;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+    50%      { transform: translate(-50%, -50%) translateY(-25px); }
+}
+
+@keyframes crtFlicker {
+    0%   { opacity: 0.985; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.975; }
+}
+
+/* =========================================================
+   SCROLLBAR (neutral)
+========================================================= */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); }
+
+/* =========================================================
+   PLAYER BOX — gemeinsames Layout (Farben je Theme s.u.)
+========================================================= */
+.cyber-player-box {
+    position: fixed;
+    left: 50%;
+    padding: 16px 20px 12px;
+    overflow: hidden;
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease, width 0.4s ease;
+}
+
+.cyber-player-title {
+    text-align: center;
+    margin-bottom: 12px;
+    transition: color 0.4s ease;
+}
+
+.cyber-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.cyber-btn {
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.15s;
+}
+
+.btn-label { display: none; margin-left: 2px; }
+
+.cyber-loop-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.cyber-seek {
+    width: 100%;
+    margin-bottom: 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.cyber-playlist {
+    text-align: center;
+    overflow-y: auto;
+}
+
+.cyber-track {
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+#cyberVisualizer {
+    width: 100%;
+    height: 140px;
+    display: block;
+    image-rendering: auto;
+}
+
+/* =========================================================
+   THEME: AMBER (CRT Terminal)
+========================================================= */
+body[data-theme="amber"] {
+    background: #050401;
+    color: #ffb000;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 1px rgba(255,176,0,0.9), 0 0 3px rgba(255,176,0,0.4);
+    animation: crtFlicker 0.12s infinite;
+}
+
+body[data-theme="amber"] .theme-switch button,
+body[data-theme="amber"] .playlist-switch a {
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    background: rgba(255,208,0,0.1);
+    border: 1px solid #ffbb00;
+    color: #ffbb00;
+    letter-spacing: 1px;
+    border-radius: 3px;
+}
+
+body[data-theme="amber"] .theme-switch button:hover,
+body[data-theme="amber"] .playlist-switch a:hover {
+    background: rgba(255,153,0,0.25);
+    box-shadow: 0 0 10px rgba(255,153,0,0.3);
+}
+
+body[data-theme="amber"] .crt-scanlines,
+body[data-theme="amber"] .crt-vignette,
+body[data-theme="amber"] .crt-roll,
+body[data-theme="amber"] .title-ascii { display: block; }
+
+body[data-theme="amber"] .cyber-player-box {
+    top: calc(50% + 80px);
+    transform: translate(-50%, -50%) perspective(900px) rotateX(2deg);
+    width: 760px;
+    background: #090601;
+    border: 2px solid #5a3d00;
+    border-radius: 30px 30px 30px 30px / 18px 18px 25px 25px;
+    box-shadow:
+        inset 0 0 50px rgba(255,176,0,0.08),
+        inset 0 0 140px rgba(255,176,0,0.03),
+        0 0 15px rgba(255,176,0,0.14),
+        0 0 80px rgba(255,176,0,0.05),
+        0 40px 120px rgba(0,0,0,0.8);
+    animation: crtFlicker 0.12s infinite;
+}
+
+body[data-theme="amber"] .cyber-player-title {
+    font-size: 1.5rem;
+    color: #ffb000;
+    border-bottom: 1px solid rgba(255,176,0,0.25);
+    padding-bottom: 6px;
+}
+
+body[data-theme="amber"] .cyber-btn {
+    background: #120c02;
+    color: #ffb000;
+    border: 1px solid #6b4900;
+    padding: 5px 14px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    box-shadow: inset 0 0 4px rgba(255,176,0,0.05);
+    border-radius: 0;
+}
+
+body[data-theme="amber"] .cyber-btn:hover {
+    background: #2a1b00;
+    box-shadow: 0 0 8px rgba(255,176,0,0.15);
+}
+
+body[data-theme="amber"] .btn-label { display: inline; }
+
+body[data-theme="amber"] .cyber-loop-label { font-size: 1.1rem; }
+body[data-theme="amber"] .cyber-loop-label input { accent-color: #ffb000; }
+
+body[data-theme="amber"] .cyber-seek {
+    height: auto;
+    background: linear-gradient(to right, #5a3900, #795507, #5a3900);
+}
+
+body[data-theme="amber"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 22px;
+    background: linear-gradient(to right, #5a3900, #ffb000, #5a3900);
+    border: 1px solid #ffd36a;
+    border-radius: 1px;
+    box-shadow: 0 0 6px rgba(255,176,0,0.5);
+}
+
+body[data-theme="amber"] .cyber-playlist {
+    margin-top: 10px;
+    max-height: 160px;
+    border: 1px solid rgba(255,176,0,0.15);
+}
+
+body[data-theme="amber"] .cyber-track {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,176,0,0.1);
+}
+
+body[data-theme="amber"] .cyber-track:hover { background: rgba(255,176,0,0.08); }
+body[data-theme="amber"] .cyber-track.active { background: rgba(255,176,0,0.15); }
+
+body[data-theme="amber"] #cyberVisualizer {
+    margin-top: 14px;
+    background: #050300;
+    border: 2px solid #3d2800;
+    box-shadow:
+        inset 0 0 40px rgba(0,0,0,0.95),
+        inset 0 0 12px rgba(255,176,0,0.05),
+        0 0 10px rgba(255,176,0,0.08);
+    image-rendering: pixelated;
+    border-radius: 0;
+}
+
+/* =========================================================
+   THEME: SYNTHWAVE
+========================================================= */
+body[data-theme="synthwave"] {
+    background: #000;
+    color: #ff00ff;
+    font-family: 'Orbitron', sans-serif;
+    scrollbar-color: rgba(22,206,252,0.7) rgba(176,19,190,0.3);
+}
+
+body[data-theme="synthwave"] .theme-switch button,
+body[data-theme="synthwave"] .playlist-switch a {
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 10px;
+    background: rgba(176,19,190,0.3);
+    border: 1px solid rgba(255,150,200,0.6);
+    color: #ff6fb7;
+}
+
+body[data-theme="synthwave"] .theme-switch button:hover,
+body[data-theme="synthwave"] .playlist-switch a:hover {
+    background: rgba(97,219,250,0.8);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255,150,200,0.6);
+}
+
+body[data-theme="synthwave"] .sun,
+body[data-theme="synthwave"] .grid,
+body[data-theme="synthwave"] .vhs,
+body[data-theme="synthwave"] #bgCanvas,
+body[data-theme="synthwave"] .logo { display: block; }
+
+body[data-theme="synthwave"] .logo {
+    top: 27%;
+    width: min(50vw, 50vh);
+    filter: drop-shadow(0 0 20px rgb(233,0,136)) drop-shadow(0 0 40px #e9a136) drop-shadow(0 0 60px #d60df1);
+}
+
+body[data-theme="synthwave"] .cyber-player-box {
+    bottom: 50px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,0,255,0.4);
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(255,0,255,0.25), inset 0 0 20px rgba(0,0,0,0.8);
+    backdrop-filter: blur(14px);
+    z-index: 20;
+}
+
+body[data-theme="synthwave"] .cyber-player-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+}
+
+body[data-theme="synthwave"] .cyber-btn {
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #001010;
+    border: 1px solid rgba(255,0,255,0.6);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba(255,255,255,0.4);
+    box-shadow: 0 0 10px rgba(255,0,255,0.6), 0 0 18px rgba(0,255,255,0.5);
+}
+
+body[data-theme="synthwave"] .cyber-btn:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 14px rgba(255,0,255,1), 0 0 22px rgba(0,255,255,0.8);
+}
+
+body[data-theme="synthwave"] .btn-label { display: inline; }
+
+body[data-theme="synthwave"] .cyber-loop-label { font-size: 0.8rem; color: #ff99ff; }
+body[data-theme="synthwave"] .cyber-loop-label input { accent-color: #ff00ff; }
+
+body[data-theme="synthwave"] .cyber-seek {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #0088ff);
+}
+
+body[data-theme="synthwave"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 10px #ff00ff;
+}
+
+body[data-theme="synthwave"] .cyber-playlist { max-height: 140px; margin-bottom: 10px; }
+
+body[data-theme="synthwave"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(255,0,255,0.05);
+    border: 1px solid rgba(255,0,255,0.2);
+    color: #ffccff;
+    font-size: 0.85rem;
+}
+
+body[data-theme="synthwave"] .cyber-track:hover { background: rgba(255,0,255,0.15); }
+body[data-theme="synthwave"] .cyber-track.active {
+    background: linear-gradient(90deg, rgba(0,255,255,0.4), rgba(255,0,255,0.4));
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 12px #ff00ff, 0 0 18px #00ffff;
+}
+
+body[data-theme="synthwave"] #cyberVisualizer {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,0,255,0.35);
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(255,0,255,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}
+
+/* =========================================================
+   THEME: DARKTECH (Section 9)
+========================================================= */
+body[data-theme="darktech"] {
+    background: #05070a;
+    font-family: 'Inconsolata', sans-serif;
+    color: #a4dbcc;
+    scrollbar-color: rgba(0,255,102,0.6) rgba(0,255,102,0.1);
+}
+
+body[data-theme="darktech"] .theme-switch button,
+body[data-theme="darktech"] .playlist-switch a {
+    font-family: 'Inconsolata', sans-serif;
+    border-radius: 4px;
+    background: rgba(0,255,102,0.1);
+    border: 1px solid rgba(0,255,102,0.4);
+    color: #00ff66;
+}
+
+body[data-theme="darktech"] .theme-switch button:hover,
+body[data-theme="darktech"] .playlist-switch a:hover {
+    background: rgba(0,255,102,0.4);
+    box-shadow: 0 0 10px rgba(0,255,102,0.3);
+}
+
+body[data-theme="darktech"] #bgCanvas,
+body[data-theme="darktech"] .logo { display: block; }
+
+body[data-theme="darktech"] .logo {
+    opacity: 0.95;
+    top: 25%;
+    width: min(30vw, 30vh);
+    filter: drop-shadow(0 0 20px rgba(50,224,195,0.7)) drop-shadow(0 0 40px #6ee4ec) drop-shadow(0 0 60px #88e5f5);
+}
+
+body[data-theme="darktech"] .cyber-player-box {
+    top: calc(35% + 80px);
+    transform: translateX(-50%);
+    min-width: 500px;
+    width: 50%;
+    max-width: 900px;
+    z-index: 10;
+    background: rgba(5,7,10,0.85);
+    border: 1px solid rgba(0,255,102,0.2);
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(0,255,102,0.1), inset 0 0 20px rgba(0,0,0,0.9);
+    backdrop-filter: blur(10px);
+}
+
+body[data-theme="darktech"] .cyber-player-title {
+    font-size: 0.9rem;
+    letter-spacing: 5px;
+    color: #00ff66;
+    text-shadow: 0 0 6px rgba(0,255,102,0.5);
+}
+
+body[data-theme="darktech"] .cyber-btn {
+    background: rgba(0,255,102,0.05);
+    color: #a4dbcc;
+    border: 1px solid rgba(0,255,102,0.3);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+body[data-theme="darktech"] .cyber-btn:hover {
+    background: rgba(0,255,102,0.15);
+    border-color: #00ff66;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0,255,102,0.2);
+}
+
+body[data-theme="darktech"] .btn-label { display: inline; }
+
+body[data-theme="darktech"] .cyber-loop-label { font-size: 0.75rem; color: #00ebd4; letter-spacing: 1px; }
+body[data-theme="darktech"] .cyber-loop-label input { accent-color: #00ff66; }
+
+body[data-theme="darktech"] .cyber-seek {
+    height: 4px;
+    border-radius: 0;
+    background: linear-gradient(90deg, #05070a, #005522, #00ff66);
+}
+
+body[data-theme="darktech"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 0;
+    background: #ff6600;
+    border: 1px solid #00ff66;
+    box-shadow: 0 0 8px #ff6600;
+}
+
+body[data-theme="darktech"] .cyber-playlist { max-height: 140px; }
+
+body[data-theme="darktech"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: rgba(0,255,102,0.02);
+    border: 1px solid rgba(0,255,102,0.05);
+    color: #a4dbcc;
+    font-size: 0.85rem;
+}
+
+body[data-theme="darktech"] .cyber-track:hover { background: rgba(0,255,102,0.08); color: #00ff66; }
+body[data-theme="darktech"] .cyber-track.active {
+    background: rgba(0,255,102,0.25);
+    color: #00ff66;
+    font-weight: bold;
+    border-color: #00ff66;
+    box-shadow: 0 0 10px rgba(0,255,102,0.3);
+}
+
+body[data-theme="darktech"] #cyberVisualizer {
+    background: rgba(2,4,6,0.8);
+    border: 1px solid rgba(0,255,102,0.2);
+    border-radius: 4px;
+    margin-top: 10px;
+    box-shadow: 0 0 15px rgba(0,255,102,0.05), inset 0 0 18px rgba(0,0,0,0.9);
+}
+
+/* =========================================================
+   THEME: KAWAII
+========================================================= */
+body[data-theme="kawaii"] {
+    background: #fff6fb;
+    font-family: 'Nunito', sans-serif;
+    color: #ff8ac9;
+}
+
+body[data-theme="kawaii"] .theme-switch button,
+body[data-theme="kawaii"] .playlist-switch a {
+    font-family: 'Nunito', sans-serif;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,150,200,0.6);
+    color: #ff6fb7;
+}
+
+body[data-theme="kawaii"] .theme-switch button:hover,
+body[data-theme="kawaii"] .playlist-switch a:hover {
+    background: rgba(255,200,230,0.9);
+    box-shadow: 0 0 10px rgba(255,150,200,0.6);
+}
+
+body[data-theme="kawaii"] #kawaii-bg,
+body[data-theme="kawaii"] .logo { display: block; }
+
+body[data-theme="kawaii"] .logo {
+    top: 22%;
+    width: min(75vw, 50vh);
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.7)) drop-shadow(0 0 40px #ff9eea) drop-shadow(0 0 60px #8eeeff);
+}
+
+body[data-theme="kawaii"] .cyber-player-box {
+    bottom: 50px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    z-index: 10;
+    background: rgba(255,255,255,0.7);
+    border: 2px solid rgba(255,180,220,0.6);
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255,180,220,0.4), inset 0 0 20px rgba(255,255,255,0.8);
+    backdrop-filter: blur(14px);
+}
+
+body[data-theme="kawaii"] .cyber-player-title {
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: #ff6fb7;
+    font-weight: 900;
+    text-shadow: 0 0 10px #ffc8e8, 0 0 20px #ffb7d5;
+}
+
+body[data-theme="kawaii"] .cyber-btn {
+    background: linear-gradient(135deg, #ffc8e8, #ffd8b8, #c8fff1);
+    color: #7a4a5a;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 0 #e5b4c8, 0 0 10px rgba(255,180,220,0.6);
+}
+
+body[data-theme="kawaii"] .cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #e5b4c8, 0 0 14px rgba(255,150,200,0.9);
+}
+
+body[data-theme="kawaii"] .cyber-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #e5b4c8, 0 0 6px rgba(255,150,200,0.6);
+}
+
+body[data-theme="kawaii"] .cyber-loop-label { font-size: 0.85rem; color: #ff8ac9; }
+body[data-theme="kawaii"] .cyber-loop-label input { accent-color: #ff8ac9; }
+
+body[data-theme="kawaii"] .cyber-seek {
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+}
+
+body[data-theme="kawaii"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #ff8ac9;
+    box-shadow: 0 0 10px #ff8ac9;
+}
+
+body[data-theme="kawaii"] .cyber-playlist { max-height: 180px; }
+
+body[data-theme="kawaii"] .cyber-track {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,180,220,0.4);
+    color: #7a4a5a;
+    font-weight: 700;
+}
+
+body[data-theme="kawaii"] .cyber-track:hover { background: rgba(255,200,230,0.8); }
+body[data-theme="kawaii"] .cyber-track.active {
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+    color: #7a4a5a;
+    border-color: #ff8ac9;
+    box-shadow: 0 0 12px #ffc8e8, 0 0 18px #ffb7d5;
+}
+
+body[data-theme="kawaii"] #cyberVisualizer {
+    background: rgba(255,255,255,0.6);
+    border: 2px solid rgba(255,180,220,0.4);
+    border-radius: 16px;
+    margin-top: 10px;
+    box-shadow: 0 0 18px rgba(255,180,220,0.35), inset 0 0 18px rgba(255,255,255,0.9);
+}
+
+/* =========================================================
+   THEME: HOLO
+========================================================= */
+body[data-theme="holo"] {
+    background: #000;
+    font-family: 'Orbitron', sans-serif;
+    color: #00fff0;
+    scrollbar-color: rgba(46,235,203,0.747) rgba(1,77,60,0.5);
+}
+
+body[data-theme="holo"] .theme-switch button,
+body[data-theme="holo"] .playlist-switch a {
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,255,255,0.4);
+    color: #00fff0;
+}
+
+body[data-theme="holo"] .theme-switch button:hover,
+body[data-theme="holo"] .playlist-switch a:hover {
+    background: rgba(0,255,255,0.2);
+    box-shadow: 0 0 10px rgba(0,255,255,0.6);
+}
+
+body[data-theme="holo"] #bgCanvas,
+body[data-theme="holo"] .logo { display: block; }
+
+body[data-theme="holo"] .logo {
+    opacity: 0.95;
+    top: 23%;
+    width: min(75vw, 75vh);
+    filter: drop-shadow(0 0 20px rgba(50,224,195,0.7)) drop-shadow(0 0 40px #6ee4ec) drop-shadow(0 0 60px #88e5f5);
+}
+
+body[data-theme="holo"] .cyber-player-box {
+    top: calc(35% + 80px);
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,255,255,0.35);
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(0,255,255,0.25), inset 0 0 20px rgba(0,0,0,0.8);
+    backdrop-filter: blur(14px) brightness(1.3);
+}
+
+body[data-theme="holo"] .cyber-player-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #00fff0;
+    text-shadow: 0 0 10px #00fff0, 0 0 20px #a066ff;
+}
+
+body[data-theme="holo"] .cyber-btn {
+    background: rgba(0,255,255,0.1);
+    color: #00fff0;
+    border: 1px solid rgba(0,255,255,0.4);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-shadow: 0 0 6px #00fff0;
+    box-shadow: 0 0 10px rgba(0,255,255,0.4), inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+body[data-theme="holo"] .cyber-btn:hover {
+    background: rgba(0,255,255,0.2);
+    box-shadow: 0 0 14px rgba(0,255,255,1), 0 0 22px rgba(160,102,255,0.8);
+}
+
+body[data-theme="holo"] .cyber-loop-label { font-size: 0.8rem; color: #a0eaff; }
+body[data-theme="holo"] .cyber-loop-label input { accent-color: #00fff0; }
+
+body[data-theme="holo"] .cyber-seek {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00fff0, #a066ff, #ffffff);
+}
+
+body[data-theme="holo"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #00fff0;
+    box-shadow: 0 0 10px #00fff0;
+}
+
+body[data-theme="holo"] .cyber-playlist { max-height: 150px; }
+
+body[data-theme="holo"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(0,255,255,0.05);
+    border: 1px solid rgba(0,255,255,0.2);
+    color: #a0eaff;
+}
+
+body[data-theme="holo"] .cyber-track:hover { background: rgba(0,255,255,0.15); }
+body[data-theme="holo"] .cyber-track.active {
+    background: rgba(0,255,255,0.35);
+    color: #00fff0;
+    border-color: #00fff0;
+    box-shadow: 0 0 12px #00fff0;
+}
+
+body[data-theme="holo"] #cyberVisualizer {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(0,255,255,0.35);
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 18px rgba(0,255,255,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}
+</style>
+</head>
+<body data-theme="amber">
+
+<div class="theme-switch">
+    <button type="button" data-theme="amber">AMBER</button>
+    <button type="button" data-theme="synthwave">SYNTHWAVE</button>
+    <button type="button" data-theme="darktech">DARKTECH</button>
+    <button type="button" data-theme="kawaii">KAWAII</button>
+    <button type="button" data-theme="holo">HOLO</button>
+</div>
+
+<div class="playlist-switch">
+    <a href="assets/loops.json">Loops</a>
+    <a href="assets/webradio.json">WebRadio</a>
+</div>
+
+<!-- Amber: ASCII-Titel + CRT-Effekte -->
+<div>
+<pre class="title-ascii">
+   __________.__                 __   ________                 __  .__
+   \______   \  | _____    ____ |  | _\______ \   ____ _____ _/  |_|  |__
+    |    |  _/  | \__  \ _/ ___\|  |/ /|    |  \_/ __ \\__  \\   __\  |  \
+    |    |   \  |__/ __ \\  \___|    < |    `   \  ___/ / __ \|  | |   Y  \
+    |______  /____(____  /\___  >__|_ Y_______  /\___  >____  /__| |___|  /
+           \/          \/     \/     \/       \/     \/     \/          \/
+</pre>
+</div>
+<div class="crt-scanlines"></div>
+<div class="crt-vignette"></div>
+<div class="crt-roll"></div>
+
+<!-- Synthwave / Darktech / Holo: Canvas-Hintergrund -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Synthwave: Sonne + Gitter + VHS -->
+<div class="sun"></div>
+<div class="grid"></div>
+<div class="vhs"></div>
+
+<!-- Synthwave / Darktech / Kawaii / Holo: Logo -->
+<img class="logo" id="themeLogo" alt="Logo">
+
+<!-- Kawaii: schwebende Sprites -->
+<canvas id="kawaii-bg"></canvas>
+
+<div class="cyber-player-box">
+    <div class="cyber-player-title">AUDIO TERMINAL v1.0</div>
+
+    <div class="cyber-player-controls">
+        <button class="cyber-btn prev"><span class="btn-icon">⏮</span><span class="btn-label">PREV</span></button>
+        <button class="cyber-btn play"><span class="btn-icon">▶</span><span class="btn-label">PLAY</span></button>
+        <button class="cyber-btn pause"><span class="btn-icon">⏸</span><span class="btn-label">PAUSE</span></button>
+        <button class="cyber-btn stop"><span class="btn-icon">⏹</span><span class="btn-label">STOP</span></button>
+        <button class="cyber-btn next"><span class="btn-icon">⏭</span><span class="btn-label">NEXT</span></button>
+    </div>
+
+    <label class="cyber-loop-label">
+        <input type="checkbox" class="loop" checked>
+        <span class="loop-label-text">LOOP ENABLED</span>
+    </label>
+
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer" width="800" height="140"></canvas>
+</div>
+
+<script>
+/* =============================================================================
+   1. PLAYER CORE ENGINE (theme-unabhängig, Streaming über HTML5 Audio)
+   ============================================================================= */
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
+        this.ctx = null;
+        this.sourceNode = null;
+        this.analyser = null;
+        this.dataArray = null;
+
+        this.loop = true;
+        this.isDragging = false;
+        this.visualizerActive = false;
+
+        this.buildRefs();
+        this.renderPlaylist();
+        this.loadTrack(0, false);
+    }
+
+    buildRefs() {
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
+
+        this.loopToggle.onchange = () => {
+            this.loop = this.loopToggle.checked;
+            this.audio.loop = this.loop;
+        };
+
+        this.seek.oninput = () => { this.isDragging = true; };
+        this.seek.onchange = () => {
+            if (isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
+            this.isDragging = false;
+        };
+
+        this.seek.onmouseup = () => { this.isDragging = false; };
+        this.seek.ontouchend = () => { this.isDragging = false; };
+
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
+        };
+    }
+
+    renderPlaylist() {
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track, i) => {
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = () => this.loadTrack(i, true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    updatePlaylist(newPlaylist) {
+        this.stop();
+        this.playlist = newPlaylist;
+        this.currentIndex = 0;
+        this.renderPlaylist();
+        this.loadTrack(0, false);
+    }
+
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    initAudioEngine() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+        }
+    }
+
+    loadTrack(index, autoplay = false) {
+        this.currentIndex = index;
+        this.highlightActive();
+
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
+        this.seek.value = 0;
+
+        if (autoplay) {
+            this.play();
+        }
+    }
+
+    play() {
+        this.initAudioEngine();
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+        this.audio.play().catch(e => console.error("Audio Startfehler:", e));
+
+        if (!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
+        }
+    }
+
+    pause() {
+        this.audio.pause();
+    }
+
+    stop() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.seek.value = 0;
+    }
+
+    nextTrack() {
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
+    }
+
+    prevTrack() {
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
+    }
+
+    updateSeek() {
+        if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
+    }
+}
+
+/* =============================================================================
+   2. AUDIO VISUALIZER (Form/Farbe je nach aktivem Theme)
+   ============================================================================= */
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function getBarColor(theme, t, v) {
+    let r, g, b;
+    if (theme === "synthwave") {
+        if (t < 0.5) { const k = t / 0.5; r = Math.floor(255 * k); g = Math.floor(255 - 255 * k); b = 255; }
+        else { const k = (t - 0.5) / 0.5; r = Math.floor(255 - 255 * k); g = Math.floor(136 * k); b = 255; }
+    } else if (theme === "darktech") {
+        if (t < 0.5) { const k = t / 0.5; r = 0; g = Math.floor(255 - 50 * k); b = Math.floor(212 * k); }
+        else { const k = (t - 0.5) / 0.5; r = 0; g = Math.floor(205 + 50 * k); b = Math.floor(212 - 212 * k); }
+    } else if (theme === "kawaii") {
+        if (t < 0.5) { const k = t / 0.5; r = 255; g = 200 - (200 - 216) * k; b = 230 - (230 - 184) * k; }
+        else { const k = (t - 0.5) / 0.5; r = 255 - (255 - 200) * k; g = 216 - (216 - 255) * k; b = 184 - (184 - 241) * k; }
+    } else { // holo
+        if (t < 0.5) { const k = t / 0.5; r = 160 * k; g = 255 - 153 * k; b = 240 + 15 * k; }
+        else { const k = (t - 0.5) / 0.5; r = 160 + 95 * k; g = 102 + 153 * k; b = 255; }
+    }
+    const alpha = 0.25 + v * 0.75;
+    return `rgba(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)},${alpha})`;
+}
+
+function drawRoundedBars(player, w, h, theme) {
+    const barCount = player.dataArray.length / 2;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * (h - 20);
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        vizCtx.fillStyle = getBarColor(theme, t, v);
+
+        const radius = 3;
+        const bw = barWidth * 0.8;
+        const bx = x + (barWidth - bw) / 2;
+
+        vizCtx.beginPath();
+        vizCtx.moveTo(bx + radius, y);
+        vizCtx.lineTo(bx + bw - radius, y);
+        vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+        vizCtx.lineTo(bx + bw, y + barHeight - radius);
+        vizCtx.quadraticCurveTo(bx + bw, y + barHeight, bx + bw - radius, y + barHeight);
+        vizCtx.lineTo(bx + radius, y + barHeight);
+        vizCtx.quadraticCurveTo(bx, y + barHeight, bx, y + barHeight - radius);
+        vizCtx.lineTo(bx, y + radius);
+        vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+        vizCtx.closePath();
+        vizCtx.fill();
+    }
+}
+
+function drawAmberSegments(player, w, h) {
+    const bgGradient = vizCtx.createLinearGradient(0, 0, 0, h);
+    bgGradient.addColorStop(0, "#120b02");
+    bgGradient.addColorStop(1, "#020100");
+    vizCtx.fillStyle = bgGradient;
+    vizCtx.fillRect(0, 0, w, h);
+
+    const columns = 16;
+    const spacing = 10;
+    const columnWidth = (w - spacing * (columns + 1)) / columns;
+    const segmentHeight = 8;
+    const segmentGap = 4;
+    const maxSegments = 11;
+
+    for (let i = 0; i < columns; i++) {
+        const dataIndex = Math.floor(i * (player.dataArray.length / columns));
+        const value = player.dataArray[dataIndex] / 255;
+        const activeSegments = Math.floor(value * maxSegments);
+        const x = spacing + i * (columnWidth + spacing);
+
+        for (let s = 0; s < maxSegments; s++) {
+            const y = h - 10 - (s * (segmentHeight + segmentGap));
+            const lit = s < activeSegments;
+            let alpha = 0.08;
+            if (lit) alpha = 0.25 + (s / maxSegments) * 0.75;
+
+            const brightness = 120 + (s * 10);
+            vizCtx.fillStyle = `rgba(255, ${brightness}, 20, ${alpha})`;
+
+            if (lit) {
+                vizCtx.shadowBlur = 12;
+                vizCtx.shadowColor = `rgba(255, ${brightness}, 20, 0.8)`;
+            } else {
+                vizCtx.shadowBlur = 0;
+            }
+
+            vizCtx.fillRect(x, y, columnWidth, segmentHeight);
+        }
+    }
+    vizCtx.shadowBlur = 0;
+
+    const glass = vizCtx.createLinearGradient(0, 0, w, 0);
+    glass.addColorStop(0, "rgba(255,255,255,0.02)");
+    glass.addColorStop(0.5, "rgba(255,255,255,0.06)");
+    glass.addColorStop(1, "rgba(255,255,255,0.01)");
+    vizCtx.fillStyle = glass;
+    vizCtx.fillRect(0, 0, w, h);
+}
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else if (player.dataArray) {
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
+    }
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    const theme = document.body.dataset.theme;
+
+    vizCtx.clearRect(0, 0, w, h);
+
+    if (theme === "amber") {
+        drawAmberSegments(player, w, h);
+    } else {
+        drawRoundedBars(player, w, h, theme);
+    }
+
+    requestAnimationFrame(() => renderVisualizer(player));
+}
+
+</script>
+
+<script>
+/* =============================================================================
+   3. HINTERGRUND-RENDERER (einer aktiv, je nach Theme)
+   ============================================================================= */
+const bgCanvas = document.getElementById("bgCanvas");
+const bgCtx = bgCanvas.getContext("2d");
+
+function resizeBgCanvas() {
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeBgCanvas);
+resizeBgCanvas();
+
+let bgAnimationId = null;
+let currentBGRenderer = null;
+
+function bgLoop() {
+    if (currentBGRenderer) {
+        currentBGRenderer();
+        bgAnimationId = requestAnimationFrame(bgLoop);
+    }
+}
+
+function stopBG() {
+    if (bgAnimationId) cancelAnimationFrame(bgAnimationId);
+    bgAnimationId = null;
+    currentBGRenderer = null;
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+}
+
+/* --- SYNTHWAVE: Sternenhimmel --- */
+let swStars = [];
+const swColors = ['rgba(255,255,255,', 'rgba(173,216,230,', 'rgba(255,255,224,', 'rgba(255,240,245,', 'rgba(135,206,250,'];
+
+function swReset() {
+    swStars = [];
+    for (let i = 0; i < 500; i++) {
+        swStars.push({
+            x: Math.random() * bgCanvas.width,
+            y: Math.random() * bgCanvas.height,
+            size: Math.random() * 2.5,
+            speed: Math.random() * 0.5 + 0.2,
+            colorBase: swColors[Math.floor(Math.random() * swColors.length)],
+            twinkleSpeed: Math.random() * 0.03 + 0.01,
+            twinkleOffset: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+function swAnimate() {
+    bgCtx.fillStyle = 'rgba(0,0,0,0.25)';
+    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+    swStars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > bgCanvas.height) { s.y = 0; s.x = Math.random() * bgCanvas.width; }
+        const twinkle = Math.sin(performance.now() * s.twinkleSpeed + s.twinkleOffset) * 0.4 + 0.6;
+        bgCtx.fillStyle = s.colorBase + twinkle + ')';
+        bgCtx.beginPath();
+        bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        bgCtx.fill();
+    });
+}
+
+/* --- DARKTECH: Partikel-Netzwerk --- */
+let dtParticles = [];
+function dtReset() {
+    dtParticles = [];
+    for (let i = 0; i < 150; i++) {
+        dtParticles.push({
+            x: Math.random() * bgCanvas.width,
+            y: Math.random() * bgCanvas.height,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8,
+            size: Math.random() * 2 + 1.5,
+            hue: Math.random() > 0.5 ? 145 : 180,
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            twinkleOffset: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+function dtAnimate() {
+    bgCtx.fillStyle = 'rgba(5,7,10,0.4)';
+    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+    dtParticles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > bgCanvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > bgCanvas.height) p.vy *= -1;
+    });
+
+    for (let i = 0; i < dtParticles.length; i++) {
+        for (let j = i + 1; j < dtParticles.length; j++) {
+            const p1 = dtParticles[i], p2 = dtParticles[j];
+            const dx = p1.x - p2.x, dy = p1.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+                const alpha = (1 - dist / 120) * 0.4;
+                bgCtx.strokeStyle = `hsla(${p1.hue},90%,65%,${alpha})`;
+                bgCtx.lineWidth = 0.8;
+                bgCtx.beginPath();
+                bgCtx.moveTo(p1.x, p1.y);
+                bgCtx.lineTo(p2.x, p2.y);
+                bgCtx.stroke();
+            }
+        }
+    }
+
+    dtParticles.forEach(p => {
+        const twinkle = Math.sin(performance.now() * p.twinkleSpeed + p.twinkleOffset) * 0.3 + 0.7;
+        bgCtx.fillStyle = `hsla(${p.hue},90%,65%,${twinkle})`;
+        bgCtx.beginPath();
+        bgCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        bgCtx.fill();
+    });
+}
+
+/* --- HOLO: 3D-Sterntunnel --- */
+let holoStars = [];
+const holoSpeed = 5;
+function holoReset() {
+    holoStars = [];
+    for (let i = 0; i < 900; i++) {
+        const z = Math.random() * bgCanvas.width;
+        holoStars.push({
+            x: (Math.random() - 0.5) * bgCanvas.width,
+            y: (Math.random() - 0.5) * bgCanvas.height,
+            z: z, pz: z,
+            color: ["#00fff0", "#a066ff", "#ffffff"][Math.floor(Math.random() * 3)],
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            twinkleOffset: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+function holoAnimate() {
+    bgCtx.fillStyle = 'rgba(0,0,0,0.3)';
+    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+    holoStars.forEach(s => {
+        s.pz = s.z;
+        s.z -= holoSpeed;
+        if (s.z <= 1) {
+            s.x = (Math.random() - 0.5) * bgCanvas.width;
+            s.y = (Math.random() - 0.5) * bgCanvas.height;
+            s.z = bgCanvas.width;
+            s.pz = s.z;
+        }
+
+        const k = 960 / s.z;
+        const px = s.x * k + bgCanvas.width / 2;
+        const py = s.y * k + bgCanvas.height / 2;
+        const pk = 960 / s.pz;
+        const ppx = s.x * pk + bgCanvas.width / 2;
+        const ppy = s.y * pk + bgCanvas.height / 2;
+
+        if (px < 0 || px > bgCanvas.width || py < 0 || py > bgCanvas.height) return;
+
+        const size = (1 - s.z / bgCanvas.width) * 3 + 0.5;
+        const twinkle = Math.sin(performance.now() * s.twinkleSpeed + s.twinkleOffset) * 0.5 + 0.5;
+        bgCtx.strokeStyle = s.color;
+        bgCtx.fillStyle = s.color;
+        bgCtx.globalAlpha = 0.4 + twinkle * 0.6;
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(ppx, ppy);
+        bgCtx.lineTo(px, py);
+        bgCtx.lineWidth = size * 0.4;
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.arc(px, py, size, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.globalAlpha = 1;
+    });
+}
+
+/* --- AMBER: CRT-Sync-Glitch (verschiebt den Player leicht) --- */
+let crtActive = false;
+const playerBoxEl = document.querySelector(".cyber-player-box");
+
+function crtSyncGlitch() {
+    if (!crtActive) return;
+    const t = performance.now() * 0.1;
+    const linePos = (t % (window.innerHeight + 400)) - 300;
+    document.documentElement.style.setProperty("--crt-line", `${linePos}px`);
+
+    const rect = playerBoxEl.getBoundingClientRect();
+    const center = rect.top + rect.height / 2;
+    const distance = Math.abs(center - linePos);
+
+    if (distance < 180) {
+        const strength = (180 - distance) / 180;
+        const offset = (Math.random() - 0.5) * 8 * strength;
+        playerBoxEl.style.transform = `translate(calc(-50% + ${offset / 3}px), -50%) perspective(900px) rotateX(2deg)`;
+    } else {
+        playerBoxEl.style.transform = `translate(-50%,-50%) perspective(900px) rotateX(2deg)`;
+    }
+    requestAnimationFrame(crtSyncGlitch);
+}
+
+function startCrt() {
+    if (crtActive) return;
+    crtActive = true;
+    crtSyncGlitch();
+}
+
+function stopCrt() {
+    crtActive = false;
+    playerBoxEl.style.transform = "";
+}
+
+/* --- KAWAII: schwebende Sprites (eigener, immer laufender Loop) --- */
+const kawaiiCanvas = document.getElementById("kawaii-bg");
+const kawaiiCtx = kawaiiCanvas.getContext("2d");
+kawaiiCanvas.width = window.innerWidth;
+kawaiiCanvas.height = window.innerHeight;
+
+const kawaiiSprites = [
+    { emoji: "💖", size: 24 }, { emoji: "☁️", size: 28 }, { emoji: "⭐", size: 20 },
+    { emoji: "🌈", size: 26 }, { emoji: "🍰", size: 22 }, { emoji: "🎀", size: 22 },
+    { emoji: "🐰", size: 22 }, { emoji: "🐭", size: 22 }, { emoji: "🧸", size: 22 },
+    { emoji: "🐼", size: 22 }, { emoji: "🐸", size: 22 }, { emoji: "🐱", size: 22 }
+];
+
+const kawaiiParticles = Array.from({ length: 60 }, () => ({
+    x: Math.random() * kawaiiCanvas.width,
+    y: Math.random() * kawaiiCanvas.height,
+    speed: 0.3 + Math.random() * 0.7,
+    sprite: kawaiiSprites[Math.floor(Math.random() * kawaiiSprites.length)],
+    opacity: 0.6 + Math.random() * 0.4
+}));
+
+function kawaiiDraw() {
+    if (document.body.dataset.theme === "kawaii") {
+        kawaiiCtx.clearRect(0, 0, kawaiiCanvas.width, kawaiiCanvas.height);
+        kawaiiParticles.forEach(p => {
+            kawaiiCtx.globalAlpha = p.opacity;
+            kawaiiCtx.font = `${p.sprite.size}px "Comic Sans MS"`;
+            kawaiiCtx.fillText(p.sprite.emoji, p.x, p.y);
+            p.y -= p.speed;
+            if (p.y < -30) { p.y = kawaiiCanvas.height + 30; p.x = Math.random() * kawaiiCanvas.width; }
+        });
+        kawaiiCtx.globalAlpha = 1;
+    }
+    requestAnimationFrame(kawaiiDraw);
+}
+kawaiiDraw();
+
+window.addEventListener("resize", () => {
+    const oldW = kawaiiCanvas.width, oldH = kawaiiCanvas.height;
+    const newW = window.innerWidth, newH = window.innerHeight;
+    kawaiiCanvas.width = newW;
+    kawaiiCanvas.height = newH;
+    kawaiiParticles.forEach(p => { p.x *= (newW / oldW); p.y *= (newH / oldH); });
+});
+
+/* =============================================================================
+   4. THEME-KONFIGURATION & UMSCHALTUNG
+   ============================================================================= */
+const THEMES = {
+    amber: {
+        pageTitle: "BLACKDEATH // CRT TERMINAL",
+        playerTitle: "AUDIO TERMINAL v1.0",
+        loopLabel: "LOOP ENABLED",
+        logo: null
+    },
+    synthwave: {
+        pageTitle: "BLACKDEATH – CP2 SYNTHWAVE",
+        playerTitle: "AUDIO NODE // SYNTHWAVE MODE",
+        loopLabel: "LOOP ENABLED",
+        logo: "assets/img_player/cyber_vapor_logo.webp"
+    },
+    darktech: {
+        pageTitle: "SECTION 9 // DEVIANT AUDIO NODE",
+        playerTitle: "// AUDIO NETCONNECT: ACTIVE",
+        loopLabel: "CYBER-LINK REPEAT",
+        logo: "assets/img_player/dark_tech.webp"
+    },
+    kawaii: {
+        pageTitle: "BLACKDEATH – CP4 KAWAII",
+        playerTitle: "AUDIO NODE // KAWAII MODE",
+        loopLabel: "LOOP ENABLED",
+        logo: "assets/img_player/kawaii_logo_2.webp"
+    },
+    holo: {
+        pageTitle: "BLACKDEATH – CP5 HOLOGRAM",
+        playerTitle: "AUDIO NODE // HOLOGRAM MODE",
+        loopLabel: "LOOP ENABLED",
+        logo: "assets/img_player/holoui_logo.webp"
+    }
+};
+
+function setBackgroundForTheme(theme) {
+    stopBG();
+    stopCrt();
+
+    if (theme === "amber") {
+        startCrt();
+    } else if (theme === "synthwave") {
+        swReset();
+        currentBGRenderer = swAnimate;
+        bgLoop();
+    } else if (theme === "darktech") {
+        dtReset();
+        currentBGRenderer = dtAnimate;
+        bgLoop();
+    } else if (theme === "holo") {
+        holoReset();
+        currentBGRenderer = holoAnimate;
+        bgLoop();
+    }
+    // kawaii läuft über den eigenen, immer aktiven kawaiiDraw()-Loop
+}
+
+function applyTheme(theme) {
+    if (!THEMES[theme]) theme = "amber";
+    const cfg = THEMES[theme];
+
+    document.body.dataset.theme = theme;
+    document.getElementById("pageTitle").textContent = cfg.pageTitle;
+    document.title = cfg.pageTitle;
+    document.querySelector(".cyber-player-title").textContent = cfg.playerTitle;
+    document.querySelector(".loop-label-text").textContent = cfg.loopLabel;
+
+    const logoEl = document.getElementById("themeLogo");
+    if (cfg.logo) {
+        logoEl.src = cfg.logo;
+    } else {
+        logoEl.removeAttribute("src");
+    }
+
+    document.querySelectorAll(".theme-switch button").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
+
+    setBackgroundForTheme(theme);
+
+    try { localStorage.setItem("blackdeathTheme", theme); } catch (e) {}
+}
+
+document.querySelectorAll(".theme-switch button").forEach(btn => {
+    btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
+});
+
+/* =============================================================================
+   5. PLAYLIST + PLAYER INIT
+   ============================================================================= */
+let cyberPlayer = null;
+
+async function initPlayer() {
+    try {
+        const response = await fetch("assets/loops.json");
+        window.history.replaceState({}, document.title, "/");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".cyber-player-box");
+
+        cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        renderVisualizer(cyberPlayer);
+
+        setupPlaylistSwitch();
+    } catch (e) {
+        console.error("Kritischer Fehler beim Initialisieren des Players:", e);
+    }
+}
+
+function setupPlaylistSwitch() {
+    const switchLinks = document.querySelectorAll(".playlist-switch a");
+    switchLinks.forEach(link => {
+        link.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const jsonUrl = link.getAttribute("href");
+            try {
+                const response = await fetch(jsonUrl);
+                if (!response.ok) throw new Error(`Fehler beim Laden von ${jsonUrl}`);
+                const newPlaylist = await response.json();
+                if (cyberPlayer) {
+                    cyberPlayer.updatePlaylist(newPlaylist);
+                }
+            } catch (error) {
+                console.error("Fehler beim Wechseln der Playlist:", error);
+            }
+        });
+    });
+}
+
+/* --- Gespeichertes Theme laden (oder Amber als Default) & starten --- */
+let savedTheme = "amber";
+try { savedTheme = localStorage.getItem("blackdeathTheme") || "amber"; } catch (e) {}
+applyTheme(savedTheme);
+
+initPlayer();
+</script>
+</body>
+</html>

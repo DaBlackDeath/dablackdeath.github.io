@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">MOBILE JUKEBOX // Theme-Switcher</title>
+
+<style>
+/* =========================================================
+    FONTS (alle Themes gemeinsam geladen)
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Press+Start+2P&family=Special+Elite&family=Oswald:wght@500;600;700&family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700;800;900&display=swap');
+
+/* =========================================================
+    GLOBAL RESET & LAYOUT
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+    margin: 0;
+    padding: 10px;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    overflow: hidden;
+    position: relative;
+
+    transition: background 0.3s ease, color 0.3s ease;
+}
+/* =========================================================
+   THEME-SWITCH-LEISTE (oberhalb des Players)
+========================================================= */
+.theme-switch-bar {
+    width: 100%;
+    max-width: 420px;
+    flex-shrink: 0;
+
+    display: flex;
+    /* ÄNDERUNG: space-between verteilt die Elemente gleichmäßig von Kante zu Kante */
+    justify-content: space-between; 
+    /* ÄNDERUNG: Feste gap entfernt, da das nun flexbox übernimmt */
+    gap: 0; 
+    
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+}
+.theme-switch-bar::-webkit-scrollbar { display: none; }
+
+.theme-switch-bar button {
+    /* ÄNDERUNG: flex: 1 sorgt dafür, dass alle Buttons gleichmäßig wachsen */
+    flex: 1; 
+    /* Optional: Ein minimaler Abstand zwischen den Buttons, damit sie nicht zusammenkleben */
+    margin: 0 4px; 
+    
+    padding: 7px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-family: 'Share Tech Mono', monospace;
+    cursor: pointer;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition: 0.15s;
+    white-space: nowrap;
+    text-align: center; /* Zentriert den Text im Button */
+}
+
+/* Verhindert äußere Ränder an den ganz linken und rechten Buttons */
+.theme-switch-bar button:first-child { margin-left: 0; }
+.theme-switch-bar button:last-child { margin-right: 0; }
+
+.theme-switch-bar button:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+.theme-switch-bar button.active {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+    background: rgba(255,255,255,0.28);
+}
+
+/* =========================================================
+    PLAYER-WRAPPER (nimmt Restplatz unterhalb der Leiste ein)
+========================================================= */
+.player-wrapper {
+    width: 100%;
+    max-width: 420px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Gemeinsames Grundlayout des Players (Farben je Theme s.u.) */
+.cyber-player-box {
+    width: 100%;
+    max-width: 420px;
+    height: 100% !important;
+    max-height: 100%;
+
+    position: relative;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.cyber-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.cyber-btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cyber-loop-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.cyber-seek {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.cyber-playlist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    cursor: default;
+}
+
+.cyber-track {
+    cursor: pointer;
+}
+
+#cyberVisualizer {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* Deko-Elemente aller Themes: standardmäßig verborgen, je Theme sichtbar geschaltet */
+.dos-corner-tl, .dos-corner-tr, .dos-corner-bl, .dos-corner-br,
+.dos-titlebar, .dos-prompt,
+.c64-listing, .c64-ready,
+.amiga-titlebar,
+.walkman-brand, .cassette-window,
+.mascot {
+    display: none;
+}
+
+.loop-label-text::before { content: ""; }
+
+/* =========================================================
+   THEME: DOS (MS-DOS / Phosphor-Terminal)
+========================================================= */
+:root {
+    --dos-bg: #000000;
+    --dos-green: #33ff33;
+    --dos-green-dim: #1c8a1c;
+    --dos-green-bright: #a6ff9e;
+    --dos-shadow: rgba(51, 255, 51, .55);
+}
+
+body[data-theme="dos"] {
+    background: var(--dos-bg);
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    color: var(--dos-green);
+}
+
+body[data-theme="dos"]::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0px, rgba(0,0,0,.25) 1px, transparent 2px, transparent 3px);
+    mix-blend-mode: multiply;
+}
+
+body[data-theme="dos"] .theme-switch-bar button {
+    font-family: 'Share Tech Mono', monospace;
+    background: rgba(51,255,51,0.08);
+    border: 1px solid var(--dos-green);
+    color: var(--dos-green);
+    border-radius: 0;
+}
+body[data-theme="dos"] .theme-switch-bar button.active,
+body[data-theme="dos"] .theme-switch-bar button:hover {
+    background: rgba(51,255,51,0.22);
+}
+
+body[data-theme="dos"] .cyber-player-box {
+    background: var(--dos-bg);
+    border: 3px double var(--dos-green);
+    border-radius: 0;
+    padding: 8px 14px 14px;
+    box-shadow: 0 0 0 1px #000, 0 0 24px rgba(51,255,51,.15);
+    text-shadow: 0 0 4px var(--dos-shadow);
+}
+
+body[data-theme="dos"] .dos-corner-tl,
+body[data-theme="dos"] .dos-corner-tr,
+body[data-theme="dos"] .dos-corner-bl,
+body[data-theme="dos"] .dos-corner-br {
+    display: block;
+    position: absolute;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--dos-green);
+    font-size: 1.1rem;
+    line-height: 1;
+    background: var(--dos-bg);
+    padding: 0 2px;
+}
+body[data-theme="dos"] .dos-corner-tl { top: -11px; left: -11px; }
+body[data-theme="dos"] .dos-corner-tr { top: -11px; right: -11px; }
+body[data-theme="dos"] .dos-corner-bl { bottom: -11px; left: -11px; }
+body[data-theme="dos"] .dos-corner-br { bottom: -11px; right: -11px; }
+
+body[data-theme="dos"] .dos-titlebar {
+    display: block;
+    text-align: center;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    color: var(--dos-bg);
+    background: var(--dos-green);
+    padding: 2px 8px;
+    margin: -8px -14px 10px;
+    flex-shrink: 0;
+    text-shadow: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body[data-theme="dos"] .dos-prompt {
+    display: block;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body[data-theme="dos"] .dos-prompt .path { color: var(--dos-green-bright); }
+
+body[data-theme="dos"] .dos-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 15px;
+    background: var(--dos-green);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: dos-blink 1s steps(1) infinite;
+}
+
+@keyframes dos-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+body[data-theme="dos"] .status-playing,
+body[data-theme="dos"] .status-stopped { display: none; }
+body[data-theme="dos"] .cyber-player-box.is-playing .status-playing { display: inline; }
+body[data-theme="dos"] .cyber-player-box:not(.is-playing) .status-stopped { display: inline; }
+
+body[data-theme="dos"] .cyber-player-title { display: none; }
+
+body[data-theme="dos"] .cyber-player-controls { gap: 6px; margin-bottom: 10px; }
+
+body[data-theme="dos"] .cyber-btn {
+    background: var(--dos-bg);
+    border: 1px solid var(--dos-green);
+    flex: 1;
+    min-height: 40px;
+    border-radius: 0;
+    box-shadow: none;
+    transition: 0.05s;
+}
+body[data-theme="dos"] .cyber-btn svg { width: 18px; height: 18px; fill: var(--dos-green); }
+body[data-theme="dos"] .cyber-btn:hover { background: rgba(51,255,51,.15); }
+body[data-theme="dos"] .cyber-btn:active { background: var(--dos-green); }
+body[data-theme="dos"] .cyber-btn:active svg { fill: var(--dos-bg); }
+
+body[data-theme="dos"] .cyber-loop-label {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--dos-green);
+}
+body[data-theme="dos"] .cyber-loop-label input {
+    accent-color: var(--dos-green);
+    filter: grayscale(1) brightness(0) invert(1) sepia(1) hue-rotate(60deg) saturate(6);
+}
+
+body[data-theme="dos"] .cyber-seek {
+    height: 12px;
+    border-radius: 0;
+    background: var(--dos-bg);
+    border: 1px solid var(--dos-green);
+    margin-bottom: 12px;
+}
+body[data-theme="dos"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px; height: 16px; border-radius: 0;
+    background: var(--dos-green);
+    box-shadow: 0 0 6px var(--dos-shadow);
+}
+
+body[data-theme="dos"] .cyber-playlist {
+    text-align: left;
+    margin-bottom: 10px;
+    background: var(--dos-bg);
+    border: 1px solid var(--dos-green);
+    padding: 4px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dos-green) var(--dos-bg);
+}
+body[data-theme="dos"] .cyber-playlist::-webkit-scrollbar { width: 10px; }
+body[data-theme="dos"] .cyber-playlist::-webkit-scrollbar-track { background: var(--dos-bg); }
+body[data-theme="dos"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: var(--dos-green); }
+
+body[data-theme="dos"] .cyber-track {
+    padding: 3px 8px;
+    color: var(--dos-green);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body[data-theme="dos"] .cyber-track .lineno { color: var(--dos-green-dim); font-weight: 700; }
+body[data-theme="dos"] .cyber-track:hover { background: rgba(51,255,51,.12); }
+body[data-theme="dos"] .cyber-track.active { background: var(--dos-green); color: var(--dos-bg); text-shadow: none; }
+body[data-theme="dos"] .cyber-track.active .lineno { color: var(--dos-bg); }
+
+body[data-theme="dos"] #cyberVisualizer {
+    height: 56px;
+    background: var(--dos-bg);
+    border: 1px solid var(--dos-green);
+    border-radius: 0;
+}
+
+/* =========================================================
+   THEME: C64 (Commodore 64 / BASIC)
+========================================================= */
+:root {
+    --c64-border: #40318d;
+    --c64-screen: #7869c4;
+    --c64-text: #d6d6ff;
+    --c64-white: #ffffff;
+    --c64-black: #000000;
+    --c64-yellow: #bfce72;
+    --c64-purple: #8b3f96;
+}
+
+body[data-theme="c64"] {
+    background: var(--c64-border);
+    font-family: 'VT323', monospace;
+    color: var(--c64-text);
+}
+
+body[data-theme="c64"] .theme-switch-bar button {
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--c64-white);
+    color: var(--c64-text);
+    border-radius: 0;
+}
+body[data-theme="c64"] .theme-switch-bar button.active,
+body[data-theme="c64"] .theme-switch-bar button:hover {
+    background: var(--c64-purple);
+}
+
+body[data-theme="c64"] .cyber-player-box {
+    background: var(--c64-screen);
+    border: none;
+    border-radius: 0;
+    padding: 16px;
+    box-shadow: none;
+}
+
+body[data-theme="c64"] .c64-listing {
+    display: block;
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    color: var(--c64-text);
+    margin-bottom: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body[data-theme="c64"] .c64-listing .num { color: var(--c64-white); }
+
+body[data-theme="c64"] .cyber-player-title {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: var(--c64-white);
+    font-weight: 400;
+    flex-shrink: 0;
+}
+
+body[data-theme="c64"] .cyber-player-controls { gap: 6px; margin-bottom: 12px; }
+
+body[data-theme="c64"] .cyber-btn {
+    background: var(--c64-black);
+    border: 2px solid var(--c64-white);
+    flex: 1;
+    min-height: 40px;
+    border-radius: 0;
+    box-shadow: 2px 2px 0 var(--c64-black);
+    transition: 0.05s;
+}
+body[data-theme="c64"] .cyber-btn svg { width: 18px; height: 18px; fill: var(--c64-text); }
+body[data-theme="c64"] .cyber-btn:hover { background: var(--c64-purple); }
+body[data-theme="c64"] .cyber-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--c64-black); }
+
+body[data-theme="c64"] .cyber-loop-label {
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    color: var(--c64-white);
+}
+body[data-theme="c64"] .cyber-loop-label input { accent-color: var(--c64-yellow); }
+
+body[data-theme="c64"] .cyber-seek {
+    height: 12px;
+    border-radius: 0;
+    background: var(--c64-black);
+    border: 2px solid var(--c64-white);
+    margin-bottom: 12px;
+}
+body[data-theme="c64"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 16px; border-radius: 0;
+    background: var(--c64-yellow);
+    border: 2px solid var(--c64-black);
+}
+
+body[data-theme="c64"] .cyber-playlist {
+    text-align: left;
+    margin-bottom: 10px;
+    background: var(--c64-black);
+    border: 2px solid var(--c64-white);
+    padding: 6px 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--c64-yellow) var(--c64-black);
+}
+body[data-theme="c64"] .cyber-playlist::-webkit-scrollbar { width: 12px; }
+body[data-theme="c64"] .cyber-playlist::-webkit-scrollbar-track { background: var(--c64-black); border-left: 2px solid var(--c64-white); }
+body[data-theme="c64"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: var(--c64-yellow); }
+
+body[data-theme="c64"] .cyber-track {
+    padding: 3px 6px;
+    margin-bottom: 1px;
+    color: var(--c64-text);
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+}
+body[data-theme="c64"] .cyber-track .lineno { color: var(--c64-yellow); margin-right: 6px; }
+body[data-theme="c64"] .cyber-track:hover { background: rgba(255,255,255,0.15); }
+body[data-theme="c64"] .cyber-track.active { background: var(--c64-text); color: var(--c64-black); }
+body[data-theme="c64"] .cyber-track.active .lineno { color: var(--c64-black); }
+
+body[data-theme="c64"] #cyberVisualizer {
+    height: 64px;
+    background: var(--c64-black);
+    border: 2px solid var(--c64-white);
+    border-radius: 0;
+}
+
+body[data-theme="c64"] .c64-ready {
+    display: block;
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    color: var(--c64-white);
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+body[data-theme="c64"] .c64-cursor {
+    display: inline-block;
+    width: 9px; height: 15px;
+    background: var(--c64-white);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: c64-blink 1s steps(1) infinite;
+}
+@keyframes c64-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+/* =========================================================
+   THEME: WALKMAN (Kassettenrekorder)
+========================================================= */
+:root {
+    --shell-lt: #d8d5cc;
+    --shell-md: #b7b3a8;
+    --shell-dk: #3a3a38;
+    --label-cream: #efe6cf;
+    --label-line: #a89a72;
+    --led-red: #ff3b30;
+    --led-amber: #ffb020;
+    --chrome-lt: #f4f2ec;
+    --chrome-dk: #8a8780;
+    --text-dark: #2a2926;
+}
+
+body[data-theme="walkman"] {
+    background: radial-gradient(circle at 30% 20%, #4a4a48, #232321 70%);
+    font-family: 'Oswald', sans-serif;
+    color: var(--text-dark);
+}
+
+body[data-theme="walkman"] .theme-switch-bar button {
+    font-family: 'Oswald', sans-serif;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid var(--chrome-lt);
+    color: var(--chrome-lt);
+}
+body[data-theme="walkman"] .theme-switch-bar button.active,
+body[data-theme="walkman"] .theme-switch-bar button:hover {
+    background: rgba(255,255,255,0.28);
+}
+
+body[data-theme="walkman"] .cyber-player-box {
+    background: linear-gradient(160deg, var(--shell-lt) 0%, var(--shell-md) 55%, var(--shell-lt) 100%);
+    border: 1px solid #8f8b80;
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 14px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 4px rgba(0,0,0,.2);
+}
+
+body[data-theme="walkman"] .walkman-brand {
+    display: block;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--chrome-dk);
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+body[data-theme="walkman"] .walkman-brand span { color: var(--led-red); }
+
+body[data-theme="walkman"] .cassette-window {
+    display: block;
+    background: #14140f;
+    border-radius: 10px;
+    border: 2px solid var(--shell-dk);
+    box-shadow: inset 0 3px 8px rgba(0,0,0,.7);
+    padding: 12px 14px 10px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+body[data-theme="walkman"] .cassette-reels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    margin-bottom: 8px;
+}
+
+body[data-theme="walkman"] .reel {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #6a6a68, #262624 70%);
+    border: 2px solid #494846;
+    position: relative;
+    animation: reel-spin 3s linear infinite;
+    animation-play-state: paused;
+}
+body[data-theme="walkman"] .cyber-player-box.is-playing .reel { animation-play-state: running; }
+body[data-theme="walkman"] .reel::before {
+    content: "";
+    position: absolute; inset: 0; margin: auto;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--shell-lt);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.5);
+}
+body[data-theme="walkman"] .reel::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-conic-gradient(#3a3a38 0deg 8deg, transparent 8deg 45deg);
+    border-radius: 50%;
+    opacity: .55;
+}
+@keyframes reel-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+body[data-theme="walkman"] .cassette-tape-line {
+    height: 2px;
+    background: #55524a;
+    margin: 0 26px 10px;
+}
+
+body[data-theme="walkman"] .cassette-label {
+    background: var(--label-cream);
+    border: 1px solid var(--label-line);
+    border-radius: 3px;
+    padding: 6px 10px;
+    text-align: center;
+    font-family: 'Special Elite', monospace;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    letter-spacing: .5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body[data-theme="walkman"] .cyber-player-title { display: none; }
+
+body[data-theme="walkman"] #cyberVisualizer {
+    height: 58px;
+    background: #101010;
+    border: 2px solid var(--shell-dk);
+    border-radius: 6px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,.6);
+    margin-bottom: 12px;
+}
+
+body[data-theme="walkman"] .cyber-player-controls { gap: 6px; margin-bottom: 12px; }
+
+body[data-theme="walkman"] .cyber-btn {
+    background: linear-gradient(180deg, var(--chrome-lt), var(--shell-md));
+    border: 1px solid #8f8b80;
+    flex: 1;
+    min-height: 46px;
+    border-radius: 6px;
+    box-shadow: 0 3px 0 var(--chrome-dk), 0 4px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.8);
+    transition: 0.08s;
+}
+body[data-theme="walkman"] .cyber-btn svg { width: 18px; height: 18px; fill: var(--text-dark); }
+body[data-theme="walkman"] .cyber-btn:hover { background: linear-gradient(180deg, #ffffff, var(--shell-lt)); }
+body[data-theme="walkman"] .cyber-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 var(--chrome-dk), inset 0 1px 3px rgba(0,0,0,.4);
+}
+body[data-theme="walkman"] .cyber-btn.play svg,
+body[data-theme="walkman"] .cyber-btn.stop svg { fill: var(--led-red); }
+
+body[data-theme="walkman"] .cyber-loop-label {
+    margin-bottom: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--text-dark);
+    text-transform: uppercase;
+}
+body[data-theme="walkman"] .cyber-loop-label input {
+    accent-color: var(--led-red);
+    width: 30px; height: 16px;
+}
+
+body[data-theme="walkman"] .cyber-seek {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--shell-dk);
+    margin-bottom: 12px;
+}
+body[data-theme="walkman"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: linear-gradient(180deg, var(--chrome-lt), var(--chrome-dk));
+    border: 1px solid #6b6862;
+    box-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+body[data-theme="walkman"] .cyber-playlist {
+    text-align: left;
+    margin-bottom: 4px;
+    background: var(--label-cream);
+    border: 1px solid var(--label-line);
+    border-radius: 6px;
+    padding: 6px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--chrome-dk) var(--label-cream);
+}
+body[data-theme="walkman"] .cyber-playlist::-webkit-scrollbar { width: 8px; }
+body[data-theme="walkman"] .cyber-playlist::-webkit-scrollbar-track { background: var(--label-cream); }
+body[data-theme="walkman"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: var(--chrome-dk); border-radius: 4px; }
+
+body[data-theme="walkman"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    border-bottom: 1px dashed var(--label-line);
+    color: var(--text-dark);
+    font-family: 'Special Elite', monospace;
+    font-size: 0.92rem;
+    transition: 0.1s;
+}
+body[data-theme="walkman"] .cyber-track .lineno { color: var(--chrome-dk); font-weight: 700; }
+body[data-theme="walkman"] .cyber-track:last-child { border-bottom: none; }
+body[data-theme="walkman"] .cyber-track:hover { background: rgba(0,0,0,0.06); }
+body[data-theme="walkman"] .cyber-track.active {
+    background: var(--shell-dk);
+    color: var(--label-cream);
+    border-radius: 4px;
+}
+body[data-theme="walkman"] .cyber-track.active .lineno { color: var(--led-amber); }
+
+/* =========================================================
+   THEME: AMIGA 500 (Workbench)
+========================================================= */
+:root {
+    --wb-gray: #a2a2a2;
+    --wb-gray-lt: #cfcfcf;
+    --wb-gray-dk: #6c6c6c;
+    --wb-blue: #0000a7;
+    --wb-blue-dk: #00007a;
+    --wb-orange: #ff8800;
+    --wb-white: #ffffff;
+    --wb-black: #000000;
+    --screen-green: #33ff66;
+}
+
+body[data-theme="amiga"] {
+    background-color: var(--wb-blue);
+    background-image: repeating-conic-gradient(var(--wb-blue) 0% 25%, var(--wb-blue-dk) 0% 50%);
+    background-size: 4px 4px;
+    font-family: 'VT323', monospace;
+    color: var(--wb-black);
+}
+
+body[data-theme="amiga"] .theme-switch-bar button {
+    font-family: 'VT323', monospace;
+    font-size: 0.85rem;
+    background: var(--wb-gray-lt);
+    border: 2px solid var(--wb-black);
+    color: var(--wb-black);
+    border-radius: 0;
+    box-shadow: inset 1px 1px 0 var(--wb-white), inset -1px -1px 0 var(--wb-gray-dk);
+}
+body[data-theme="amiga"] .theme-switch-bar button.active,
+body[data-theme="amiga"] .theme-switch-bar button:hover {
+    background: #d8d8d8;
+}
+
+body[data-theme="amiga"] .cyber-player-box {
+    background: var(--wb-gray);
+    border: 2px solid var(--wb-black);
+    border-radius: 0;
+    padding: 0 14px 14px;
+    box-shadow: 3px 3px 0 rgba(0,0,0,.5), inset 1px 1px 0 var(--wb-gray-lt);
+}
+
+body[data-theme="amiga"] .cyber-player-title { display: none; }
+
+body[data-theme="amiga"] .amiga-titlebar {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    margin: -2px -2px 10px -2px;
+    background-image: repeating-linear-gradient(45deg, var(--wb-orange) 0 6px, var(--wb-white) 6px 12px);
+    border-bottom: 2px solid var(--wb-black);
+    flex-shrink: 0;
+}
+
+body[data-theme="amiga"] .amiga-gadget {
+    width: 16px; height: 16px;
+    margin: 0 4px;
+    background: var(--wb-gray-lt);
+    border: 2px solid var(--wb-black);
+    box-shadow: inset 1px 1px 0 var(--wb-white), inset -1px -1px 0 var(--wb-gray-dk);
+    flex-shrink: 0;
+}
+
+body[data-theme="amiga"] .amiga-titletext {
+    flex: 1;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    color: var(--wb-black);
+    background: var(--wb-white);
+    padding: 3px 4px;
+    margin: 0 2px;
+    border: 2px solid var(--wb-black);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body[data-theme="amiga"] .cyber-player-controls { gap: 8px; margin-bottom: 12px; }
+
+body[data-theme="amiga"] .cyber-btn {
+    background: var(--wb-gray-lt);
+    border: 2px solid var(--wb-black);
+    flex: 1;
+    min-height: 40px;
+    border-radius: 0;
+    box-shadow: inset 2px 2px 0 var(--wb-white), inset -2px -2px 0 var(--wb-gray-dk);
+    transition: 0.05s;
+}
+body[data-theme="amiga"] .cyber-btn svg { width: 18px; height: 18px; fill: var(--wb-black); }
+body[data-theme="amiga"] .cyber-btn:hover { background: #d8d8d8; }
+body[data-theme="amiga"] .cyber-btn:active {
+    box-shadow: inset -2px -2px 0 var(--wb-white), inset 2px 2px 0 var(--wb-gray-dk);
+    transform: translate(1px, 1px);
+}
+
+body[data-theme="amiga"] .cyber-loop-label {
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--wb-black);
+}
+body[data-theme="amiga"] .cyber-loop-label input { accent-color: var(--wb-orange); }
+
+body[data-theme="amiga"] .cyber-seek {
+    height: 14px;
+    border-radius: 0;
+    background: var(--wb-white);
+    border: 2px solid var(--wb-black);
+    box-shadow: inset 1px 1px 0 var(--wb-gray-dk);
+    margin-bottom: 12px;
+}
+body[data-theme="amiga"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 18px; border-radius: 0;
+    background: var(--wb-gray-lt);
+    border: 2px solid var(--wb-black);
+    box-shadow: inset 1px 1px 0 var(--wb-white), inset -1px -1px 0 var(--wb-gray-dk);
+}
+
+body[data-theme="amiga"] .cyber-playlist {
+    text-align: left;
+    margin-bottom: 10px;
+    background: var(--wb-white);
+    border: 2px solid var(--wb-black);
+    box-shadow: inset 1px 1px 0 var(--wb-gray-dk);
+    padding: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-gray-dk) var(--wb-white);
+}
+body[data-theme="amiga"] .cyber-playlist::-webkit-scrollbar { width: 14px; }
+body[data-theme="amiga"] .cyber-playlist::-webkit-scrollbar-track { background: var(--wb-white); border-left: 2px solid var(--wb-black); }
+body[data-theme="amiga"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: var(--wb-gray-lt); border: 2px solid var(--wb-black); }
+
+body[data-theme="amiga"] .cyber-track {
+    padding: 4px 8px;
+    margin-bottom: 2px;
+    color: var(--wb-black);
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+}
+body[data-theme="amiga"] .cyber-track::before { content: "▸ "; }
+body[data-theme="amiga"] .cyber-track:hover { background: #dcdce8; }
+body[data-theme="amiga"] .cyber-track.active {
+    background: var(--wb-black);
+    color: var(--screen-green);
+    box-shadow: none;
+}
+
+body[data-theme="amiga"] #cyberVisualizer {
+    height: 64px;
+    background: var(--wb-black);
+    border: 2px solid var(--wb-black);
+    box-shadow: inset 2px 2px 0 var(--wb-gray-dk), 0 0 0 2px var(--wb-gray-lt);
+    border-radius: 0;
+}
+
+/* =========================================================
+   THEME: ANIME-COZY
+========================================================= */
+:root {
+    --cream: #fff3e6;
+    --blush: #ffc9c9;
+    --peach: #ffb199;
+    --lavender: #d9c6f2;
+    --mocha: #6b4a42;
+    --mocha-soft: #8a655c;
+    --gold: #ffd27a;
+    --cocoa-line: rgba(139, 94, 60, 0.18);
+}
+
+body[data-theme="anime-cozy"] {
+    background:
+        radial-gradient(circle at 15% 8%, rgba(255,210,122,.35), transparent 40%),
+        radial-gradient(circle at 85% 92%, rgba(217,198,242,.35), transparent 45%),
+        var(--cream);
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--mocha);
+}
+
+body[data-theme="anime-cozy"] .theme-switch-bar button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--cocoa-line);
+    color: var(--mocha);
+}
+body[data-theme="anime-cozy"] .theme-switch-bar button.active,
+body[data-theme="anime-cozy"] .theme-switch-bar button:hover {
+    background: rgba(255,200,160,0.8);
+}
+
+body[data-theme="anime-cozy"] .cyber-player-box {
+    background: rgba(255, 249, 240, .85);
+    border: 2px solid var(--cocoa-line);
+    border-radius: 28px;
+    padding: 26px 20px 20px;
+    box-shadow: 0 18px 40px rgba(139, 94, 60, 0.18), inset 0 0 24px rgba(255, 255, 255, .6);
+    backdrop-filter: blur(14px);
+}
+
+body[data-theme="anime-cozy"] .mascot {
+    display: block;
+    position: absolute;
+    top: -34px;
+    right: 18px;
+    width: 84px;
+    height: auto;
+    z-index: 12;
+    filter: drop-shadow(0 6px 10px rgba(139, 94, 60, 0.25));
+    animation: mascot-bob 3.4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes mascot-bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50%      { transform: translateY(-6px) rotate(2deg); }
+}
+
+body[data-theme="anime-cozy"] .cyber-player-title {
+    text-align: center;
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: var(--peach);
+    font-weight: 800;
+    text-shadow: 0 2px 0 rgba(255,255,255,.7);
+}
+body[data-theme="anime-cozy"] .cyber-player-title::before,
+body[data-theme="anime-cozy"] .cyber-player-title::after {
+    content: "♡";
+    color: var(--lavender);
+    margin: 0 8px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+body[data-theme="anime-cozy"] .cyber-player-controls { gap: 10px; margin-bottom: 14px; }
+
+body[data-theme="anime-cozy"] .cyber-btn {
+    background: linear-gradient(135deg, var(--blush), var(--gold), var(--lavender));
+    border: none;
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    box-shadow: 0 4px 0 #e0b394, 0 0 10px rgba(255, 178, 122, 0.35);
+    transition: 0.1s;
+}
+body[data-theme="anime-cozy"] .cyber-btn svg { width: 22px; height: 22px; fill: var(--mocha); transition: transform 0.1s; }
+body[data-theme="anime-cozy"] .cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #e0b394, 0 0 14px rgba(255, 178, 122, 0.55);
+}
+body[data-theme="anime-cozy"] .cyber-btn:hover svg { transform: scale(1.05); }
+body[data-theme="anime-cozy"] .cyber-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #e0b394, 0 0 6px rgba(255, 178, 122, 0.4);
+}
+
+body[data-theme="anime-cozy"] .cyber-loop-label {
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--mocha-soft);
+}
+body[data-theme="anime-cozy"] .cyber-loop-label input { accent-color: var(--peach); }
+
+body[data-theme="anime-cozy"] .cyber-seek {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--blush), var(--gold), var(--lavender));
+    margin-bottom: 14px;
+}
+body[data-theme="anime-cozy"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fffaf3;
+    border: 2px solid var(--peach);
+    box-shadow: 0 0 10px rgba(255, 178, 122, 0.6);
+}
+
+body[data-theme="anime-cozy"] .cyber-playlist {
+    text-align: center;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blush) rgba(255,255,255,.3);
+}
+body[data-theme="anime-cozy"] .cyber-playlist::-webkit-scrollbar { width: 6px; }
+body[data-theme="anime-cozy"] .cyber-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 10px; }
+body[data-theme="anime-cozy"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: var(--blush); border-radius: 10px; }
+
+body[data-theme="anime-cozy"] .cyber-track {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--cocoa-line);
+    color: var(--mocha);
+    font-weight: 700;
+    transition: 0.15s;
+}
+body[data-theme="anime-cozy"] .cyber-track:hover { background: rgba(255, 226, 196, 0.8); }
+body[data-theme="anime-cozy"] .cyber-track.active {
+    background: linear-gradient(90deg, var(--blush), var(--gold), var(--lavender));
+    color: var(--mocha);
+    border-color: var(--peach);
+    box-shadow: 0 0 12px rgba(255, 210, 122, 0.5), 0 0 18px rgba(217, 198, 242, 0.4);
+}
+
+body[data-theme="anime-cozy"] #cyberVisualizer {
+    height: 70px;
+    background: rgba(255, 255, 255, .55);
+    border: 2px solid var(--cocoa-line);
+    border-radius: 18px;
+    box-shadow: inset 0 0 10px rgba(255,255,255,.9);
+}
+
+/* =========================================================
+   THEME: KAWAII (Original)
+========================================================= */
+body[data-theme="kawaii"] {
+    background: #fff6fb;
+    font-family: system-ui, sans-serif;
+    color: #ff8ac9;
+}
+
+body[data-theme="kawaii"] .theme-switch-bar button {
+    font-family: system-ui, sans-serif;
+    font-weight: 700;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,180,220,.6);
+    color: #ff6fb7;
+}
+body[data-theme="kawaii"] .theme-switch-bar button.active,
+body[data-theme="kawaii"] .theme-switch-bar button:hover {
+    background: rgba(255,200,230,0.9);
+}
+
+body[data-theme="kawaii"] .cyber-player-box {
+    background: rgba(255,255,255,.8);
+    border: 2px solid rgba(255,180,220,.6);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 25px rgba(255,180,220,.4), inset 0 0 20px rgba(255,255,255,.8);
+    backdrop-filter: blur(14px);
+}
+
+body[data-theme="kawaii"] .cyber-player-title {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    color: #ff6fb7;
+    font-weight: 900;
+    text-shadow: 0 0 10px #ffc8e8, 0 0 20px #ffb7d5;
+}
+
+body[data-theme="kawaii"] .cyber-player-controls { gap: 10px; margin-bottom: 14px; }
+
+body[data-theme="kawaii"] .cyber-btn {
+    background: linear-gradient(135deg, #ffc8e8, #ffd8b8, #c8fff1);
+    border: none;
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    box-shadow: 0 4px 0 #e5b4c8, 0 0 10px rgba(255, 180, 220, 0.6);
+    transition: 0.1s;
+}
+body[data-theme="kawaii"] .cyber-btn svg { width: 22px; height: 22px; fill: #7a4a5a; transition: transform 0.1s; }
+body[data-theme="kawaii"] .cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #e5b4c8, 0 0 14px rgba(255, 150, 200, 0.9);
+}
+body[data-theme="kawaii"] .cyber-btn:hover svg { transform: scale(1.05); }
+body[data-theme="kawaii"] .cyber-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #e5b4c8, 0 0 6px rgba(255, 150, 200, 0.6);
+}
+
+body[data-theme="kawaii"] .cyber-loop-label {
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #7a4a5a;
+}
+body[data-theme="kawaii"] .cyber-loop-label input { accent-color: #ff8ac9; }
+
+body[data-theme="kawaii"] .cyber-seek {
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+    margin-bottom: 14px;
+}
+body[data-theme="kawaii"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ff8ac9;
+    box-shadow: 0 0 10px #ff8ac9;
+}
+
+body[data-theme="kawaii"] .cyber-playlist {
+    text-align: center;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ffc8e8 rgba(255,255,255,.3);
+}
+body[data-theme="kawaii"] .cyber-playlist::-webkit-scrollbar { width: 6px; }
+body[data-theme="kawaii"] .cyber-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 10px; }
+body[data-theme="kawaii"] .cyber-playlist::-webkit-scrollbar-thumb { background-color: #ffc8e8; border-radius: 10px; }
+
+body[data-theme="kawaii"] .cyber-track {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 180, 220, 0.4);
+    color: #7a4a5a;
+    font-weight: 700;
+    transition: 0.15s;
+}
+body[data-theme="kawaii"] .cyber-track:hover { background: rgba(255, 200, 230, 0.8); }
+body[data-theme="kawaii"] .cyber-track.active {
+    background: linear-gradient(90deg, #ffc8e8, #ffd8b8, #c8fff1);
+    color: #7a4a5a;
+    border-color: #ff8ac9;
+    box-shadow: 0 0 12px #ffc8e8, 0 0 18px #ffb7d5;
+}
+
+body[data-theme="kawaii"] #cyberVisualizer {
+    height: 70px;
+    background: rgba(255,255,255,.6);
+    border: 2px solid rgba(255,180,220,.4);
+    border-radius: 16px;
+    box-shadow: inset 0 0 10px rgba(255,255,255,.9);
+}
+
+/* =========================================================
+   HINTERGRUND-CANVAS: nur bei anime-cozy & kawaii sichtbar
+========================================================= */
+#kawaii-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    display: none;
+}
+body[data-theme="anime-cozy"] #kawaii-bg,
+body[data-theme="kawaii"] #kawaii-bg {
+    display: block;
+}
+</style>
+</head>
+<body data-theme="dos">
+
+<canvas id="kawaii-bg"></canvas>
+
+<div class="theme-switch-bar">
+    <button type="button" data-theme="dos">DOS</button>
+    <button type="button" data-theme="c64">C64</button>
+    <button type="button" data-theme="amiga">AMIGA</button>
+    <button type="button" data-theme="walkman">WALKMAN</button>
+    <button type="button" data-theme="anime-cozy">COZY</button>
+    <button type="button" data-theme="kawaii">KAWAII</button>
+</div>
+
+<div class="player-wrapper">
+<div class="cyber-player-box">
+
+    <!-- DOS: ASCII-Ecken + Titelleiste + Prompt -->
+    <span class="dos-corner-tl">╔</span>
+    <span class="dos-corner-tr">╗</span>
+    <span class="dos-corner-bl">╚</span>
+    <span class="dos-corner-br">╝</span>
+    <div class="dos-titlebar">═══ A:\JUKEBOX.EXE ═══</div>
+    <div class="dos-prompt">
+        <span class="path">C:\JUKEBOX&gt;</span>
+        <span class="track-label-live">SIDE A</span>
+        <span class="status-playing">[PLAYING]</span><span class="status-stopped">[STOPPED]</span>
+        <span class="dos-cursor"></span>
+    </div>
+
+    <!-- C64: BASIC-Listing-Zeile -->
+    <div class="c64-listing"><span class="num">10</span> LOAD "JUKEBOX",8,1</div>
+
+    <!-- Walkman: Markenplakette + Kassettenfenster -->
+    <div class="walkman-brand">WALK<span>MAN</span> · WM-2000</div>
+    <div class="cassette-window">
+        <div class="cassette-reels">
+            <div class="reel"></div>
+            <div class="reel"></div>
+        </div>
+        <div class="cassette-tape-line"></div>
+        <div class="cassette-label track-label-live">SIDE A</div>
+    </div>
+
+    <!-- Amiga: Workbench-Titelleiste -->
+    <div class="amiga-titlebar">
+        <div class="amiga-gadget"></div>
+        <div class="amiga-titletext">A500_JUKEBOX.AUD</div>
+        <svg width="16" height="16" viewBox="0 0 16 16" style="margin-right:4px;flex-shrink:0;" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" fill="#fff" stroke="#000" stroke-width="1"/>
+            <path d="M8 1 A7 7 0 0 1 8 15 Z" fill="#e2231a"/>
+            <path d="M1 8 A7 7 0 0 1 8 1 L8 8 Z" fill="#e2231a"/>
+            <path d="M8 15 A7 7 0 0 1 1 8 L8 8 Z" fill="#fff"/>
+        </svg>
+    </div>
+
+    <div class="cyber-player-title">JUKEBOX PLAYER</div>
+
+    <div class="cyber-player-controls">
+        <button class="cyber-btn prev" aria-label="Zurück">
+            <svg viewBox="0 0 24 24">
+                <path d="M11.5 12l6.5-5.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L11.5 12zm-7 0L11 6.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L4.5 12z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <button class="cyber-btn play" aria-label="Abspielen">
+            <svg viewBox="0 0 24 24">
+                <path d="M7.5 5.3c0-.8.9-1.3 1.6-.8l10.2 6.7c.6.4.6 1.3 0 1.7L9.1 19.5c-.7.5-1.6 0-1.6-.8V5.3z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <button class="cyber-btn pause" aria-label="Pause">
+            <svg viewBox="0 0 24 24">
+                <rect x="5.5" y="4.5" width="4" height="15" rx="2"/>
+                <rect x="14.5" y="4.5" width="4" height="15" rx="2"/>
+            </svg>
+        </button>
+
+        <button class="cyber-btn stop" aria-label="Stopp">
+            <svg viewBox="0 0 24 24">
+                <rect x="4.5" y="4.5" width="15" height="15" rx="4"/>
+            </svg>
+        </button>
+
+        <button class="cyber-btn next" aria-label="Weiter">
+            <svg viewBox="0 0 24 24">
+                <path d="M12.5 12L6 6.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5zm7 0l-6.5-5.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <label class="cyber-loop-label">
+        <input type="checkbox" class="loop" checked>
+        <span class="loop-label-text">LOOP ENABLED</span>
+    </label>
+
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer" width="400" height="80"></canvas>
+
+    <!-- C64: READY.-Prompt -->
+    <div class="c64-ready">READY.<span class="c64-cursor"></span></div>
+</div>
+</div>
+
+<script>
+/* =============================================================================
+   1. PLAYER CORE ENGINE (theme-übergreifend)
+   ============================================================================= */
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
+        this.ctx = null;
+        this.sourceNode = null;
+        this.analyser = null;
+        this.dataArray = null;
+
+        this.loop = true;
+        this.isDragging = false;
+        this.visualizerActive = false;
+
+        this.buildRefs();
+        this.renderPlaylist();
+        this.loadTrack(0, false);
+    }
+
+    buildRefs() {
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+        this.trackLabels = this.root.querySelectorAll(".track-label-live");
+
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
+
+        this.loopToggle.onchange = () => {
+            this.loop = this.loopToggle.checked;
+            this.audio.loop = this.loop;
+        };
+
+        this.seek.oninput = () => { this.isDragging = true; };
+        this.seek.onchange = () => {
+            if (isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
+            this.isDragging = false;
+        };
+
+        this.seek.onmouseup = () => { this.isDragging = false; };
+        this.seek.ontouchend = () => { this.isDragging = false; };
+
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
+        };
+    }
+
+    renderPlaylist() {
+        this.listBox.innerHTML = "";
+        const theme = document.body.dataset.theme;
+
+        this.playlist.forEach((track, i) => {
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
+
+            if (theme === "dos") {
+                const lineNo = document.createElement("span");
+                lineNo.className = "lineno";
+                lineNo.textContent = String(i + 1).padStart(2, "0") + "  ";
+                item.appendChild(lineNo);
+                item.appendChild(document.createTextNode(track.name.toUpperCase() + "   <AUD>"));
+            } else if (theme === "c64") {
+                const lineNo = document.createElement("span");
+                lineNo.className = "lineno";
+                lineNo.textContent = (i + 1) * 10;
+                item.appendChild(lineNo);
+                item.appendChild(document.createTextNode(track.name.toUpperCase()));
+            } else if (theme === "walkman") {
+                const lineNo = document.createElement("span");
+                lineNo.className = "lineno";
+                lineNo.textContent = String(i + 1).padStart(2, "0") + ". ";
+                item.appendChild(lineNo);
+                item.appendChild(document.createTextNode(track.name));
+            } else {
+                item.textContent = track.name;
+            }
+
+            item.onclick = () => this.loadTrack(i, true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    initAudioEngine() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+        }
+    }
+
+    loadTrack(index, autoplay = false) {
+        this.currentIndex = index;
+        this.highlightActive();
+
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
+        this.seek.value = 0;
+
+        this.trackLabels.forEach(el => { el.textContent = this.playlist[index].name; });
+
+        if (autoplay) {
+            this.play();
+        }
+    }
+
+    play() {
+        this.initAudioEngine();
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+        this.audio.play().catch(e => console.error("Streaming-Fehler:", e));
+        this.root.classList.add("is-playing");
+
+        if (!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
+        }
+    }
+
+    pause() {
+        this.audio.pause();
+        this.root.classList.remove("is-playing");
+    }
+
+    stop() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.seek.value = 0;
+        this.root.classList.remove("is-playing");
+    }
+
+    nextTrack() {
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
+    }
+
+    prevTrack() {
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
+    }
+
+    updateSeek() {
+        if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
+    }
+}
+
+/* =============================================================================
+   2. VISUALIZER (Form/Farbe je nach aktivem Theme)
+   ============================================================================= */
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function drawFlatBars(player, w, h, colorFn) {
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        vizCtx.fillStyle = colorFn(t, v, i);
+        const bw = barWidth * 0.7;
+        const bx = x + (barWidth - bw) / 2;
+
+        if (barHeight > 0) {
+            vizCtx.fillRect(Math.round(bx), Math.round(y), Math.round(bw), Math.round(barHeight));
+        }
+    }
+}
+
+function drawMonoBars(player, w, h) {
+    const barCount = 32;
+    const gap = 2;
+    const barWidth = (w - 8 - gap * (barCount - 1)) / barCount;
+    const step = Math.floor(player.dataArray.length / barCount);
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i * step] / 255;
+        const barHeight = Math.max(2, v * (h - 8));
+        const x = 4 + i * (barWidth + gap);
+        const y = h - 4 - barHeight;
+
+        vizCtx.fillStyle = `rgba(51,255,51,${0.35 + v * 0.65})`;
+        vizCtx.fillRect(Math.round(x), Math.round(y), Math.round(barWidth), Math.round(barHeight));
+    }
+}
+
+function drawRoundedBars(player, w, h, colorFn) {
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        vizCtx.fillStyle = colorFn(t, v, i);
+        const radius = 3;
+        const bw = barWidth * 0.75;
+        const bx = x + (barWidth - bw) / 2;
+
+        if (barHeight > radius * 2) {
+            vizCtx.beginPath();
+            vizCtx.moveTo(bx + radius, y);
+            vizCtx.lineTo(bx + bw - radius, y);
+            vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+            vizCtx.lineTo(bx + bw, y + barHeight);
+            vizCtx.lineTo(bx, y + barHeight);
+            vizCtx.lineTo(bx, y + radius);
+            vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+            vizCtx.closePath();
+            vizCtx.fill();
+        } else if (barHeight > 0) {
+            vizCtx.fillRect(bx, y, bw, barHeight);
+        }
+    }
+}
+
+function drawWalkmanVU(player, w, h) {
+    const len = player.dataArray.length;
+    let sumL = 0, sumR = 0;
+    for (let i = 0; i < len / 2; i++) sumL += player.dataArray[i];
+    for (let i = len / 2; i < len; i++) sumR += player.dataArray[i];
+    const levelL = sumL / (len / 2) / 255;
+    const levelR = sumR / (len / 2) / 255;
+
+    const segments = 24;
+    const gap = 3;
+    const segWidth = (w - 8 - gap * (segments - 1)) / segments;
+    const rowHeight = (h - 12) / 2;
+
+    function drawChannel(level, yTop) {
+        const litCount = Math.round(level * segments);
+        for (let i = 0; i < segments; i++) {
+            const x = 4 + i * (segWidth + gap);
+            const t = i / segments;
+            let color = "#233a26";
+            if (i < litCount) {
+                if (t < 0.6) color = "#4ade5e";
+                else if (t < 0.85) color = "#ffb020";
+                else color = "#ff3b30";
+            }
+            vizCtx.fillStyle = color;
+            vizCtx.fillRect(Math.round(x), Math.round(yTop), Math.round(segWidth), Math.round(rowHeight));
+        }
+    }
+
+    drawChannel(levelL, 4);
+    drawChannel(levelR, 8 + rowHeight);
+}
+
+const c64Palette = [
+    [136,57,50], [103,182,189], [139,63,150], [85,160,73],
+    [191,206,114], [139,84,41], [214,214,214], [255,255,255]
+];
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else if (player.dataArray) {
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
+    }
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    vizCtx.clearRect(0, 0, w, h);
+
+    if (!player.dataArray) {
+        requestAnimationFrame(() => renderVisualizer(player));
+        return;
+    }
+
+    const theme = document.body.dataset.theme;
+
+    if (theme === "dos") {
+        drawMonoBars(player, w, h);
+    } else if (theme === "c64") {
+        drawFlatBars(player, w, h, (t, v, i) => {
+            const [r, g, b] = c64Palette[i % c64Palette.length];
+            return `rgba(${r},${g},${b},${0.6 + v * 0.4})`;
+        });
+    } else if (theme === "walkman") {
+        drawWalkmanVU(player, w, h);
+    } else if (theme === "amiga") {
+        drawFlatBars(player, w, h, (t, v) => {
+            let r, g, b;
+            if (t < 0.5) {
+                const k = t / 0.5;
+                r = 51; g = 255; b = 102 - (102 - 30) * k;
+            } else {
+                const k = (t - 0.5) / 0.5;
+                r = 51 + (255 - 51) * k; g = 255 - (255 - 176) * k; b = 30 * (1 - k);
+            }
+            return `rgba(${r},${g},${b},${0.5 + v * 0.5})`;
+        });
+    } else if (theme === "anime-cozy") {
+        drawRoundedBars(player, w, h, (t, v) => {
+            let r, g, b;
+            if (t < 0.5) {
+                const k = t / 0.5;
+                r = 255; g = 177 + (210 - 177) * k; b = 153 - (153 - 122) * k;
+            } else {
+                const k = (t - 0.5) / 0.5;
+                r = 255 - (255 - 217) * k; g = 210 - (210 - 198) * k; b = 122 + (242 - 122) * k;
+            }
+            return `rgba(${r},${g},${b},${0.4 + v * 0.6})`;
+        });
+    } else { // kawaii
+        drawRoundedBars(player, w, h, (t, v) => {
+            let r, g, b;
+            if (t < 0.5) {
+                const k = t / 0.5;
+                r = 255; g = 200 - (200 - 216) * k; b = 230 - (230 - 184) * k;
+            } else {
+                const k = (t - 0.5) / 0.5;
+                r = 255 - (255 - 200) * k; g = 216 - (216 - 255) * k; b = 184 - (184 - 241) * k;
+            }
+            return `rgba(${r},${g},${b},${0.4 + v * 0.6})`;
+        });
+    }
+
+    requestAnimationFrame(() => renderVisualizer(player));
+}
+
+</script>
+
+<script>
+/* =============================================================================
+   3. ANIMIERTER HINTERGRUND (nur anime-cozy & kawaii, je eigenes Sprite-Set)
+   ============================================================================= */
+const bgCanvas = document.getElementById("kawaii-bg");
+const bgCtx = bgCanvas.getContext("2d");
+
+bgCanvas.width = window.innerWidth;
+bgCanvas.height = window.innerHeight;
+
+const spriteSetsByTheme = {
+    "anime-cozy": [
+        { emoji: "💛", size: 22 }, { emoji: "☁️", size: 26 }, { emoji: "⭐", size: 18 },
+        { emoji: "🌙", size: 24 }, { emoji: "🍡", size: 20 }, { emoji: "🎀", size: 20 },
+        { emoji: "🐰", size: 22 }, { emoji: "🧸", size: 22 }, { emoji: "☕", size: 20 },
+        { emoji: "🐾", size: 18 }, { emoji: "✨", size: 16 }, { emoji: "🍰", size: 20 }
+    ],
+    "kawaii": [
+        { emoji: "💖", size: 24 }, { emoji: "☁️", size: 28 }, { emoji: "⭐", size: 20 },
+        { emoji: "🌈", size: 26 }, { emoji: "🍰", size: 22 }, { emoji: "🎀", size: 22 },
+        { emoji: "🐰", size: 22 }, { emoji: "🐭", size: 22 }, { emoji: "🧸", size: 22 },
+        { emoji: "🐼", size: 22 }, { emoji: "🐸", size: 22 }, { emoji: "🐱", size: 22 }
+    ]
+};
+
+function createParticle(isInitial = false) {
+    const theme = document.body.dataset.theme;
+    const sprites = spriteSetsByTheme[theme] || spriteSetsByTheme["kawaii"];
+    return {
+        x: Math.random() * bgCanvas.width,
+        y: isInitial ? Math.random() * bgCanvas.height : bgCanvas.height + 40,
+        speed: 0.4 + Math.random() * 0.8,
+        sprite: sprites[Math.floor(Math.random() * sprites.length)],
+        opacity: 0.4 + Math.random() * 0.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.01 + Math.random() * 0.02
+    };
+}
+
+const particles = Array.from({ length: 40 }, () => createParticle(true));
+
+function resizeBg() {
+    const oldWidth = bgCanvas.width;
+    const oldHeight = bgCanvas.height;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+
+    bgCanvas.width = newWidth;
+    bgCanvas.height = newHeight;
+
+    particles.forEach(p => {
+        p.x = (p.x / oldWidth) * newWidth;
+        p.y = (p.y / oldHeight) * newHeight;
+    });
+}
+window.addEventListener("resize", resizeBg);
+
+function drawBackground() {
+    const theme = document.body.dataset.theme;
+    if (theme === "anime-cozy" || theme === "kawaii") {
+        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+        bgCtx.textBaseline = "middle";
+        bgCtx.textAlign = "center";
+
+        particles.forEach(p => {
+            bgCtx.globalAlpha = p.opacity;
+            bgCtx.font = `${p.sprite.size}px sans-serif`;
+
+            const xFinal = p.x + Math.sin(p.wobble) * 15;
+            bgCtx.fillText(p.sprite.emoji, xFinal, p.y);
+
+            p.y -= p.speed;
+            p.wobble += p.wobbleSpeed;
+
+            if (p.y < -40) {
+                Object.assign(p, createParticle(false));
+            }
+        });
+
+        bgCtx.globalAlpha = 1.0;
+    }
+    requestAnimationFrame(drawBackground);
+}
+
+drawBackground();
+
+/* =============================================================================
+   4. THEME-KONFIGURATION & UMSCHALTUNG
+   ============================================================================= */
+const THEMES = {
+    "dos": {
+        pageTitle: "C:\\JUKEBOX.EXE // MS-DOS Terminal",
+        playerTitle: "JUKEBOX PLAYER",
+        loopLabel: "LOOP.COM /RESIDENT"
+    },
+    "c64": {
+        pageTitle: "C64 Jukebox // BASIC V2",
+        playerTitle: "*** C64 JUKEBOX ***",
+        loopLabel: "20 LOOP = TRUE"
+    },
+    "walkman": {
+        pageTitle: "Walkman WM-2000 // Kassettenspieler",
+        playerTitle: "WALKMAN PLAYER",
+        loopLabel: "AUTO REVERSE"
+    },
+    "amiga": {
+        pageTitle: "A500 Jukebox // Workbench",
+        playerTitle: "AUDIO NODE",
+        loopLabel: "LOOP: ON/OFF"
+    },
+    "anime-cozy": {
+        pageTitle: "Cozy Anime Radio ♡",
+        playerTitle: "COZY TUNES",
+        loopLabel: "LOOP ♡"
+    },
+    "kawaii": {
+        pageTitle: "BLACKDEATH – CP4 KAWAII",
+        playerTitle: "AUDIO NODE // KAWAII MODE",
+        loopLabel: "LOOP ENABLED"
+    }
+};
+
+function applyTheme(theme) {
+    if (!THEMES[theme]) theme = "dos";
+    const cfg = THEMES[theme];
+
+    document.body.dataset.theme = theme;
+    document.getElementById("pageTitle").textContent = cfg.pageTitle;
+    document.title = cfg.pageTitle;
+    document.querySelector(".cyber-player-title").textContent = cfg.playerTitle;
+    document.querySelector(".loop-label-text").textContent = cfg.loopLabel;
+
+    document.querySelectorAll(".theme-switch-bar button").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
+
+    if (window.cyberPlayer) {
+        window.cyberPlayer.renderPlaylist();
+        window.cyberPlayer.highlightActive();
+    }
+
+    try { localStorage.setItem("mobileJukeboxTheme", theme); } catch (e) {}
+}
+
+document.querySelectorAll(".theme-switch-bar button").forEach(btn => {
+    btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
+});
+
+/* =============================================================================
+   5. INIT PLAYER
+   ============================================================================= */
+async function initPlayer() {
+    try {
+        const response = await fetch("assets/playlist.json");
+	window.history.replaceState({}, document.title, "/");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+
+        renderVisualizer(window.cyberPlayer);
+    } catch (e) {
+        console.error("Fehler beim Laden der Playlist:", e);
+        const fallbackPlaylist = [{ name: "assets/playlist.json fehlt!", src: "" }];
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, fallbackPlaylist);
+        renderVisualizer(window.cyberPlayer);
+    }
+}
+
+/* --- Gespeichertes Theme laden (oder DOS als Default) & starten --- */
+let savedTheme = "dos";
+try { savedTheme = localStorage.getItem("mobileJukeboxTheme") || "dos"; } catch (e) {}
+applyTheme(savedTheme);
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPlayer);
+} else {
+    initPlayer();
+}
+</script>
+
+</body>
+</html>
