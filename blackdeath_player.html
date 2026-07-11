@@ -34,20 +34,15 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 8px;
-    max-width: 62vw;
     z-index: 9999;
 }
 
-.theme-switch button {
-    padding: 6px 12px;
+.theme-switch select {
+    padding: 9px 14px;
     border-radius: 8px;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
     background: rgba(0, 0, 0, 0.55);
@@ -55,44 +50,46 @@ body {
     color: #fff;
     backdrop-filter: blur(6px);
     transition: 0.15s;
+    min-width: 170px;
+    max-width: 45vw;
 }
 
-.theme-switch button:hover {
+.theme-switch select:hover {
     background: rgba(255, 255, 255, 0.18);
-}
-
-.theme-switch button.active {
-    outline: 2px solid #fff;
-    outline-offset: 1px;
-    background: rgba(255, 255, 255, 0.25);
 }
 
 .playlist-switch {
     position: fixed;
     top: 20px;
     left: 20px;
-    display: flex;
-    gap: 10px;
     z-index: 9999;
 }
 
-.playlist-switch a {
-    padding: 6px 12px;
+.playlist-switch select {
+    padding: 9px 14px;
     border-radius: 8px;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
     font-family: 'Orbitron', sans-serif;
-    text-decoration: none;
+    cursor: pointer;
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.35);
     color: #fff;
     backdrop-filter: blur(6px);
     transition: 0.15s;
     letter-spacing: 1px;
+    min-width: 140px;
+    max-width: 40vw;
 }
 
-.playlist-switch a:hover {
+.playlist-switch select:hover {
     background: rgba(255, 255, 255, 0.18);
+}
+
+.theme-switch select option,
+.playlist-switch select option {
+    background: #111;
+    color: #fff;
 }
 
 /* =========================================================
@@ -239,6 +236,95 @@ body {
 }
 
 /* =========================================================
+   NEUE DEKO-ELEMENTE (MSDOS / AMIGA500 / C64 / MAC / ARCADE)
+========================================================= */
+.crt-scanlines-mono {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+        rgba(var(--scan-rgb, 51,255,51), 0.06) 0px,
+        rgba(var(--scan-rgb, 51,255,51), 0.06) 1px,
+        transparent 2px, transparent 4px);
+    opacity: 0.35;
+    z-index: 100;
+    display: none;
+}
+
+.amiga-titlebar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: none;
+    align-items: center;
+    height: 26px;
+    background-image: repeating-linear-gradient(45deg, #ff8800 0 6px, #ffffff 6px 12px);
+    border-bottom: 2px solid #000;
+    z-index: 5;
+}
+
+.amiga-gadget {
+    width: 16px; height: 16px;
+    margin: 0 6px;
+    background: #cfcfcf;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
+    flex-shrink: 0;
+}
+
+.amiga-titletext {
+    flex: 1;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: #000;
+    background: #fff;
+    padding: 3px 4px;
+    margin: 0 4px;
+    border: 2px solid #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mac-menubar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 22px;
+    display: none;
+    align-items: center;
+    gap: 18px;
+    padding: 0 14px;
+    background: #fff;
+    border-bottom: 1px solid #000;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: #000;
+    z-index: 9998;
+    letter-spacing: 0.5px;
+}
+
+.mac-menubar .mac-apple { font-weight: 900; }
+
+.arcade-marquee {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: #ff2fd6;
+    text-shadow: 0 0 8px #ff2fd6, 0 0 18px #00f0ff;
+    display: none;
+    z-index: 15;
+    animation: marquee-blink 1.1s steps(1) infinite;
+}
+
+@keyframes marquee-blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.25; } }
+
+/* =========================================================
    SCROLLBAR (neutral)
 ========================================================= */
 ::-webkit-scrollbar { width: 8px; }
@@ -251,8 +337,13 @@ body {
 .cyber-player-box {
     position: fixed;
     left: 50%;
+    bottom: 20px; /* Garantiert mindestens 20px Abstand zum unteren Rand */
+    top: auto;    /* Hebt alte Top-Zentrierungen global auf */
+    max-height: calc(100vh - 40px); /* Verhindert das Rausrutschen auf kleinen Viewports */
     padding: 16px 20px 12px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease, width 0.4s ease;
 }
 
@@ -321,10 +412,11 @@ body[data-theme="amber"] {
     letter-spacing: 1px;
     text-shadow: 0 0 1px rgba(255,176,0,0.9), 0 0 3px rgba(255,176,0,0.4);
     animation: crtFlicker 0.12s infinite;
+    scrollbar-color: #ffb000 rgba(255,176,0,0.1);
 }
 
-body[data-theme="amber"] .theme-switch button,
-body[data-theme="amber"] .playlist-switch a {
+body[data-theme="amber"] .theme-switch select,
+body[data-theme="amber"] .playlist-switch select {
     font-family: 'VT323', monospace;
     font-size: 1.05rem;
     background: rgba(255,208,0,0.1);
@@ -334,8 +426,8 @@ body[data-theme="amber"] .playlist-switch a {
     border-radius: 3px;
 }
 
-body[data-theme="amber"] .theme-switch button:hover,
-body[data-theme="amber"] .playlist-switch a:hover {
+body[data-theme="amber"] .theme-switch select:hover,
+body[data-theme="amber"] .playlist-switch select:hover {
     background: rgba(255,153,0,0.25);
     box-shadow: 0 0 10px rgba(255,153,0,0.3);
 }
@@ -346,8 +438,9 @@ body[data-theme="amber"] .crt-roll,
 body[data-theme="amber"] .title-ascii { display: block; }
 
 body[data-theme="amber"] .cyber-player-box {
-    top: calc(50% + 80px);
-    transform: translate(-50%, -50%) perspective(900px) rotateX(2deg);
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%) perspective(900px) rotateX(2deg);
     width: 760px;
     background: #090601;
     border: 2px solid #5a3d00;
@@ -406,7 +499,7 @@ body[data-theme="amber"] .cyber-seek::-webkit-slider-thumb {
 
 body[data-theme="amber"] .cyber-playlist {
     margin-top: 10px;
-    max-height: 160px;
+    max-height: 235px;
     border: 1px solid rgba(255,176,0,0.15);
 }
 
@@ -440,8 +533,8 @@ body[data-theme="synthwave"] {
     scrollbar-color: rgba(22,206,252,0.7) rgba(176,19,190,0.3);
 }
 
-body[data-theme="synthwave"] .theme-switch button,
-body[data-theme="synthwave"] .playlist-switch a {
+body[data-theme="synthwave"] .theme-switch select,
+body[data-theme="synthwave"] .playlist-switch select {
     font-family: 'Orbitron', sans-serif;
     border-radius: 10px;
     background: rgba(176,19,190,0.3);
@@ -449,8 +542,8 @@ body[data-theme="synthwave"] .playlist-switch a {
     color: #ff6fb7;
 }
 
-body[data-theme="synthwave"] .theme-switch button:hover,
-body[data-theme="synthwave"] .playlist-switch a:hover {
+body[data-theme="synthwave"] .theme-switch select:hover,
+body[data-theme="synthwave"] .playlist-switch select:hover {
     background: rgba(97,219,250,0.8);
     color: #fff;
     box-shadow: 0 0 10px rgba(255,150,200,0.6);
@@ -527,7 +620,7 @@ body[data-theme="synthwave"] .cyber-seek::-webkit-slider-thumb {
     box-shadow: 0 0 10px #ff00ff;
 }
 
-body[data-theme="synthwave"] .cyber-playlist { max-height: 140px; margin-bottom: 10px; }
+body[data-theme="synthwave"] .cyber-playlist { max-height: 210px; margin-bottom: 10px; }
 
 body[data-theme="synthwave"] .cyber-track {
     padding: 6px 8px;
@@ -564,8 +657,8 @@ body[data-theme="darktech"] {
     scrollbar-color: rgba(0,255,102,0.6) rgba(0,255,102,0.1);
 }
 
-body[data-theme="darktech"] .theme-switch button,
-body[data-theme="darktech"] .playlist-switch a {
+body[data-theme="darktech"] .theme-switch select,
+body[data-theme="darktech"] .playlist-switch select {
     font-family: 'Inconsolata', sans-serif;
     border-radius: 4px;
     background: rgba(0,255,102,0.1);
@@ -573,8 +666,8 @@ body[data-theme="darktech"] .playlist-switch a {
     color: #00ff66;
 }
 
-body[data-theme="darktech"] .theme-switch button:hover,
-body[data-theme="darktech"] .playlist-switch a:hover {
+body[data-theme="darktech"] .theme-switch select:hover,
+body[data-theme="darktech"] .playlist-switch select:hover {
     background: rgba(0,255,102,0.4);
     box-shadow: 0 0 10px rgba(0,255,102,0.3);
 }
@@ -585,12 +678,13 @@ body[data-theme="darktech"] .logo { display: block; }
 body[data-theme="darktech"] .logo {
     opacity: 0.95;
     top: 25%;
-    width: min(30vw, 30vh);
-    filter: drop-shadow(0 0 20px rgba(50,224,195,0.7)) drop-shadow(0 0 40px #6ee4ec) drop-shadow(0 0 60px #88e5f5);
+    width: min(35vw, 35vh);
+    filter: drop-shadow(0 0 20px rgba(2, 110, 98, 0.7)) drop-shadow(0 0 40px #10bd66) drop-shadow(0 0 60px #04af4b);
 }
 
 body[data-theme="darktech"] .cyber-player-box {
-    top: calc(35% + 80px);
+    bottom: 20px;
+    top: auto;
     transform: translateX(-50%);
     min-width: 500px;
     width: 50%;
@@ -641,15 +735,13 @@ body[data-theme="darktech"] .cyber-seek {
 
 body[data-theme="darktech"] .cyber-seek::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 0;
+    width: 12px; height: 12px; border-radius: 0;
     background: #ff6600;
     border: 1px solid #00ff66;
     box-shadow: 0 0 8px #ff6600;
 }
 
-body[data-theme="darktech"] .cyber-playlist { max-height: 140px; }
+body[data-theme="darktech"] .cyber-playlist { max-height: 225px; }
 
 body[data-theme="darktech"] .cyber-track {
     padding: 6px 8px;
@@ -685,10 +777,11 @@ body[data-theme="kawaii"] {
     background: #fff6fb;
     font-family: 'Nunito', sans-serif;
     color: #ff8ac9;
+    scrollbar-color: #ffc8e8 rgba(255,255,255,.3);
 }
 
-body[data-theme="kawaii"] .theme-switch button,
-body[data-theme="kawaii"] .playlist-switch a {
+body[data-theme="kawaii"] .theme-switch select,
+body[data-theme="kawaii"] .playlist-switch select {
     font-family: 'Nunito', sans-serif;
     border-radius: 10px;
     background: rgba(255,255,255,0.7);
@@ -696,8 +789,8 @@ body[data-theme="kawaii"] .playlist-switch a {
     color: #ff6fb7;
 }
 
-body[data-theme="kawaii"] .theme-switch button:hover,
-body[data-theme="kawaii"] .playlist-switch a:hover {
+body[data-theme="kawaii"] .theme-switch select:hover,
+body[data-theme="kawaii"] .playlist-switch select:hover {
     background: rgba(255,200,230,0.9);
     box-shadow: 0 0 10px rgba(255,150,200,0.6);
 }
@@ -812,8 +905,8 @@ body[data-theme="holo"] {
     scrollbar-color: rgba(46,235,203,0.747) rgba(1,77,60,0.5);
 }
 
-body[data-theme="holo"] .theme-switch button,
-body[data-theme="holo"] .playlist-switch a {
+body[data-theme="holo"] .theme-switch select,
+body[data-theme="holo"] .playlist-switch select {
     font-family: 'Orbitron', sans-serif;
     border-radius: 6px;
     background: rgba(0,0,0,0.5);
@@ -821,8 +914,8 @@ body[data-theme="holo"] .playlist-switch a {
     color: #00fff0;
 }
 
-body[data-theme="holo"] .theme-switch button:hover,
-body[data-theme="holo"] .playlist-switch a:hover {
+body[data-theme="holo"] .theme-switch select:hover,
+body[data-theme="holo"] .playlist-switch select:hover {
     background: rgba(0,255,255,0.2);
     box-shadow: 0 0 10px rgba(0,255,255,0.6);
 }
@@ -833,12 +926,14 @@ body[data-theme="holo"] .logo { display: block; }
 body[data-theme="holo"] .logo {
     opacity: 0.95;
     top: 23%;
-    width: min(75vw, 75vh);
-    filter: drop-shadow(0 0 20px rgba(50,224,195,0.7)) drop-shadow(0 0 40px #6ee4ec) drop-shadow(0 0 60px #88e5f5);
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 0 10px rgb(6, 194, 163, 0.5) );
+    filter:opacity(70%);
 }
 
 body[data-theme="holo"] .cyber-player-box {
-    top: calc(35% + 80px);
+    bottom: 20px;
+    top: auto;
     transform: translateX(-50%);
     width: 50%;
     min-width: 500px;
@@ -892,7 +987,7 @@ body[data-theme="holo"] .cyber-seek::-webkit-slider-thumb {
     box-shadow: 0 0 10px #00fff0;
 }
 
-body[data-theme="holo"] .cyber-playlist { max-height: 150px; }
+body[data-theme="holo"] .cyber-playlist { max-height: 225px; }
 
 body[data-theme="holo"] .cyber-track {
     padding: 6px 8px;
@@ -918,21 +1013,627 @@ body[data-theme="holo"] #cyberVisualizer {
     margin-top: 10px;
     box-shadow: 0 0 18px rgba(0,255,255,0.35), inset 0 0 18px rgba(0,0,0,0.9);
 }
+
+/* =========================================================
+   THEME: MSDOS (Grüner Phosphor-Terminal)
+========================================================= */
+body[data-theme="msdos"] {
+    background: #020402;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 3px rgba(51,255,51,0.7);
+    animation: crtFlicker 0.15s infinite;
+    --scan-rgb: 51,255,51;
+    scrollbar-color: rgba(51,255,51,0.7) rgba(0,0,0,0.3);
+}
+
+body[data-theme="msdos"] .theme-switch select,
+body[data-theme="msdos"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    background: rgba(51,255,51,0.08);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    border-radius: 0;
+}
+body[data-theme="msdos"] .theme-switch select:hover,
+body[data-theme="msdos"] .playlist-switch select:hover {
+    background: rgba(51,255,51,0.25);
+    box-shadow: 0 0 10px rgba(51,255,51,0.3);
+}
+
+body[data-theme="msdos"] .crt-scanlines-mono,
+body[data-theme="msdos"] .crt-vignette,
+body[data-theme="msdos"] .logo { display: block; }
+
+body[data-theme="msdos"] .logo {
+    top: 21%;
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 0 14px rgba(51,255,51,0.6));
+    image-rendering: pixelated;
+}
+
+body[data-theme="msdos"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #010200;
+    border: 3px double #33ff33;
+    border-radius: 0;
+    box-shadow: 0 0 0 1px #000, 0 0 30px rgba(51,255,51,0.15);
+}
+
+body[data-theme="msdos"] .cyber-player-title {
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: #33ff33;
+    border-bottom: 1px solid rgba(51,255,51,0.3);
+    padding-bottom: 6px;
+}
+
+body[data-theme="msdos"] .cyber-btn {
+    background: #000;
+    color: #33ff33;
+    border: 1px solid #33ff33;
+    padding: 5px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    border-radius: 0;
+}
+body[data-theme="msdos"] .cyber-btn:hover { background: rgba(51,255,51,0.18); }
+body[data-theme="msdos"] .cyber-btn:active { background: #33ff33; color: #000; }
+body[data-theme="msdos"] .btn-label { display: inline; }
+
+body[data-theme="msdos"] .cyber-loop-label { font-size: 1rem; color: #33ff33; }
+body[data-theme="msdos"] .cyber-loop-label input { accent-color: #33ff33; }
+
+body[data-theme="msdos"] .cyber-seek {
+    height: 10px;
+    border-radius: 0;
+    background: #000;
+    border: 1px solid #33ff33;
+}
+body[data-theme="msdos"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px; height: 16px; border-radius: 0;
+    background: #33ff33;
+    box-shadow: 0 0 6px rgba(51,255,51,0.6);
+}
+
+body[data-theme="msdos"] .cyber-playlist {
+    max-height: 203px;
+    margin-top: 8px;
+    background: #000;
+    border: 1px solid #33ff33;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="msdos"] .cyber-track {
+    padding: 4px 8px;
+    color: #33ff33;
+    font-size: 1.05rem;
+}
+body[data-theme="msdos"] .cyber-track:hover { background: rgba(51,255,51,0.12); }
+body[data-theme="msdos"] .cyber-track.active { background: #33ff33; color: #000; text-shadow: none; }
+
+body[data-theme="msdos"] #cyberVisualizer {
+    background: #000;
+    border: 1px solid #33ff33;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+/* =========================================================
+   THEME: AMIGA 500 (Workbench)
+========================================================= */
+body[data-theme="amiga500"] {
+    background-color: #0000a7;
+    background-image: repeating-conic-gradient(#0000a7 0% 25%, #00007a 0% 50%);
+    background-size: 4px 4px;
+    font-family: 'VT323', monospace;
+    color: #000;
+    scrollbar-color: #004ef5 rgba(241, 144, 33, 0.7);
+}
+
+body[data-theme="amiga500"] .theme-switch select,
+body[data-theme="amiga500"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    background: #cfcfcf;
+    border: 2px solid #000;
+    color: #000;
+    border-radius: 0;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .theme-switch select:hover,
+body[data-theme="amiga500"] .playlist-switch select:hover { background: #e2e2e2; }
+
+body[data-theme="amiga500"] .crt-vignette,
+body[data-theme="amiga500"] .amiga-titlebar,
+body[data-theme="amiga500"] .logo { display: flex; }
+body[data-theme="amiga500"] .logo { display: block; }
+
+body[data-theme="amiga500"] .logo {
+    top: 21%;
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 8px 0 rgba(0,0,0,0.3));
+    image-rendering: pixelated;
+}
+
+body[data-theme="amiga500"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #a2a2a2;
+    border: 2px solid #000;
+    border-radius: 0;
+    padding-top: 34px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5), inset 1px 1px 0 #cfcfcf;
+}
+
+body[data-theme="amiga500"] .cyber-player-title { display: none; }
+
+body[data-theme="amiga500"] .cyber-btn {
+    background: #cfcfcf;
+    color: #000;
+    border: 2px solid #000;
+    padding: 6px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    border-radius: 0;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .cyber-btn:hover { background: #dcdcdc; }
+body[data-theme="amiga500"] .cyber-btn:active {
+    box-shadow: inset -2px -2px 0 #fff, inset 2px 2px 0 #6c6c6c;
+    transform: translate(1px, 1px);
+}
+body[data-theme="amiga500"] .btn-label { display: inline; }
+
+body[data-theme="amiga500"] .cyber-loop-label { font-size: 1rem; color: #000; }
+body[data-theme="amiga500"] .cyber-loop-label input { accent-color: #ff8800; }
+
+body[data-theme="amiga500"] .cyber-seek {
+    height: 14px;
+    border-radius: 0;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 18px; border-radius: 0;
+    background: #cfcfcf;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
+}
+
+body[data-theme="amiga500"] .cyber-playlist {
+    max-height: 225px;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #6c6c6c;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="amiga500"] .cyber-track {
+    padding: 4px 8px;
+    color: #000;
+    font-size: 1.05rem;
+}
+body[data-theme="amiga500"] .cyber-track::before { content: "▸ "; }
+body[data-theme="amiga500"] .cyber-track:hover { background: #dcdce8; }
+body[data-theme="amiga500"] .cyber-track.active { background: #000; color: #33ff66; }
+
+body[data-theme="amiga500"] #cyberVisualizer {
+    background: #000;
+    border: 2px solid #000;
+    box-shadow: inset 2px 2px 0 #6c6c6c, 0 0 0 2px #cfcfcf;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+/* =========================================================
+   THEME: C64 (Commodore 64 / BASIC)
+========================================================= */
+body[data-theme="c64"] {
+    background: #40318d;
+    font-family: 'VT323', monospace;
+    color: #d6d6ff;
+    scrollbar-color: #7869c4 #d6d6ff ;
+}
+
+body[data-theme="c64"] .theme-switch select,
+body[data-theme="c64"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #fff;
+    color: #d6d6ff;
+    border-radius: 0;
+}
+body[data-theme="c64"] .theme-switch select:hover,
+body[data-theme="c64"] .playlist-switch select:hover { background: #8b3f96; }
+
+body[data-theme="c64"] .crt-vignette,
+body[data-theme="c64"] .logo { display: block; }
+
+body[data-theme="c64"] .logo {
+    top: 21%;
+    width: min(50vw, 50vh);
+    image-rendering: pixelated;
+}
+
+body[data-theme="c64"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #7869c4;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 10px #40318d, 0 20px 60px rgba(0,0,0,0.6);
+}
+
+body[data-theme="c64"] .cyber-player-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+body[data-theme="c64"] .cyber-btn {
+    background: #000;
+    color: #d6d6ff;
+    border: 2px solid #fff;
+    padding: 6px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    border-radius: 0;
+    box-shadow: 2px 2px 0 #000;
+}
+body[data-theme="c64"] .cyber-btn:hover { background: #8b3f96; }
+body[data-theme="c64"] .cyber-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #000; }
+body[data-theme="c64"] .btn-label { display: inline; }
+
+body[data-theme="c64"] .cyber-loop-label { font-size: 1rem; color: #fff; }
+body[data-theme="c64"] .cyber-loop-label input { accent-color: #bfce72; }
+
+body[data-theme="c64"] .cyber-seek {
+    height: 12px;
+    border-radius: 0;
+    background: #000;
+    border: 2px solid #fff;
+}
+body[data-theme="c64"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 16px; border-radius: 0;
+    background: #bfce72;
+    border: 2px solid #000;
+}
+
+body[data-theme="c64"] .cyber-playlist {
+    max-height: 225px;
+    background: #000;
+    border: 2px solid #fff;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="c64"] .cyber-track {
+    padding: 4px 8px;
+    color: #d6d6ff;
+    font-size: 1.1rem;
+}
+body[data-theme="c64"] .cyber-track:hover { background: rgba(255,255,255,0.15); }
+body[data-theme="c64"] .cyber-track.active { background: #d6d6ff; color: #000; }
+
+body[data-theme="c64"] #cyberVisualizer {
+    background: #000;
+    border: 2px solid #fff;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+/* =========================================================
+   THEME: MACINTOSH SYSTEM 6/7
+========================================================= */
+body[data-theme="mac"] {
+    background: #bcbcbc;
+    font-family: 'Inconsolata', monospace;
+    color: #000;
+    scrollbar-color: #000000 #ffffff;
+}
+
+body[data-theme="mac"] .theme-switch select,
+body[data-theme="mac"] .playlist-switch select {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    border-radius: 4px;
+    backdrop-filter: none;
+}
+body[data-theme="mac"] .theme-switch select:hover,
+body[data-theme="mac"] .playlist-switch select:hover { background: #000; color: #fff; }
+
+body[data-theme="mac"] .crt-vignette,
+body[data-theme="mac"] .mac-menubar,
+body[data-theme="mac"] .logo { display: flex; }
+body[data-theme="mac"] .logo { display: block; }
+
+body[data-theme="mac"] .logo {
+    top: 26%;
+    width: min(90vw, 90vh);
+    filter: drop-shadow(0 4px 0 rgba(0,0,0,0.5));
+    image-rendering: pixelated;
+}
+
+body[data-theme="mac"] .cyber-player-box {
+    bottom: 20px; /* Präziser Abstand von 20px zum unteren Rand */
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding-top: 30px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
+}
+
+body[data-theme="mac"] .cyber-player-box::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 22px;
+    background-image: repeating-linear-gradient(to bottom, #000 0, #000 1px, #fff 1px, #fff 3px);
+    border-bottom: 2px solid #000;
+}
+
+body[data-theme="mac"] .cyber-player-box::after {
+    content: "";
+    position: absolute;
+    top: 6px; left: 10px;
+    width: 11px; height: 11px;
+    background: #fff;
+    border: 1.5px solid #000;
+    z-index: 2;
+}
+
+body[data-theme="mac"] .cyber-player-title {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    display: inline-block;
+    margin: 2px auto 12px;
+    padding: 0 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: #000;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+}
+
+body[data-theme="mac"] .cyber-btn {
+    background: #fff;
+    color: #000;
+    border: 1.5px solid #000;
+    padding: 6px 14px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 5px;
+}
+body[data-theme="mac"] .cyber-btn:hover { background: #000; color: #fff; }
+body[data-theme="mac"] .cyber-btn:active { background: #555; }
+body[data-theme="mac"] .btn-label { display: inline; }
+
+body[data-theme="mac"] .cyber-loop-label { font-size: 0.8rem; font-weight: 700; color: #000; }
+body[data-theme="mac"] .cyber-loop-label input { accent-color: #000; }
+
+body[data-theme="mac"] .cyber-seek {
+    height: 6px;
+    border-radius: 0;
+    background: #fff;
+    border: 1.5px solid #000;
+}
+body[data-theme="mac"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 14px; border-radius: 2px;
+    background: #fff;
+    border: 1.5px solid #000;
+}
+
+body[data-theme="mac"] .cyber-playlist {
+    max-height: 225px;
+    background: #fff;
+    border: 1.5px solid #000;
+    padding: 2px;
+    text-align: left;
+}
+
+body[data-theme="mac"] .cyber-track {
+    padding: 4px 8px;
+    color: #000;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #ddd;
+}
+body[data-theme="mac"] .cyber-track:hover { background: #eee; }
+body[data-theme="mac"] .cyber-track.active { background: #000; color: #fff; }
+
+body[data-theme="mac"] #cyberVisualizer {
+    background: #fff;
+    border: 1.5px solid #000;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+body[data-theme="mac"] .theme-switch,
+body[data-theme="mac"] .playlist-switch {
+    top: 32px;
+}
+
+/* =========================================================
+   THEME: ARCADE-KABINETT
+========================================================= */
+body[data-theme="arcade"] {
+    background: #000;
+    font-family: 'Orbitron', sans-serif;
+    color: #ff2fd6;
+    scrollbar-color: rgba(22,206,252,0.7) rgba(176,19,190,0.3);
+}
+
+body[data-theme="arcade"] .theme-switch select,
+body[data-theme="arcade"] .playlist-switch select {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.62rem;
+    background: rgba(255,47,214,0.12);
+    border: 1px solid #ff2fd6;
+    color: #ff2fd6;
+    border-radius: 4px;
+}
+body[data-theme="arcade"] .theme-switch select:hover,
+body[data-theme="arcade"] .playlist-switch select:hover {
+    background: rgba(0,240,255,0.2);
+    border-color: #00f0ff;
+    color: #00f0ff;
+}
+
+body[data-theme="arcade"] .crt-scanlines-mono,
+body[data-theme="arcade"] .crt-vignette,
+body[data-theme="arcade"] .arcade-marquee,
+body[data-theme="arcade"] .logo { display: block; }
+
+body[data-theme="arcade"] { --scan-rgb: 255,47,214; }
+
+body[data-theme="arcade"] .logo {
+    top: 24%;
+    width: min(90vw, 90vh);
+    filter: drop-shadow(0 0 16px #ff2fd6) drop-shadow(0 0 30px #00f0ff);
+}
+
+body[data-theme="arcade"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #0a0210;
+    border: 3px solid #ff2fd6;
+    border-radius: 40px;
+    box-shadow:
+        0 0 20px rgba(255,47,214,0.5),
+        0 0 50px rgba(0,240,255,0.25),
+        inset 0 0 40px rgba(255,47,214,0.15);
+}
+
+body[data-theme="arcade"] .cyber-player-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #00f0ff;
+    text-shadow: 0 0 8px #00f0ff;
+}
+
+body[data-theme="arcade"] .cyber-player-controls { gap: 10px; }
+
+body[data-theme="arcade"] .cyber-btn {
+    background: #1a0a22;
+    color: #fff;
+    border: 2px solid #ff2fd6;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 0 10px rgba(255,47,214,0.6);
+}
+body[data-theme="arcade"] .cyber-btn:nth-child(2n) { border-color: #00f0ff; box-shadow: 0 0 10px rgba(0,240,255,0.6); }
+body[data-theme="arcade"] .cyber-btn:hover { filter: brightness(1.3); }
+body[data-theme="arcade"] .btn-label { display: none; }
+
+body[data-theme="arcade"] .cyber-loop-label { font-size: 0.75rem; color: #ffe83d; text-shadow: 0 0 6px #ffe83d; }
+body[data-theme="arcade"] .cyber-loop-label input { accent-color: #ff2fd6; }
+
+body[data-theme="arcade"] .cyber-seek {
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff2fd6, #ffe83d, #00f0ff);
+}
+body[data-theme="arcade"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff;
+    border: 2px solid #ff2fd6;
+    box-shadow: 0 0 10px #ff2fd6;
+}
+
+body[data-theme="arcade"] .cyber-playlist { max-height: 225px; }
+
+body[data-theme="arcade"] .cyber-track {
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(255,47,214,0.06);
+    border: 1px solid rgba(255,47,214,0.25);
+    color: #ffb8f2;
+}
+body[data-theme="arcade"] .cyber-track:hover { background: rgba(0,240,255,0.12); }
+body[data-theme="arcade"] .cyber-track.active {
+    background: rgba(255,47,214,0.3);
+    color: #fff;
+    border-color: #00f0ff;
+    box-shadow: 0 0 12px rgba(255,47,214,0.6);
+}
+
+body[data-theme="arcade"] #cyberVisualizer {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #ff2fd6;
+    border-radius: 12px;
+    margin-top: 10px;
+    box-shadow: 0 0 18px rgba(255,47,214,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}
 </style>
 </head>
 <body data-theme="amber">
 
 <div class="theme-switch">
-    <button type="button" data-theme="amber">AMBER</button>
-    <button type="button" data-theme="synthwave">SYNTHWAVE</button>
-    <button type="button" data-theme="darktech">DARKTECH</button>
-    <button type="button" data-theme="kawaii">KAWAII</button>
-    <button type="button" data-theme="holo">HOLO</button>
+    <select id="themeSelect" aria-label="Theme auswählen">
+        <option value="amber">AMBER</option>
+        <option value="synthwave">SYNTHWAVE</option>
+        <option value="darktech">DARKTECH</option>
+        <option value="kawaii">KAWAII</option>
+        <option value="holo">HOLO</option>
+        <option value="msdos">MS-DOS</option>
+        <option value="amiga500">AMIGA 500</option>
+        <option value="c64">C64</option>
+        <option value="mac">MAC SYS 6/7</option>
+        <option value="arcade">ARCADE</option>
+    </select>
 </div>
 
 <div class="playlist-switch">
-    <a href="assets/loops.json">Loops</a>
-    <a href="assets/webradio.json">WebRadio</a>
+    <select id="playlistSelect" aria-label="Playlist auswählen">
+        <option value="assets/loops.json" selected>Loops</option>
+        <option value="assets/webradio.json">WebRadio</option>
+    </select>
 </div>
 
 <!-- Amber: ASCII-Titel + CRT-Effekte -->
@@ -947,8 +1648,18 @@ body[data-theme="holo"] #cyberVisualizer {
 </pre>
 </div>
 <div class="crt-scanlines"></div>
+<div class="crt-scanlines-mono"></div>
 <div class="crt-vignette"></div>
 <div class="crt-roll"></div>
+
+<!-- MSDOS / Arcade: Marquee-Effekte -->
+<div class="arcade-marquee">★ INSERT COIN ★</div>
+
+<!-- Mac System 6/7: Menüleiste -->
+<div class="mac-menubar">
+    <span class="mac-apple"></span>
+    <span>Ablage</span><span>Bearbeiten</span><span>Ansicht</span><span>Sonderbefehle</span>
+</div>
 
 <!-- Synthwave / Darktech / Holo: Canvas-Hintergrund -->
 <canvas id="bgCanvas"></canvas>
@@ -958,13 +1669,19 @@ body[data-theme="holo"] #cyberVisualizer {
 <div class="grid"></div>
 <div class="vhs"></div>
 
-<!-- Synthwave / Darktech / Kawaii / Holo: Logo -->
+<!-- Synthwave / Darktech / Kawaii / Holo / MSDOS / Amiga500 / C64 / Mac / Arcade: Logo -->
 <img class="logo" id="themeLogo" alt="Logo">
 
 <!-- Kawaii: schwebende Sprites -->
 <canvas id="kawaii-bg"></canvas>
 
 <div class="cyber-player-box">
+    <!-- Amiga500: Workbench-Titelleiste -->
+    <div class="amiga-titlebar">
+        <div class="amiga-gadget"></div>
+        <div class="amiga-titletext">A500_JUKEBOX.AUD</div>
+    </div>
+
     <div class="cyber-player-title">AUDIO TERMINAL v1.0</div>
 
     <div class="cyber-player-controls">
@@ -1165,12 +1882,61 @@ function getBarColor(theme, t, v) {
     } else if (theme === "kawaii") {
         if (t < 0.5) { const k = t / 0.5; r = 255; g = 200 - (200 - 216) * k; b = 230 - (230 - 184) * k; }
         else { const k = (t - 0.5) / 0.5; r = 255 - (255 - 200) * k; g = 216 - (216 - 255) * k; b = 184 - (184 - 241) * k; }
+    } else if (theme === "arcade") {
+        const hue = (t * 300 + performance.now() * 0.02) % 360;
+        return `hsla(${hue}, 100%, 60%, ${0.4 + v * 0.6})`;
     } else { // holo
         if (t < 0.5) { const k = t / 0.5; r = 160 * k; g = 255 - 153 * k; b = 240 + 15 * k; }
         else { const k = (t - 0.5) / 0.5; r = 160 + 95 * k; g = 102 + 153 * k; b = 255; }
     }
     const alpha = 0.25 + v * 0.75;
     return `rgba(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)},${alpha})`;
+}
+
+const c64Palette = [
+    [136,57,50], [103,182,189], [139,63,150], [85,160,73],
+    [191,206,114], [139,84,41], [214,214,214], [255,255,255]
+];
+
+function getFlatBarColor(theme, t, v, i) {
+    if (theme === "msdos") {
+        return `rgba(51,255,51,${0.35 + v * 0.65})`;
+    }
+    if (theme === "amiga500") {
+        let r, g, b;
+        if (t < 0.5) { const k = t / 0.5; r = 255; g = 136 + (119 * k); b = 0; }
+        else { const k = (t - 0.5) / 0.5; r = 255 - (255 - 51) * k; g = 255 - (255 - 102) * k; b = 0 + 255 * k; }
+        return `rgba(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)},${0.5 + v * 0.5})`;
+    }
+    if (theme === "c64") {
+        const [r, g, b] = c64Palette[i % c64Palette.length];
+        return `rgba(${r},${g},${b},${0.6 + v * 0.4})`;
+    }
+    if (theme === "mac") {
+        return `rgba(0,0,0,${0.55 + v * 0.45})`;
+    }
+    return `rgba(255,255,255,${0.5 + v * 0.5})`;
+}
+
+function drawFlatBars(player, w, h, theme) {
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        vizCtx.fillStyle = getFlatBarColor(theme, t, v, i);
+        const bw = barWidth * 0.7;
+        const bx = x + (barWidth - bw) / 2;
+
+        if (barHeight > 0) {
+            vizCtx.fillRect(Math.round(bx), Math.round(y), Math.round(bw), Math.round(barHeight));
+        }
+    }
 }
 
 function drawRoundedBars(player, w, h, theme) {
@@ -1273,6 +2039,8 @@ function renderVisualizer(player) {
 
     if (theme === "amber") {
         drawAmberSegments(player, w, h);
+    } else if (theme === "msdos" || theme === "amiga500" || theme === "c64" || theme === "mac") {
+        drawFlatBars(player, w, h, theme);
     } else {
         drawRoundedBars(player, w, h, theme);
     }
@@ -1460,7 +2228,7 @@ function holoAnimate() {
     });
 }
 
-/* --- AMBER: CRT-Sync-Glitch (verschiebt den Player leicht) --- */
+/* --- AMBER: CRT-Sync-Glitch (Kompensiert jetzt die neue Positionierung) --- */
 let crtActive = false;
 const playerBoxEl = document.querySelector(".cyber-player-box");
 
@@ -1477,9 +2245,9 @@ function crtSyncGlitch() {
     if (distance < 180) {
         const strength = (180 - distance) / 180;
         const offset = (Math.random() - 0.5) * 8 * strength;
-        playerBoxEl.style.transform = `translate(calc(-50% + ${offset / 3}px), -50%) perspective(900px) rotateX(2deg)`;
+        playerBoxEl.style.transform = `translate(calc(-50% + ${offset / 3}px), 0) perspective(900px) rotateX(2deg)`;
     } else {
-        playerBoxEl.style.transform = `translate(-50%,-50%) perspective(900px) rotateX(2deg)`;
+        playerBoxEl.style.transform = `translateX(-50%) perspective(900px) rotateX(2deg)`;
     }
     requestAnimationFrame(crtSyncGlitch);
 }
@@ -1543,6 +2311,14 @@ window.addEventListener("resize", () => {
 /* =============================================================================
    4. THEME-KONFIGURATION & UMSCHALTUNG
    ============================================================================= */
+
+/* Erzeugt ein Platzhalter-Logo als Data-URI (vom Nutzer später einfach per
+   THEMES[...].logo gegen eine echte Bilddatei, z.B. assets/img_player/xyz.webp,
+   austauschbar). */
+function svgLogo(svgMarkup) {
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svgMarkup);
+}
+
 const THEMES = {
     amber: {
         pageTitle: "BLACKDEATH // CRT TERMINAL",
@@ -1560,7 +2336,7 @@ const THEMES = {
         pageTitle: "SECTION 9 // DEVIANT AUDIO NODE",
         playerTitle: "// AUDIO NETCONNECT: ACTIVE",
         loopLabel: "CYBER-LINK REPEAT",
-        logo: "assets/img_player/dark_tech.webp"
+        logo: "assets/img_player/darktech_logo.webp"
     },
     kawaii: {
         pageTitle: "BLACKDEATH – CP4 KAWAII",
@@ -1572,7 +2348,37 @@ const THEMES = {
         pageTitle: "BLACKDEATH – CP5 HOLOGRAM",
         playerTitle: "AUDIO NODE // HOLOGRAM MODE",
         loopLabel: "LOOP ENABLED",
-        logo: "assets/img_player/holoui_logo.webp"
+        logo: "assets/img_player/holo_logo.webp"
+    },
+    msdos: {
+        pageTitle: "C:\\JUKEBOX.EXE // MS-DOS TERMINAL",
+        playerTitle: "AUDIO TERMINAL v1.0",
+        loopLabel: "LOOP.COM /RESIDENT",
+        logo: "assets/img_player/msdos_logo.webp"
+    },
+    amiga500: {
+        pageTitle: "A500 JUKEBOX // WORKBENCH",
+        playerTitle: "AUDIO NODE",
+        loopLabel: "LOOP: ON/OFF",
+        logo: "assets/img_player/amiga_logo.webp"
+    },
+    c64: {
+        pageTitle: "C64 JUKEBOX // BASIC V2",
+        playerTitle: "*** C64 JUKEBOX ***",
+        loopLabel: "20 LOOP = TRUE",
+        logo: "assets/img_player/c64_logo.webp"
+    },
+    mac: {
+        pageTitle: "MACINTOSH SYSTEM 6/7",
+        playerTitle: "AUDIO NETWORK",
+        loopLabel: "LOOP ENABLED",
+        logo: "assets/img_player/mac_logo.webp"
+    },
+    arcade: {
+        pageTitle: "ARCADE KABINETT // INSERT COIN",
+        playerTitle: "PLAYER ONE JUKEBOX",
+        loopLabel: "CONTINUE?",
+        logo: "assets/img_player/arcade_logo.webp"
     }
 };
 
@@ -1595,7 +2401,6 @@ function setBackgroundForTheme(theme) {
         currentBGRenderer = holoAnimate;
         bgLoop();
     }
-    // kawaii läuft über den eigenen, immer aktiven kawaiiDraw()-Loop
 }
 
 function applyTheme(theme) {
@@ -1615,17 +2420,16 @@ function applyTheme(theme) {
         logoEl.removeAttribute("src");
     }
 
-    document.querySelectorAll(".theme-switch button").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.theme === theme);
-    });
+    const themeSelectEl = document.getElementById("themeSelect");
+    if (themeSelectEl.value !== theme) themeSelectEl.value = theme;
 
     setBackgroundForTheme(theme);
 
     try { localStorage.setItem("blackdeathTheme", theme); } catch (e) {}
 }
 
-document.querySelectorAll(".theme-switch button").forEach(btn => {
-    btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
+document.getElementById("themeSelect").addEventListener("change", (event) => {
+    applyTheme(event.target.value);
 });
 
 /* =============================================================================
@@ -1635,8 +2439,9 @@ let cyberPlayer = null;
 
 async function initPlayer() {
     try {
-        const response = await fetch("assets/loops.json");
-        window.history.replaceState({}, document.title, "/");
+        const initialUrl = document.getElementById("playlistSelect").value;
+        const response = await fetch(initialUrl);
+	window.history.replaceState({}, document.title, "/");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
 
@@ -1650,22 +2455,19 @@ async function initPlayer() {
 }
 
 function setupPlaylistSwitch() {
-    const switchLinks = document.querySelectorAll(".playlist-switch a");
-    switchLinks.forEach(link => {
-        link.addEventListener("click", async (event) => {
-            event.preventDefault();
-            const jsonUrl = link.getAttribute("href");
-            try {
-                const response = await fetch(jsonUrl);
-                if (!response.ok) throw new Error(`Fehler beim Laden von ${jsonUrl}`);
-                const newPlaylist = await response.json();
-                if (cyberPlayer) {
-                    cyberPlayer.updatePlaylist(newPlaylist);
-                }
-            } catch (error) {
-                console.error("Fehler beim Wechseln der Playlist:", error);
+    const select = document.getElementById("playlistSelect");
+    select.addEventListener("change", async () => {
+        const jsonUrl = select.value;
+        try {
+            const response = await fetch(jsonUrl);
+            if (!response.ok) throw new Error(`Fehler beim Laden von ${jsonUrl}`);
+            const newPlaylist = await response.json();
+            if (cyberPlayer) {
+                cyberPlayer.updatePlaylist(newPlaylist);
             }
-        });
+        } catch (error) {
+            console.error("Fehler beim Wechseln der Playlist:", error);
+        }
     });
 }
 
