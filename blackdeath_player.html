@@ -257,7 +257,7 @@ body {
     display: none;
     align-items: center;
     height: 26px;
-    background-image: repeating-linear-gradient(45deg, #ff8800 0 6px, #ffffff 6px 12px);
+    background-image: repeating-linear-gradient(45deg, #ff8800 0 6px, #0d0adb 6px 12px);
     border-bottom: 2px solid #000;
     z-index: 5;
 }
@@ -265,7 +265,7 @@ body {
 .amiga-gadget {
     width: 16px; height: 16px;
     margin: 0 6px;
-    background: #cfcfcf;
+    background: #ff8800;
     border: 2px solid #000;
     box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
     flex-shrink: 0;
@@ -278,7 +278,7 @@ body {
     font-size: 0.6rem;
     letter-spacing: 1px;
     color: #000;
-    background: #fff;
+    background: #bebdf7;
     padding: 3px 4px;
     margin: 0 4px;
     border: 2px solid #000;
@@ -1138,7 +1138,7 @@ body[data-theme="amiga500"] {
     background-size: 4px 4px;
     font-family: 'VT323', monospace;
     color: #000;
-    scrollbar-color: #004ef5 rgba(241, 144, 33, 0.7);
+    scrollbar-color: rgb(255, 174, 0) #004ef5;
 }
 
 body[data-theme="amiga500"] .theme-switch select,
@@ -2441,7 +2441,7 @@ async function initPlayer() {
     try {
         const initialUrl = document.getElementById("playlistSelect").value;
         const response = await fetch(initialUrl);
-	window.history.replaceState({}, document.title, "/");
+	//window.history.replaceState({}, document.title, "/");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
 
