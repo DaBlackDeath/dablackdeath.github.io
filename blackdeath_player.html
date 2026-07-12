@@ -27,6 +27,7 @@ body {
     transition: background 0.35s ease, color 0.35s ease;
 }
 
+
 /* =========================================================
    THEME SWITCH (neutral, funktioniert auf jedem Theme)
 ========================================================= */
@@ -1705,6 +1706,7 @@ body[data-theme="arcade"] #cyberVisualizer {
 </div>
 
 <script>
+    document.addEventListener('contextmenu', e => e.preventDefault());
 /* =============================================================================
    1. PLAYER CORE ENGINE (theme-unabhängig, Streaming über HTML5 Audio)
    ============================================================================= */
@@ -2441,7 +2443,7 @@ async function initPlayer() {
     try {
         const initialUrl = document.getElementById("playlistSelect").value;
         const response = await fetch(initialUrl);
-	//window.history.replaceState({}, document.title, "/");
+	window.history.replaceState({}, document.title, "/");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
 
