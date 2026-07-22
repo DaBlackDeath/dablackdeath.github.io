@@ -305,7 +305,11 @@ const typewriterLines = [
     "> Loading assets...",
     "> Starting display driver...",
     "> Syncing phosphor grid...",
-    "> Boot complete "
+    "> Boot complete ",
+    "> ",
+    "> optimized for 1920x1080",
+    "> ",
+    ""
 ];
 
 let twIndex = 0;
@@ -365,7 +369,7 @@ function tryFinishBoot() {
     if (!preloaderDone || !minBootTimeDone || !typewriterDone || !postTypewriterDelayDone) return;
 
     if (!readyToDismiss) {
-        typewriterText.textContent = typewriterLines.join("\n") + "\n\n> CLICK TO ENTER...";
+        typewriterText.textContent = typewriterLines.join("\n") + ">" + "\n> CLICK TO ENTER...";
         readyToDismiss = true;
     }
 }
