@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERAL – KAWAII METAL PLAYER</title>
+
+<style>
+/* =========================================================
+    GLOBAL & LAYOUT (Zentrierung & 10px Rand)
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #09040d;
+    font-family: system-ui, sans-serif;
+    color: #ffd6f3;
+
+    margin: 0;
+    padding: 10px;
+
+    min-height: 100dvh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+    position: relative;
+}
+
+/* =========================================================
+    KAWAII BACKGROUND
+========================================================= */
+#kawaii-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* =========================================================
+    PLAYER BOX (Auf Hochformat fixiert)
+========================================================= */
+.logo {
+    position: fixed;
+    left: 50%;
+    top: 1%;
+    transform: translateX(-50%);
+    z-index: 20;
+    width: min(320px, 80vw);
+    height: auto;
+    animation: floatLogo 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0px);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-8px);
+    }
+}
+
+.cyber-player-box {
+    width: 100%;
+    max-width: 420px;
+
+    height: calc(100dvh - 250px);
+    align-self: flex-end;
+
+    background:
+        linear-gradient(145deg, rgba(28,10,32,.94), rgba(8,5,14,.96)),
+        repeating-linear-gradient(135deg, rgba(255,35,170,.05) 0 2px, transparent 2px 9px);
+    border: 2px solid #ff4fc3;
+    border-radius: 18px;
+    padding: 20px;
+
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.08),
+        0 0 18px rgba(255,20,170,.55),
+        0 0 45px rgba(255,20,170,.25),
+        inset 0 0 25px rgba(255,20,170,.10);
+
+    backdrop-filter: blur(14px);
+
+    position: relative;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.cyber-player-title {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    color: #ff69cf;
+    font-weight: 1000;
+    text-transform: uppercase;
+    text-shadow:
+        2px 2px 0 #09040d,
+        0 0 8px #ff39c7,
+        0 0 20px rgba(255,39,193,.8);
+
+}
+
+/* =========================================================
+    CONTROLS & BUTTONS
+========================================================= */
+.cyber-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.cyber-btn {
+    background: linear-gradient(135deg, #ff4fc3, #ff91df 45%, #b8b0ff);
+    border: 2px solid #ffd9f5;
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #6f174f, 0 0 14px rgba(255, 40, 190, 0.55);
+    transition: 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Kawaii SVG Styling */
+.cyber-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: #2a0824;
+    transition: transform 0.1s;
+}
+
+.cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #6f174f, 0 0 18px rgba(255, 30, 190, 1);
+}
+
+.cyber-btn:hover svg {
+    transform: scale(1.05);
+}
+
+.cyber-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #6f174f, 0 0 8px rgba(255, 30, 190, 0.8);
+}
+
+/* =========================================================
+    SEEK & LOOP
+========================================================= */
+.cyber-loop-label {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cyber-loop-label input {
+    accent-color: #ffd6f3;
+    cursor: pointer;
+}
+
+.cyber-seek {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff299f, #ff62d2, #b99cff, #ff299f);
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ff8ac9;
+    box-shadow: 0 0 10px #ff8ac9;
+}
+
+/* =========================================================
+    PLAYLIST & VISUALIZER
+========================================================= */
+.cyber-playlist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    text-align: center;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ffc8e8 rgba(255,255,255,.3);
+}
+
+.cyber-playlist::-webkit-scrollbar { width: 6px; }
+.cyber-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 10px; }
+.cyber-playlist::-webkit-scrollbar-thumb { background-color: #ffc8e8; border-radius: 10px; }
+
+.cyber-track {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(255,35,180,.12), rgba(255,255,255,.035));
+    border: 1px solid rgba(255,75,202,.38);
+    cursor: pointer;
+    color: #ffd9f5;
+    font-weight: 700;
+    transition: 0.15s;
+}
+
+.cyber-track:hover { background: rgba(255, 200, 230, 0.8); }
+.cyber-track.active {
+    background: linear-gradient(90deg, #ff299f, #ff62d2, #b99cff, #ff299f);
+    color: #ffd9f5;
+    border-color: #ffd6f3;
+    box-shadow: 0 0 12px #ffc8e8, 0 0 18px #ffb7d5;
+}
+
+#cyberVisualizer {
+    width: 100%;
+    height: 70px;
+    flex-shrink: 0;
+    background: rgba(68, 3, 63, 0.6);
+    border: 2px solid rgba(255,180,220,.4);
+    border-radius: 16px;
+    box-shadow: inset 0 0 10px rgba(255,255,255,.9);
+}
+
+/* =========================================================
+   MERAL KAWAII METAL OVERLAY
+========================================================= */
+.cyber-player-box::before {
+    content: "✦  ♡  ✦";
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255,105,210,.45);
+    font-size: 11px;
+    letter-spacing: 8px;
+    pointer-events: none;
+}
+.cyber-player-box::after {
+    content: "♥";
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    color: #ff4fc3;
+    text-shadow: 0 0 10px #ff4fc3;
+    font-size: 13px;
+    pointer-events: none;
+}
+.cyber-loop-label { color: #ffb9e8; }
+.cyber-seek::-webkit-slider-thumb {
+    background: #ff63d0;
+    border-color: #fff;
+    box-shadow: 0 0 12px #ff2fbc, 0 0 22px rgba(255,47,188,.7);
+}
+.cyber-playlist {
+    scrollbar-color: #ff3fc4 rgba(255,255,255,.08);
+}
+.cyber-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,.04); }
+.cyber-playlist::-webkit-scrollbar-thumb { background-color: #ff3fc4; }
+
+@media (max-width: 420px) {
+    .cyber-player-box { padding: 16px; }
+    .cyber-player-title { letter-spacing: 2px; }
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="kawaii-bg"></canvas>
+
+<img class="logo" src="assets/img_player/meral_logo.webp" alt="MERAL">
+
+<div class="cyber-player-box">
+    <div class="cyber-player-title">♡ MERAL // KAWAII METAL ♡</div>
+
+    <div class="cyber-player-controls">
+        <button class="cyber-btn prev" aria-label="Zurück">
+            <svg viewBox="0 0 24 24">
+                <path d="M11.5 12l6.5-5.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L11.5 12zm-7 0L11 6.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L4.5 12z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+        
+        <button class="cyber-btn play" aria-label="Abspielen">
+            <svg viewBox="0 0 24 24">
+                <path d="M7.5 5.3c0-.8.9-1.3 1.6-.8l10.2 6.7c.6.4.6 1.3 0 1.7L9.1 19.5c-.7.5-1.6 0-1.6-.8V5.3z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+        
+        <button class="cyber-btn pause" aria-label="Pause">
+            <svg viewBox="0 0 24 24">
+                <rect x="5.5" y="4.5" width="4" height="15" rx="2"/>
+                <rect x="14.5" y="4.5" width="4" height="15" rx="2"/>
+            </svg>
+        </button>
+        
+        <button class="cyber-btn stop" aria-label="Stopp">
+            <svg viewBox="0 0 24 24">
+                <rect x="4.5" y="4.5" width="15" height="15" rx="4"/>
+            </svg>
+        </button>
+        
+        <button class="cyber-btn next" aria-label="Weiter">
+            <svg viewBox="0 0 24 24">
+                <path d="M12.5 12L6 6.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5zm7 0l-6.5-5.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <label class="cyber-loop-label">
+        <input type="checkbox" class="loop" checked>
+        LOOP ENABLED
+    </label>
+
+    <input type="range" class="cyber-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="cyber-playlist"></div>
+
+    <canvas id="cyberVisualizer" width="400" height="80"></canvas>
+</div>
+
+<script>
+/* =========================================================
+    AUDIO LOGIC (Streaming Node)
+========================================================= */
+class CyberPlaylistPlayer {
+    constructor(root, playlist) {
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+
+        // HTML5 Audio Engine für Streaming initialisieren
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
+        this.ctx = null;
+        this.sourceNode = null;
+        this.analyser = null;
+        this.dataArray = null;
+        
+        this.loop = true;
+        this.isDragging = false;
+        this.visualizerActive = false;
+
+        this.buildRefs();
+        this.renderPlaylist();
+        this.loadTrack(0, false);
+    }
+
+    buildRefs() {
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".cyber-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".cyber-playlist");
+
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
+
+        this.loopToggle.onchange = () => {
+            this.loop = this.loopToggle.checked;
+            this.audio.loop = this.loop;
+        };
+
+        this.seek.oninput = () => { this.isDragging = true; };
+        this.seek.onchange = () => {
+            if (isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
+            this.isDragging = false;
+        };
+
+        this.seek.onmouseup = () => { this.isDragging = false; };
+        this.seek.ontouchend = () => { this.isDragging = false; };
+        
+        // Native Events für Fortschrittsanzeige koppeln
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
+        };
+    }
+
+    renderPlaylist() {
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track, i) => {
+            const item = document.createElement("div");
+            item.className = "cyber-track" + (i === this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = () => this.loadTrack(i, true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive() {
+        this.listBox.querySelectorAll(".cyber-track").forEach((el, i) => {
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    initAudioEngine() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            // Audio-Strom an Web Audio Kontext binden
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+        }
+    }
+
+    loadTrack(index, autoplay = false) {
+        this.currentIndex = index;
+        this.highlightActive();
+        
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
+        this.seek.value = 0;
+
+        if (autoplay) {
+            this.play();
+        }
+    }
+
+    play() {
+        this.initAudioEngine();
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+        this.audio.play().catch(e => console.error("Streaming-Fehler:", e));
+
+        if (!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
+        }
+    }
+
+    pause() {
+        this.audio.pause();
+    }
+
+    stop() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.seek.value = 0;
+    }
+
+    nextTrack() {
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
+    }
+
+    prevTrack() {
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
+    }
+
+    updateSeek() {
+        if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
+    }
+}
+
+
+/* =========================================================
+    VISUALIZER RENDERER WITH FALLOFF
+========================================================= */
+const vizCanvas = document.getElementById("cyberVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    // Wenn Musik läuft, echte Daten ziehen; wenn pausiert/gestoppt, mathematisch dämpfen
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else if (player.dataArray) {
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
+    }
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    vizCtx.clearRect(0, 0, w, h);
+
+    if (!player.dataArray) {
+        requestAnimationFrame(() => renderVisualizer(player));
+        return;
+    }
+
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        let r, g, b;
+        if (t < 0.33) {
+            const k = t / 0.33;
+            r = 255; g = Math.floor(35 + 80 * k); b = Math.floor(170 + 55 * k);
+        } else if (t < 0.66) {
+            const k = (t - 0.33) / 0.33;
+            r = 255; g = Math.floor(115 + 90 * k); b = Math.floor(225 + 25 * k);
+        } else {
+            const k = (t - 0.66) / 0.34;
+            r = Math.floor(255 - 70 * k); g = Math.floor(205 - 150 * k); b = Math.floor(250 - 20 * k);
+        }
+
+        vizCtx.fillStyle = `rgba(${r},${g},${b},${0.4 + v * 0.6})`;
+        const radius = 3;
+        const bw = barWidth * 0.75;
+        const bx = x + (barWidth - bw) / 2;
+
+        if (barHeight > radius * 2) {
+            vizCtx.beginPath();
+            vizCtx.moveTo(bx + radius, y);
+            vizCtx.lineTo(bx + bw - radius, y);
+            vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+            vizCtx.lineTo(bx + bw, y + barHeight);
+            vizCtx.lineTo(bx, y + barHeight);
+            vizCtx.lineTo(bx, y + radius);
+            vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+            vizCtx.closePath();
+            vizCtx.fill();
+        } else if (barHeight > 0) {
+             vizCtx.fillRect(bx, y, bw, barHeight);
+        }
+    }
+
+    requestAnimationFrame(() => renderVisualizer(player));
+}
+
+/* =========================================================
+    ANIMATED BACKGROUND LOGIC (PERFEKT VERTEILT)
+========================================================= */
+const bgCanvas = document.getElementById("kawaii-bg");
+const bgCtx = bgCanvas.getContext("2d");
+
+bgCanvas.width = window.innerWidth;
+bgCanvas.height = window.innerHeight;
+
+const kawaiiSprites = [
+    {emoji: "🖤", size: 24}, {emoji: "💖", size: 24}, {emoji: "🩷", size: 24},
+    {emoji: "⚡", size: 22}, {emoji: "★", size: 20}, {emoji: "✦", size: 22},
+    {emoji: "🎀", size: 23}, {emoji: "🐾", size: 22}, {emoji: "🦊", size: 22},
+    {emoji: "🌸", size: 22}, {emoji: "⛓", size: 22}, {emoji: "♥", size: 22}
+];
+
+function createParticle(isInitial = false) {
+    return {
+        x: Math.random() * bgCanvas.width,
+        y: isInitial ? Math.random() * bgCanvas.height : bgCanvas.height + 40,
+        speed: 0.4 + Math.random() * 0.8,
+        sprite: kawaiiSprites[Math.floor(Math.random() * kawaiiSprites.length)],
+        opacity: 0.4 + Math.random() * 0.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.01 + Math.random() * 0.02
+    };
+}
+
+const particles = Array.from({length: 40}, () => createParticle(true));
+
+function resizeBg() {
+    const oldWidth = bgCanvas.width;
+    const oldHeight = bgCanvas.height;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+    
+    bgCanvas.width = newWidth;
+    bgCanvas.height = newHeight;
+    
+    particles.forEach(p => {
+        p.x = (p.x / oldWidth) * newWidth;
+        p.y = (p.y / oldHeight) * newHeight;
+    });
+}
+window.addEventListener("resize", resizeBg);
+
+function drawBackground() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.textBaseline = "middle";
+    bgCtx.textAlign = "center";
+
+    particles.forEach(p => {
+        bgCtx.globalAlpha = p.opacity;
+        bgCtx.font = `${p.sprite.size}px sans-serif`;
+        
+        const xFinal = p.x + Math.sin(p.wobble) * 15;
+        bgCtx.fillText(p.sprite.emoji, xFinal, p.y);
+        
+        p.y -= p.speed;
+        p.wobble += p.wobbleSpeed;
+        
+        if (p.y < -40) {
+            Object.assign(p, createParticle(false));
+        }
+    });
+    
+    bgCtx.globalAlpha = 1.0;
+    requestAnimationFrame(drawBackground);
+}
+
+drawBackground();
+
+/* =========================================================
+    INIT PLAYER
+========================================================= */
+async function initPlayer() {
+    try {
+        const response = await fetch("assets/playlist.json");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, playlist);
+        
+        // Loop global einmalig starten
+        renderVisualizer(window.cyberPlayer);
+    } catch (e) {
+        console.error("Fehler beim Laden der Playlist:", e);
+        const fallbackPlaylist = [{name: "assets/playlist.json fehlt!", src: ""}];
+        const playerRoot = document.querySelector(".cyber-player-box");
+        window.cyberPlayer = new CyberPlaylistPlayer(playerRoot, fallbackPlaylist);
+        renderVisualizer(window.cyberPlayer);
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPlayer);
+} else {
+    initPlayer();
+}
+</script>
+
+</body>
+</html>
