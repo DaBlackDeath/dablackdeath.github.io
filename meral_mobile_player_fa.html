@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERAL – FRUTIGER AERO PLAYER</title>
+
+<style>
+/* =========================================================
+    GLOBAL & LAYOUT
+========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: linear-gradient(160deg, #4facfe 0%, #00f2fe 25%, #a8edea 50%, #fed6e3 75%, #d299c2 100%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c5f7c;
+
+    margin: 0;
+    padding: 10px;
+
+    min-height: 100dvh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+    position: relative;
+}
+
+/* =========================================================
+    FRUTIGER AERO BACKGROUND
+========================================================= */
+#aero-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* =========================================================
+    PLAYER BOX (Aero Glass)
+========================================================= */
+.logo {
+    position: fixed;
+    left: 50%;
+    top: 1%;
+    transform: translateX(-50%);
+    z-index: 20;
+    width: min(420px, 80vw);
+    height: auto;
+    animation: floatLogo 5s ease-in-out infinite;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(255,100,180,0.4));
+}
+
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0px);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-8px);
+    }
+}
+
+.aero-player-box {
+    width: 100%;
+    max-width: 420px;
+
+    height: calc(100dvh - 250px);
+    align-self: flex-end;
+    opacity: 75%;
+
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.65) 0%,
+        rgba(255,230,245,0.35) 30%,
+        rgba(230,250,255,0.35) 70%,
+        rgba(255,255,255,0.55) 100%
+    );
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 22px;
+    padding: 20px;
+
+    box-shadow:
+        0 12px 40px rgba(0, 80, 150, 0.2),
+        0 0 0 1px rgba(255,255,255,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -1px 0 rgba(255,255,255,0.3);
+
+    backdrop-filter: blur(24px) saturate(160%);
+
+    position: relative;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+/* Aero-Glas Lichtreflexion oben */
+.aero-player-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 55%;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.6) 0%,
+        rgba(255,255,255,0.15) 60%,
+        rgba(255,255,255,0) 100%
+    );
+    border-radius: 22px 22px 50% 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.aero-player-title {
+    text-align: center;
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    color: #ff4fa3;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.9), 0 0 12px rgba(255,100,180,0.4);
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+    CONTROLS & BUTTONS (Bunte Skeuomorphie)
+========================================================= */
+.aero-player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+.aero-btn {
+    background: linear-gradient(180deg, #ffe4f0 0%, #ffb8dc 30%, #ff7eb9 50%, #ff4fa3 51%, #e8308a 100%);
+    border: 1px solid rgba(255,255,255,0.9);
+    flex: 1;
+    min-height: 44px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow:
+        0 4px 10px rgba(255,80,160,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -1px 0 rgba(180,40,100,0.2);
+    transition: all 0.15s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glanz-Highlight oben auf dem Button */
+.aero-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 999px 999px 0 0;
+    pointer-events: none;
+}
+
+.aero-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: #ffffff;
+    transition: transform 0.1s;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+.aero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 16px rgba(255,80,160,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -1px 0 rgba(180,40,100,0.2);
+    background: linear-gradient(180deg, #fff0f7 0%, #ffc8e4 30%, #ff96cb 50%, #ff6db5 51%, #f0409a 100%);
+}
+
+.aero-btn:hover svg {
+    transform: scale(1.08);
+}
+
+.aero-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+        0 2px 6px rgba(255,80,160,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -1px 0 rgba(180,40,100,0.2);
+}
+
+/* =========================================================
+    SEEK & LOOP
+========================================================= */
+.aero-loop-label {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #ff4fa3;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+}
+
+.aero-loop-label input {
+    accent-color: #ff4fa3;
+    cursor: pointer;
+}
+
+.aero-seek {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffb8dc, #a8e6ff, #b4f8c8, #fff5b7, #ffb8dc);
+    background-size: 200% 100%;
+    animation: rainbowMove 4s linear infinite;
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: inset 0 1px 3px rgba(0,80,120,0.15);
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes rainbowMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+.aero-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #ffb8dc 40%, #ff4fa3 100%);
+    border: 2px solid rgba(255,255,255,0.95);
+    box-shadow: 0 2px 8px rgba(255,80,160,0.45);
+}
+
+/* =========================================================
+    PLAYLIST & VISUALIZER
+========================================================= */
+.aero-playlist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    text-align: center;
+    margin-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ffb8dc rgba(255,255,255,.5);
+    position: relative;
+    z-index: 1;
+}
+
+.aero-playlist::-webkit-scrollbar { width: 6px; }
+.aero-playlist::-webkit-scrollbar-track { background: rgba(255,255,255,0.4); border-radius: 10px; }
+.aero-playlist::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ffb8dc, #a8e6ff); border-radius: 10px; }
+
+.aero-track {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,230,245,0.35) 100%);
+    border: 1px solid rgba(255,255,255,0.7);
+    cursor: pointer;
+    color: #d04080;
+    font-weight: 700;
+    transition: 0.15s;
+    box-shadow: 0 2px 6px rgba(255,100,180,0.1);
+}
+
+.aero-track:hover {
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,210,235,0.55) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255,100,180,0.2);
+    color: #ff4fa3;
+}
+
+.aero-track.active {
+    background: linear-gradient(90deg, #ff4fa3, #ff7eb9, #a8e6ff, #b4f8c8, #fff5b7);
+    background-size: 300% 100%;
+    animation: rainbowShift 3s ease infinite;
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.9);
+    box-shadow: 0 4px 16px rgba(255,80,160,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    font-weight: 800;
+}
+
+@keyframes rainbowShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+#aeroVisualizer {
+    width: 100%;
+    height: 80px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,230,245,0.35) 100%);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 18px;
+    box-shadow: inset 0 1px 6px rgba(0,80,120,0.1), 0 2px 10px rgba(255,100,180,0.1);
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 420px) {
+    .aero-player-box { padding: 16px; }
+    .aero-player-title { letter-spacing: 1px; }
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="aero-bg"></canvas>
+
+<img class="logo" src="assets/img_player/meral_logo_fa.webp" alt="MERAL">
+
+<div class="aero-player-box">
+    <div class="aero-player-title">♡ MERAL // FRUTIGER AERO ♡</div>
+
+    <div class="aero-player-controls">
+        <button class="aero-btn prev" aria-label="Zurück">
+            <svg viewBox="0 0 24 24">
+                <path d="M11.5 12l6.5-5.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L11.5 12zm-7 0L11 6.5c.5-.4.5 1 .5 1.5v8c0 .5 0 1.9-.5 1.5L4.5 12z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+        
+        <button class="aero-btn play" aria-label="Abspielen">
+            <svg viewBox="0 0 24 24">
+                <path d="M7.5 5.3c0-.8.9-1.3 1.6-.8l10.2 6.7c.6.4.6 1.3 0 1.7L9.1 19.5c-.7.5-1.6 0-1.6-.8V5.3z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+        
+        <button class="aero-btn pause" aria-label="Pause">
+            <svg viewBox="0 0 24 24">
+                <rect x="5.5" y="4.5" width="4" height="15" rx="2"/>
+                <rect x="14.5" y="4.5" width="4" height="15" rx="2"/>
+            </svg>
+        </button>
+        
+        <button class="aero-btn stop" aria-label="Stopp">
+            <svg viewBox="0 0 24 24">
+                <rect x="4.5" y="4.5" width="15" height="15" rx="4"/>
+            </svg>
+        </button>
+        
+        <button class="aero-btn next" aria-label="Weiter">
+            <svg viewBox="0 0 24 24">
+                <path d="M12.5 12L6 6.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5zm7 0l-6.5-5.5c-.5-.4-.5 1-.5 1.5v8c0 .5 0 1.9.5 1.5l6.5-5.5z" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <label class="aero-loop-label">
+        <input type="checkbox" class="loop" checked>
+        LOOP ENABLED
+    </label>
+
+    <input type="range" class="aero-seek" value="0" min="0" max="100" step="0.1">
+
+    <div class="aero-playlist"></div>
+
+    <canvas id="aeroVisualizer" width="400" height="80"></canvas>
+</div>
+
+<script>
+/* =========================================================
+    AUDIO LOGIC (Streaming Node)
+========================================================= */
+class AeroPlaylistPlayer {
+    constructor(root, playlist) {
+        this.root = root;
+        this.playlist = playlist;
+        this.currentIndex = 0;
+
+        this.audio = new Audio();
+        this.audio.crossOrigin = "anonymous";
+
+        this.ctx = null;
+        this.sourceNode = null;
+        this.analyser = null;
+        this.dataArray = null;
+        
+        this.loop = true;
+        this.isDragging = false;
+        this.visualizerActive = false;
+
+        this.buildRefs();
+        this.renderPlaylist();
+        this.loadTrack(0, false);
+    }
+
+    buildRefs() {
+        this.playBtn = this.root.querySelector(".play");
+        this.pauseBtn = this.root.querySelector(".pause");
+        this.stopBtn = this.root.querySelector(".stop");
+        this.prevBtn = this.root.querySelector(".prev");
+        this.nextBtn = this.root.querySelector(".next");
+        this.seek = this.root.querySelector(".aero-seek");
+        this.loopToggle = this.root.querySelector(".loop");
+        this.listBox = this.root.querySelector(".aero-playlist");
+
+        this.playBtn.onclick = () => this.play();
+        this.pauseBtn.onclick = () => this.pause();
+        this.stopBtn.onclick = () => this.stop();
+        this.prevBtn.onclick = () => this.prevTrack();
+        this.nextBtn.onclick = () => this.nextTrack();
+
+        this.loopToggle.onchange = () => {
+            this.loop = this.loopToggle.checked;
+            this.audio.loop = this.loop;
+        };
+
+        this.seek.oninput = () => { this.isDragging = true; };
+        this.seek.onchange = () => {
+            if (isNaN(this.audio.duration)) return;
+            this.audio.currentTime = (this.seek.value / 100) * this.audio.duration;
+            this.isDragging = false;
+        };
+
+        this.seek.onmouseup = () => { this.isDragging = false; };
+        this.seek.ontouchend = () => { this.isDragging = false; };
+        
+        this.audio.ontimeupdate = () => this.updateSeek();
+        this.audio.onended = () => {
+            if (!this.loop) {
+                this.nextTrack();
+            }
+        };
+    }
+
+    renderPlaylist() {
+        this.listBox.innerHTML = "";
+        this.playlist.forEach((track, i) => {
+            const item = document.createElement("div");
+            item.className = "aero-track" + (i === this.currentIndex ? " active" : "");
+            item.textContent = track.name;
+            item.onclick = () => this.loadTrack(i, true);
+            this.listBox.appendChild(item);
+        });
+    }
+
+    highlightActive() {
+        this.listBox.querySelectorAll(".aero-track").forEach((el, i) => {
+            const isActive = i === this.currentIndex;
+            el.classList.toggle("active", isActive);
+            if (isActive) {
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        });
+    }
+
+    initAudioEngine() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 128;
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+            this.sourceNode.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+        }
+    }
+
+    loadTrack(index, autoplay = false) {
+        this.currentIndex = index;
+        this.highlightActive();
+        
+        this.audio.src = this.playlist[index].src;
+        this.audio.loop = this.loop;
+        this.seek.value = 0;
+
+        if (autoplay) {
+            this.play();
+        }
+    }
+
+    play() {
+        this.initAudioEngine();
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+        this.audio.play().catch(e => console.error("Streaming-Fehler:", e));
+
+        if (!this.visualizerActive) {
+            this.visualizerActive = true;
+            renderVisualizer(this);
+        }
+    }
+
+    pause() {
+        this.audio.pause();
+    }
+
+    stop() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.seek.value = 0;
+    }
+
+    nextTrack() {
+        const nextIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadTrack(nextIndex, true);
+    }
+
+    prevTrack() {
+        const prevIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack(prevIndex, true);
+    }
+
+    updateSeek() {
+        if (this.isDragging || isNaN(this.audio.duration) || this.audio.duration === 0) return;
+        this.seek.value = (this.audio.currentTime / this.audio.duration) * 100;
+    }
+}
+
+
+/* =========================================================
+    VISUALIZER RENDERER (Bunter Regenbogen + Glow)
+========================================================= */
+const vizCanvas = document.getElementById("aeroVisualizer");
+const vizCtx = vizCanvas.getContext("2d");
+
+function renderVisualizer(player) {
+    if (!player || !player.analyser) return;
+
+    if (player.audio && !player.audio.paused) {
+        player.analyser.getByteFrequencyData(player.dataArray);
+    } else if (player.dataArray) {
+        for (let i = 0; i < player.dataArray.length; i++) {
+            player.dataArray[i] = Math.floor(player.dataArray[i] * 0.85);
+        }
+    }
+
+    const w = vizCanvas.width;
+    const h = vizCanvas.height;
+    vizCtx.clearRect(0, 0, w, h);
+
+    if (!player.dataArray) {
+        requestAnimationFrame(() => renderVisualizer(player));
+        return;
+    }
+
+    const barCount = player.dataArray.length * 0.8;
+    const barWidth = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+        const v = player.dataArray[i] / 255;
+        const barHeight = v * h * 0.92;
+        const x = i * barWidth;
+        const y = h - barHeight;
+        const t = i / barCount;
+
+        // Regenbogen-Farbverlauf: Pink -> Lila -> Cyan -> Grün -> Gelb -> Orange -> Pink
+        let r, g, b;
+        const hue = t * 360; // 0-360 Grad Farbkreis
+        const sat = 90 + v * 10; // hohe Sättigung
+        const light = 55 + v * 25; // Helligkeit abhängig von Lautstärke
+        
+        const rgb = hslToRgb(hue / 360, sat / 100, light / 100);
+        r = rgb[0];
+        g = rgb[1];
+        b = rgb[2];
+
+        const alpha = 0.5 + v * 0.5;
+        const bw = barWidth * 0.72;
+        const bx = x + (barWidth - bw) / 2;
+        const radius = 4;
+
+        // Glow-Effekt hinter dem Balken
+        if (v > 0.15) {
+            vizCtx.shadowColor = `rgba(${r},${g},${b},0.6)`;
+            vizCtx.shadowBlur = 8 + v * 12;
+        } else {
+            vizCtx.shadowBlur = 0;
+        }
+
+        if (barHeight > radius * 2) {
+            vizCtx.beginPath();
+            vizCtx.moveTo(bx + radius, y);
+            vizCtx.lineTo(bx + bw - radius, y);
+            vizCtx.quadraticCurveTo(bx + bw, y, bx + bw, y + radius);
+            vizCtx.lineTo(bx + bw, y + barHeight);
+            vizCtx.lineTo(bx, y + barHeight);
+            vizCtx.lineTo(bx, y + radius);
+            vizCtx.quadraticCurveTo(bx, y, bx + radius, y);
+            vizCtx.closePath();
+            
+            // Hauptfarbe
+            vizCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+            vizCtx.fill();
+            
+            // Reset shadow für Highlight
+            vizCtx.shadowBlur = 0;
+            
+            // Glanz-Highlight oben
+            vizCtx.fillStyle = `rgba(255,255,255,${0.4 + v * 0.4})`;
+            vizCtx.fillRect(bx + 2, y + 1, bw - 4, Math.min(barHeight * 0.25, 5));
+            
+            // Sekundärer Glanz
+            vizCtx.fillStyle = `rgba(255,255,255,${0.15 + v * 0.2})`;
+            vizCtx.fillRect(bx + 3, y + barHeight * 0.5, bw - 6, Math.min(barHeight * 0.15, 3));
+        } else if (barHeight > 0) {
+             vizCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+             vizCtx.fillRect(bx, y, bw, barHeight);
+             vizCtx.shadowBlur = 0;
+        }
+    }
+
+    requestAnimationFrame(() => renderVisualizer(player));
+}
+
+function hslToRgb(h, s, l) {
+    let r, g, b;
+    if (s === 0) {
+        r = g = b = l;
+    } else {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+/* =========================================================
+    ANIMATED BACKGROUND (Bunte Frutiger Aero Partikel)
+========================================================= */
+const bgCanvas = document.getElementById("aero-bg");
+const bgCtx = bgCanvas.getContext("2d");
+
+bgCanvas.width = window.innerWidth;
+bgCanvas.height = window.innerHeight;
+
+const aeroSprites = [
+    {emoji: "🦋", size: 26, color: true}, {emoji: "🌸", size: 24, color: true},
+    {emoji: "✨", size: 20, color: true}, {emoji: "🌈", size: 32, color: true},
+    {emoji: "💗", size: 22, color: true}, {emoji: "⭐", size: 20, color: true},
+    {emoji: "🌼", size: 22, color: true}, {emoji: "🍬", size: 22, color: true},
+    {emoji: "🎀", size: 24, color: true}, {emoji: "☁️", size: 36, color: false},
+    {emoji: "🌿", size: 22, color: true}, {emoji: "💎", size: 20, color: true},
+    {emoji: "🫧", size: 18, color: false}, {emoji: "🌺", size: 24, color: true}
+];
+
+function createAeroParticle(isInitial = false) {
+    return {
+        x: Math.random() * bgCanvas.width,
+        y: isInitial ? Math.random() * bgCanvas.height : bgCanvas.height + 60,
+        speed: 0.25 + Math.random() * 0.55,
+        sprite: aeroSprites[Math.floor(Math.random() * aeroSprites.length)],
+        opacity: 0.35 + Math.random() * 0.45,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.006 + Math.random() * 0.012,
+        scale: 0.8 + Math.random() * 0.5
+    };
+}
+
+const particles = Array.from({length: 40}, () => createAeroParticle(true));
+
+function resizeBg() {
+    const oldWidth = bgCanvas.width;
+    const oldHeight = bgCanvas.height;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+    
+    bgCanvas.width = newWidth;
+    bgCanvas.height = newHeight;
+    
+    particles.forEach(p => {
+        p.x = (p.x / oldWidth) * newWidth;
+        p.y = (p.y / oldHeight) * newHeight;
+    });
+}
+window.addEventListener("resize", resizeBg);
+
+function drawBackground() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.textBaseline = "middle";
+    bgCtx.textAlign = "center";
+
+    particles.forEach(p => {
+        bgCtx.globalAlpha = p.opacity;
+        bgCtx.font = `${p.sprite.size * p.scale}px sans-serif`;
+        
+        const xFinal = p.x + Math.sin(p.wobble) * 25;
+        bgCtx.fillText(p.sprite.emoji, xFinal, p.y);
+        
+        p.y -= p.speed;
+        p.wobble += p.wobbleSpeed;
+        
+        if (p.y < -60) {
+            Object.assign(p, createAeroParticle(false));
+        }
+    });
+    
+    bgCtx.globalAlpha = 1.0;
+    requestAnimationFrame(drawBackground);
+}
+
+drawBackground();
+
+/* =========================================================
+    INIT PLAYER
+========================================================= */
+async function initPlayer() {
+    try {
+        const response = await fetch("assets/playlist.json");
+        const playlist = await response.json();
+        const playerRoot = document.querySelector(".aero-player-box");
+        window.aeroPlayer = new AeroPlaylistPlayer(playerRoot, playlist);
+        
+        renderVisualizer(window.aeroPlayer);
+    } catch (e) {
+        console.error("Fehler beim Laden der Playlist:", e);
+        const fallbackPlaylist = [{name: "assets/playlist.json fehlt!", src: ""}];
+        const playerRoot = document.querySelector(".aero-player-box");
+        window.aeroPlayer = new AeroPlaylistPlayer(playerRoot, fallbackPlaylist);
+        renderVisualizer(window.aeroPlayer);
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPlayer);
+} else {
+    initPlayer();
+}
+</script>
+
+</body>
+</html>
