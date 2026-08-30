@@ -1687,8 +1687,8 @@ body[data-theme="sadmood"] #bgCanvas {
 }
 
 body[data-theme="sadmood"] .logo {
-    top: 19%;
-    width: min(78vw, 920px);
+    top: 24%;
+    width: min(80vw, 80vh);
     max-height: 40vh;
     object-fit: contain;
     filter:
@@ -2858,7 +2858,7 @@ async function initPlayer() {
     try {
         const initialUrl = document.getElementById("playlistSelect").value;
         const response = await fetch(initialUrl);
-	window.history.replaceState({}, document.title, "/");
+	//window.history.replaceState({}, document.title, "/");
         const playlist = await response.json();
         const playerRoot = document.querySelector(".cyber-player-box");
 
