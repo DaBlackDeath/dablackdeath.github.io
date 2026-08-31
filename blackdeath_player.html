@@ -1687,13 +1687,14 @@ body[data-theme="sadmood"] #bgCanvas {
 }
 
 body[data-theme="sadmood"] .logo {
-    top: 24%;
-    width: min(90vw, 90vh);
-
+    top: 19%;
+    width: min(78vw, 920px);
+    max-height: 40vh;
+    object-fit: contain;
     filter:
         drop-shadow(0 0 8px rgba(130,145,210,0.22))
         drop-shadow(0 0 24px rgba(104,83,145,0.16));
-    animation: sadMoodFloat 4s ease-in-out infinite;
+    animation: sadMoodFloat 8s ease-in-out infinite;
     z-index: 8;
 }
 
@@ -1703,16 +1704,12 @@ body[data-theme="sadmood"] .logo {
 }
 
 body[data-theme="sadmood"] .cyber-player-box {
-        bottom: 20px;
+    bottom: 24px;
     top: auto;
     transform: translateX(-50%);
-    width: 50%;
+    width: 54%;
     min-width: 500px;
-    max-width: 900px;
-    background: #0a0210;
-    border: 3px solid #ff2fd6;
-    border-radius: 40px;
-    
+    max-width: 920px;
     z-index: 20;
     padding: 18px 20px 14px;
     background:
@@ -1835,7 +1832,7 @@ body[data-theme="sadmood"] .cyber-track {
     margin-bottom: 2px;
     border-left: 1px solid transparent;
     color: #aaa8b8;
-    font-size: 0.93rem;
+    font-size: 0.78rem;
     letter-spacing: 0.25px;
     background: transparent;
 }
@@ -1900,6 +1897,346 @@ body[data-theme="sadmood"] #cyberVisualizer {
     body[data-theme="sadmood"] .cyber-btn { min-width: 0; padding: 7px 11px; }
     body[data-theme="sadmood"] .cyber-track { font-size: 0.72rem; }
 }
+
+/* =========================================================
+   THEME: HAPPY CHAOS — absurd comic / goofy / joyful
+   Bewusst NICHT Kawaii: mehr Comicbuch, mehr Chaos, dicke
+   schwarze Outlines, halftone dots und völlig überdrehte Farben.
+========================================================= */
+body[data-theme="happychaos"] {
+    background:
+        radial-gradient(circle at 18% 18%, rgba(255,239,77,0.34), transparent 18%),
+        radial-gradient(circle at 84% 22%, rgba(255,79,194,0.25), transparent 22%),
+        linear-gradient(135deg, #59d9ff 0%, #8d7cff 46%, #ff62c5 100%);
+    color: #171225;
+    font-family: 'Nunito', sans-serif;
+    scrollbar-color: #19152a #70dfff;
+    overflow: hidden;
+}
+
+body[data-theme="happychaos"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.34;
+    background-image:
+        radial-gradient(#171225 1.3px, transparent 1.4px),
+        radial-gradient(#fff 1.1px, transparent 1.2px);
+    background-size: 18px 18px, 27px 27px;
+    background-position: 0 0, 8px 10px;
+    mix-blend-mode: multiply;
+}
+
+body[data-theme="happychaos"]::after {
+    content: "LOL!   ZAP!   ^_^   WHAT?!   BOOM!   HEHE!   XD";
+    position: fixed;
+    left: -4%;
+    right: -4%;
+    bottom: 3%;
+    z-index: 2;
+    pointer-events: none;
+    color: rgba(255,255,255,0.20);
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.8rem);
+    font-weight: 900;
+    letter-spacing: 7px;
+    white-space: nowrap;
+    transform: rotate(-2deg);
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.16);
+}
+
+body[data-theme="happychaos"] .theme-switch select,
+body[data-theme="happychaos"] .playlist-switch select {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    background: #fff9dc;
+    border: 3px solid #171225;
+    color: #171225;
+    border-radius: 11px;
+    box-shadow: 4px 4px 0 #171225, 0 0 18px rgba(255,255,255,0.25);
+    backdrop-filter: none;
+}
+
+body[data-theme="happychaos"] .theme-switch select:hover,
+body[data-theme="happychaos"] .playlist-switch select:hover {
+    background: #ffe75a;
+    transform: rotate(-1deg) translateY(-1px);
+}
+
+body[data-theme="happychaos"] .theme-switch select option,
+body[data-theme="happychaos"] .playlist-switch select option {
+    background: #fff9dc;
+    color: #171225;
+}
+
+body[data-theme="happychaos"] #bgCanvas,
+body[data-theme="happychaos"] .logo {
+    display: block;
+}
+
+body[data-theme="happychaos"] #bgCanvas {
+    z-index: 0;
+    opacity: 1;
+}
+
+body[data-theme="happychaos"] .logo {
+    top: 18%;
+    width: min(50vw, 50vw);
+    max-height: 30vh;
+    object-fit: contain;
+    filter:
+        drop-shadow(7px 8px 0 rgba(23,18,37,0.92))
+        drop-shadow(0 0 12px rgba(255,255,255,0.32));
+    animation: happyChaosBounce 3.2s ease-in-out infinite;
+    z-index: 8;
+}
+
+@keyframes happyChaosBounce {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-0.7deg) translateY(0); }
+    25% { transform: translate(-50%, -50%) rotate(0.6deg) translateY(-5px); }
+    50% { transform: translate(-50%, -50%) rotate(-0.4deg) translateY(3px); }
+    75% { transform: translate(-50%, -50%) rotate(0.8deg) translateY(-4px); }
+}
+
+body[data-theme="happychaos"] .cyber-player-box {
+    bottom: 18px;
+    top: auto;
+    transform: translateX(-50%) rotate(-0.25deg);
+    width: 56%;
+    min-width: 500px;
+    max-width: 930px;
+    z-index: 20;
+    padding: 18px 20px 14px;
+    background:
+        linear-gradient(145deg, rgba(255,255,240,0.97), rgba(245,239,255,0.95));
+    border: 4px solid #171225;
+    border-radius: 17px;
+    box-shadow:
+        8px 9px 0 #171225,
+        0 0 0 5px rgba(255,235,71,0.95),
+        0 15px 45px rgba(30,10,60,0.28);
+    backdrop-filter: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-box::before {
+    content: "★  AUDIO OF QUESTIONABLE QUALITY  ★";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 22px;
+    padding-top: 3px;
+    background: #171225;
+    color: #ffe84d;
+    border-bottom: 3px solid #171225;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.52rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-align: center;
+    pointer-events: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-box::after {
+    content: "XD";
+    position: absolute;
+    right: 14px;
+    bottom: 8px;
+    color: rgba(255,44,175,0.18);
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: 2.3rem;
+    font-weight: 900;
+    transform: rotate(-12deg);
+    pointer-events: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-title {
+    margin-top: 10px;
+    margin-bottom: 13px;
+    padding: 7px 12px;
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #171225;
+    background: #7cf0ff;
+    border: 3px solid #171225;
+    border-radius: 9px;
+    box-shadow: 4px 4px 0 #171225;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+    transform: rotate(0.5deg);
+}
+
+body[data-theme="happychaos"] .cyber-player-controls {
+    gap: 8px;
+}
+
+body[data-theme="happychaos"] .cyber-btn {
+    min-width: 55px;
+    padding: 8px 13px;
+    background: #ff4bb7;
+    color: #fff;
+    border: 3px solid #171225;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 0 #171225;
+    text-shadow: 1px 1px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-btn:nth-child(2) { background: #ffe34d; color: #171225; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(3) { background: #66e8ff; color: #171225; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(4) { background: #9a7cff; color: #fff; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(5) { background: #7ee36d; color: #171225; }
+
+body[data-theme="happychaos"] .cyber-btn:hover {
+    transform: translate(-1px, -3px) rotate(-2deg);
+    box-shadow: 5px 7px 0 #171225;
+    filter: saturate(1.18);
+}
+
+body[data-theme="happychaos"] .cyber-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 #171225;
+}
+
+body[data-theme="happychaos"] .btn-label { display: none; }
+
+body[data-theme="happychaos"] .cyber-loop-label {
+    color: #171225;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+body[data-theme="happychaos"] .cyber-loop-label input {
+    accent-color: #ff3fae;
+}
+
+body[data-theme="happychaos"] .cyber-seek {
+    height: 10px;
+    border: 3px solid #171225;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff4bb7, #ffe34d, #66e8ff, #7ee36d, #9a7cff);
+    box-shadow: 3px 3px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #171225;
+    box-shadow: 2px 2px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-playlist {
+    max-height: 185px;
+    margin-top: 11px;
+    padding: 5px;
+    text-align: left;
+    border: 3px solid #171225;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.70);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7);
+}
+
+body[data-theme="happychaos"] .cyber-track {
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    color: #171225;
+    font-size: 0.78rem;
+    font-weight: 900;
+    border: 2px solid transparent;
+    border-radius: 7px;
+}
+
+body[data-theme="happychaos"] .cyber-track::before {
+    content: "☞ ";
+    color: #ff3fae;
+}
+
+body[data-theme="happychaos"] .cyber-track:hover {
+    background: #fff0a8;
+    border-color: #171225;
+    transform: translateX(3px) rotate(-0.4deg);
+}
+
+body[data-theme="happychaos"] .cyber-track.active {
+    background: #7cf0ff;
+    color: #171225;
+    border-color: #171225;
+    box-shadow: 3px 3px 0 #171225;
+}
+
+body[data-theme="happychaos"] #cyberVisualizer {
+    margin-top: 13px;
+    background:
+        radial-gradient(circle at 20% 25%, rgba(255,227,77,0.16), transparent 18%),
+        linear-gradient(180deg, #171225, #292042);
+    border: 4px solid #171225;
+    border-radius: 10px;
+    box-shadow:
+        5px 5px 0 #171225,
+        inset 0 0 24px rgba(255,255,255,0.05);
+}
+
+@media (max-width: 700px) {
+    body[data-theme="happychaos"] .theme-switch { top: 12px; right: 12px; }
+    body[data-theme="happychaos"] .playlist-switch { top: 12px; left: 12px; }
+    body[data-theme="happychaos"] .theme-switch select,
+    body[data-theme="happychaos"] .playlist-switch select {
+        min-width: 0;
+        font-size: 0.64rem;
+        padding: 7px 8px;
+        border-width: 2px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .logo {
+        top: 18%;
+        width: 96vw;
+        max-height: 34vh;
+        filter:
+            drop-shadow(4px 5px 0 rgba(23,18,37,0.95))
+            drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    }
+    body[data-theme="happychaos"] .cyber-player-box {
+        width: calc(100% - 18px);
+        min-width: 0;
+        bottom: 9px;
+        padding: 15px 9px 10px;
+        border-width: 3px;
+        border-radius: 13px;
+        box-shadow:
+            5px 6px 0 #171225,
+            0 0 0 3px rgba(255,235,71,0.95);
+    }
+    body[data-theme="happychaos"] .cyber-player-box::before {
+        font-size: 0.42rem;
+        letter-spacing: 1px;
+    }
+    body[data-theme="happychaos"] .cyber-player-title {
+        font-size: 0.72rem;
+        letter-spacing: 1.4px;
+        padding: 6px 7px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .cyber-btn {
+        min-width: 0;
+        padding: 7px 9px;
+        border-width: 2px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .cyber-track { font-size: 0.68rem; }
+    body[data-theme="happychaos"] .cyber-playlist { max-height: 145px; }
+}
+
 </style>
 </head>
 <body data-theme="amber">
@@ -1917,6 +2254,7 @@ body[data-theme="sadmood"] #cyberVisualizer {
         <option value="mac">MAC SYS 6/7</option>
         <option value="arcade">ARCADE</option>
         <option value="sadmood">SAD MOOD</option>
+        <option value="happychaos">HAPPY CHAOS</option>
     </select>
 </div>
 
@@ -1952,7 +2290,7 @@ body[data-theme="sadmood"] #cyberVisualizer {
     <span>Ablage</span><span>Bearbeiten</span><span>Ansicht</span><span>Sonderbefehle</span>
 </div>
 
-<!-- Synthwave / Darktech / Holo: Canvas-Hintergrund -->
+<!-- Synthwave / Darktech / Holo / SAD MOOD / HAPPY CHAOS: Canvas-Hintergrund -->
 <canvas id="bgCanvas"></canvas>
 
 <!-- Synthwave: Sonne + Gitter + VHS -->
@@ -2533,6 +2871,164 @@ function holoAnimate() {
     });
 }
 
+
+/* --- HAPPY CHAOS: Comicbuch / Halftone / völlig unnötige Energie --- */
+let happyChaosBursts = [];
+let happyChaosBubbles = [];
+
+function happyChaosReset() {
+    happyChaosBursts = [];
+    happyChaosBubbles = [];
+
+    const w = bgCanvas.width;
+    const h = bgCanvas.height;
+
+    for (let i = 0; i < 18; i++) {
+        happyChaosBursts.push({
+            x: Math.random() * w,
+            y: Math.random() * h * 0.78,
+            r: 18 + Math.random() * 55,
+            rot: Math.random() * Math.PI,
+            speed: (Math.random() - 0.5) * 0.004,
+            color: ["#ff4bb7", "#ffe34d", "#66e8ff", "#7ee36d", "#9a7cff"][i % 5]
+        });
+    }
+
+    const words = ["LOL", "ZAP!", "^_^", "XD", "BOOM", "HÄ?", "HEHE", "WTF?!"];
+    for (let i = 0; i < 9; i++) {
+        happyChaosBubbles.push({
+            x: Math.random() * w,
+            y: 70 + Math.random() * h * 0.48,
+            text: words[Math.floor(Math.random() * words.length)],
+            scale: 0.65 + Math.random() * 0.75,
+            rot: (Math.random() - 0.5) * 0.28,
+            phase: Math.random() * Math.PI * 2,
+            color: ["#171225", "#ff3fae", "#ffe34d", "#0d9fc4"][i % 4]
+        });
+    }
+}
+
+function happyChaosAnimate() {
+    const w = bgCanvas.width;
+    const h = bgCanvas.height;
+    const now = performance.now();
+
+    bgCtx.clearRect(0, 0, w, h);
+
+    // Comic-paper base with a bright sky-like gradient.
+    const bg = bgCtx.createLinearGradient(0, 0, w, h);
+    bg.addColorStop(0, "#66ddff");
+    bg.addColorStop(0.46, "#9b83ff");
+    bg.addColorStop(1, "#ff66c6");
+    bgCtx.fillStyle = bg;
+    bgCtx.fillRect(0, 0, w, h);
+
+    // Giant soft yellow "sun" / impact glow behind the logo.
+    const sunX = w * 0.50;
+    const sunY = h * 0.22;
+    const sunR = Math.min(w, h) * 0.17;
+    const sun = bgCtx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR);
+    sun.addColorStop(0, "rgba(255,240,72,0.72)");
+    sun.addColorStop(0.45, "rgba(255,222,64,0.34)");
+    sun.addColorStop(1, "rgba(255,222,64,0)");
+    bgCtx.fillStyle = sun;
+    bgCtx.fillRect(0, 0, w, h);
+
+    // Comic halftone field.
+    bgCtx.fillStyle = "rgba(23,18,37,0.10)";
+    const step = Math.max(12, Math.floor(Math.min(w, h) / 42));
+    const offset = (now * 0.002) % step;
+    for (let y = -step; y < h; y += step) {
+        for (let x = -step; x < w; x += step) {
+            bgCtx.beginPath();
+            bgCtx.arc(x + offset, y, 1.4, 0, Math.PI * 2);
+            bgCtx.fill();
+        }
+    }
+
+    // Radiating comic speed lines.
+    bgCtx.save();
+    bgCtx.translate(w * 0.5, h * 0.22);
+    bgCtx.strokeStyle = "rgba(255,255,255,0.24)";
+    bgCtx.lineWidth = 2;
+    for (let i = 0; i < 34; i++) {
+        const a = (i / 34) * Math.PI * 2 + now * 0.00003;
+        const r1 = Math.min(w, h) * 0.16;
+        const r2 = Math.min(w, h) * 0.60;
+        bgCtx.beginPath();
+        bgCtx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1);
+        bgCtx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2);
+        bgCtx.stroke();
+    }
+    bgCtx.restore();
+
+    // Floating comic bursts.
+    happyChaosBursts.forEach(b => {
+        b.rot += b.speed;
+        const pulse = 1 + Math.sin(now * 0.0012 + b.x) * 0.05;
+
+        bgCtx.save();
+        bgCtx.translate(b.x, b.y);
+        bgCtx.rotate(b.rot);
+        bgCtx.scale(pulse, pulse);
+
+        bgCtx.strokeStyle = "#171225";
+        bgCtx.lineWidth = 5;
+        bgCtx.fillStyle = b.color;
+
+        const points = 14;
+        bgCtx.beginPath();
+        for (let i = 0; i < points * 2; i++) {
+            const a = (i / (points * 2)) * Math.PI * 2;
+            const rr = i % 2 === 0 ? b.r : b.r * 0.45;
+            const px = Math.cos(a) * rr;
+            const py = Math.sin(a) * rr;
+            if (i === 0) bgCtx.moveTo(px, py);
+            else bgCtx.lineTo(px, py);
+        }
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.stroke();
+        bgCtx.restore();
+    });
+
+    // Random ridiculous words.
+    happyChaosBubbles.forEach(b => {
+        const bob = Math.sin(now * 0.001 + b.phase) * 5;
+        bgCtx.save();
+        bgCtx.translate(b.x, b.y + bob);
+        bgCtx.rotate(b.rot);
+        bgCtx.scale(b.scale, b.scale);
+
+        bgCtx.font = "900 26px 'Comic Sans MS', 'Nunito', sans-serif";
+        bgCtx.textAlign = "center";
+        bgCtx.textBaseline = "middle";
+        bgCtx.lineWidth = 7;
+        bgCtx.strokeStyle = "#fff";
+        bgCtx.strokeText(b.text, 0, 0);
+        bgCtx.fillStyle = b.color;
+        bgCtx.fillText(b.text, 0, 0);
+        bgCtx.restore();
+    });
+
+    // Thick comic frame near the edges.
+    bgCtx.strokeStyle = "rgba(23,18,37,0.48)";
+    bgCtx.lineWidth = Math.max(5, Math.min(w, h) * 0.007);
+    bgCtx.strokeRect(
+        bgCtx.lineWidth * 1.5,
+        bgCtx.lineWidth * 1.5,
+        w - bgCtx.lineWidth * 3,
+        h - bgCtx.lineWidth * 3
+    );
+
+    // Vignette kept extremely light — this theme should feel energetic.
+    const vignette = bgCtx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.18, w / 2, h / 2, Math.max(w, h) * 0.76);
+    vignette.addColorStop(0, "rgba(255,255,255,0)");
+    vignette.addColorStop(1, "rgba(23,18,37,0.18)");
+    bgCtx.fillStyle = vignette;
+    bgCtx.fillRect(0, 0, w, h);
+}
+
 /* --- SAD MOOD: Regen / Mondlicht / langsame Nachtstimmung --- */
 let sadMoodRain = [];
 let sadMoodDust = [];
@@ -2742,6 +3238,12 @@ const THEMES = {
         loopLabel: "LOOP / STAY A LITTLE LONGER",
         logo: "assets/img_player/blackdeath_sadmood_logo.webp"
     },
+    happychaos: {
+        pageTitle: "BLACKDEATH – HAPPY CHAOS // ABSURD AUDIO",
+        playerTitle: "AUDIO GOOFBALL // TOTALLY NORMAL",
+        loopLabel: "LOOP? OF COURSE!",
+        logo: "assets/img_player/blackdeath_happychaos_logo.webp"
+    },
     synthwave: {
         pageTitle: "BLACKDEATH – CP2 SYNTHWAVE",
         playerTitle: "AUDIO NODE // SYNTHWAVE MODE",
@@ -2807,6 +3309,10 @@ function setBackgroundForTheme(theme) {
     } else if (theme === "sadmood") {
         sadMoodReset();
         currentBGRenderer = sadMoodAnimate;
+        bgLoop();
+    } else if (theme === "happychaos") {
+        happyChaosReset();
+        currentBGRenderer = happyChaosAnimate;
         bgLoop();
     } else if (theme === "synthwave") {
         swReset();
