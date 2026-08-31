@@ -1688,13 +1688,12 @@ body[data-theme="sadmood"] #bgCanvas {
 
 body[data-theme="sadmood"] .logo {
     top: 24%;
-    width: min(80vw, 80vh);
-    max-height: 40vh;
-    object-fit: contain;
+    width: min(90vw, 90vh);
+
     filter:
         drop-shadow(0 0 8px rgba(130,145,210,0.22))
         drop-shadow(0 0 24px rgba(104,83,145,0.16));
-    animation: sadMoodFloat 8s ease-in-out infinite;
+    animation: sadMoodFloat 4s ease-in-out infinite;
     z-index: 8;
 }
 
@@ -1704,12 +1703,16 @@ body[data-theme="sadmood"] .logo {
 }
 
 body[data-theme="sadmood"] .cyber-player-box {
-    bottom: 24px;
+        bottom: 20px;
     top: auto;
     transform: translateX(-50%);
-    width: 54%;
+    width: 50%;
     min-width: 500px;
-    max-width: 920px;
+    max-width: 900px;
+    background: #0a0210;
+    border: 3px solid #ff2fd6;
+    border-radius: 40px;
+    
     z-index: 20;
     padding: 18px 20px 14px;
     background:
@@ -1832,7 +1835,7 @@ body[data-theme="sadmood"] .cyber-track {
     margin-bottom: 2px;
     border-left: 1px solid transparent;
     color: #aaa8b8;
-    font-size: 0.78rem;
+    font-size: 0.93rem;
     letter-spacing: 0.25px;
     background: transparent;
 }
@@ -2737,7 +2740,7 @@ const THEMES = {
         pageTitle: "BLACKDEATH – SAD MOOD // NOCTURNAL AUDIO",
         playerTitle: "SAD MOOD // NOCTURNAL AUDIO",
         loopLabel: "LOOP / STAY A LITTLE LONGER",
-        logo: "assets/img_player/blackdeath_sadmood_logo.webp"
+        logo: "assets/img_player/blackdeath_sadmood_logo_2.webp"
     },
     synthwave: {
         pageTitle: "BLACKDEATH – CP2 SYNTHWAVE",
