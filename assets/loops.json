@@ -70,5 +70,25 @@
   {
     "name": "Commercial 01",
     "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/commercial_01_loop.ogg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvY29tbWVyY2lhbF8wMV9sb29wLm9nZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODQ2ODI5NjksImV4cCI6NDkwNjc0Njk2OX0.J1QNAhIv_UDwdaWcvx-Q9cYBqZOOLBEZMvv8k6zE5xA"
+  },
+  {
+    "name": "Lomax - Medieval",
+    "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/lomax_medieval_loop.ogg?token=eyJraWQiOiJmZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvbG9tYXhfbWVkaWV2YWxfbG9vcC5vZ2ciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg4NzM3MDEzLCJleHAiOjQ5MTA4MDEwMTN9.g0hagsgMJdmB1-UgaJ2UFLusVOYC4BRWr-uo5R3LYMI"
+  },
+  {
+    "name": "Lomax - Training",
+    "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/lomax_training_loop.ogg?token=eyJraWQiOiJmZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvbG9tYXhfdHJhaW5pbmdfbG9vcC5vZ2ciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg4NzM3MTQ4LCJleHAiOjQ5MTA4MDExNDh9.CCD2phRkQ-SLSY_FdQkrMMH4MAzd0EHMPegfzYLRPW0"
+  },
+  {
+    "name": "Sun Fun Baby (Looky Looky)",
+    "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/Sun%20Fun%20Baby%20(Looky%20Looky)%20(Extended%20Mix)-loop.ogg?token=eyJraWQiOiJmZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvU3VuIEZ1biBCYWJ5IChMb29reSBMb29reSkgKEV4dGVuZGVkIE1peCktbG9vcC5vZ2ciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg4NzM3MzA1LCJleHAiOjQ5MTA4MDEzMDV9.HM9cr2ft7HP3z7JK-vQEXaTBAVQGb2lF25hk7yJifdA"
+  },
+  {
+    "name": "Paul Hertzog - Kumite",
+    "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/Paul%20Hertzog%20-%20Kumite-loop1.ogg?token=eyJraWQiOiJmZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvUGF1bCBIZXJ0em9nIC0gS3VtaXRlLWxvb3AxLm9nZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODg3MzczNjYsImV4cCI6NDkxMDgwMTM2Nn0.CEYn34PnVSJ1STtFUxTkEeOl6UtMEDEdlgUxhHJcVyU"
+  },
+  {
+    "name": "Sammy Hagar - Winner Takes It All",
+    "src": "https://ytjveyjqkwgiggwtfpka.supabase.co/storage/v1/object/sign/snddta/Sammy%20Hagar%20-%20Winner%20Takes%20It%20All-loop.ogg?token=eyJraWQiOiJmZDhhZDU2Ni1mYmU0LTQwNjctOWUxMC1mOWVlZjNjYTNlZDkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzbmRkdGEvU2FtbXkgSGFnYXIgLSBXaW5uZXIgVGFrZXMgSXQgQWxsLWxvb3Aub2dnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4ODczNzY0OSwiZXhwIjo0OTEwODAxNjQ5fQ.0ed6rFC6AWUflompH_Ule_qg9tQlgQUgLK9mgnZ66dQ"
   }
 ]
