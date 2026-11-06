@@ -1,0 +1,358 @@
+{
+  "storageKey": "blackdeathTheme",
+
+  "defaultTheme": "amber",
+
+  "themeDir": "player/themes",
+
+  "fonts": [
+    "https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@400;700;900&family=Nunito:wght@400;700;900&family=Inconsolata:wght@400;700;900&display=swap",
+    "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rye&family=Cinzel:wght@400;700;900&family=Special+Elite&family=Monoton&family=Bebas+Neue&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap"
+  ],
+
+  "playlists": [{ "label": "Loops", "src": "assets/loops.json" }, { "label": "Mixes", "src": "assets/mixes.json" }],
+
+  "themes": {
+    "synthwave": {
+      "label": "SYNTHWAVE",
+      "pageTitle": "BLACKDEATH – CP2 SYNTHWAVE",
+      "playerTitle": "AUDIO NODE // SYNTHWAVE MODE",
+      "loopLabel": "LOOP ENABLED",
+      "logo": "assets/img_player/cyber_vapor_logo.webp",
+      "decor": true,
+      "background": {
+        "effect": "starfield",
+        "count": 500,
+        "maxSize": 2.5,
+        "speed": [0.2, 0.7],
+        "fade": "rgba(0,0,0,0.25)",
+        "colors": ["255,255,255", "173,216,230", "255,255,224", "255,240,245", "135,206,250"]
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[0, 255, 255], [255, 0, 255], [0, 136, 255]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "darktech": {
+      "label": "DARKTECH",
+      "pageTitle": "SECTION 9 // DEVIANT AUDIO NODE",
+      "playerTitle": "// AUDIO NETCONNECT: ACTIVE",
+      "loopLabel": "CYBER-LINK REPEAT",
+      "logo": "assets/img_player/darktech_logo.webp",
+      "background": {
+        "effect": "network",
+        "count": 150,
+        "speed": 0.8,
+        "linkDistance": 120,
+        "hues": [145, 180],
+        "fade": "rgba(5,7,10,0.4)"
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[0, 255, 0], [0, 205, 212], [0, 255, 0]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "amber": {
+      "label": "AMBER",
+      "pageTitle": "BLACKDEATH // CRT TERMINAL",
+      "playerTitle": "AUDIO TERMINAL v1.0",
+      "loopLabel": "LOOP ENABLED",
+      "logo": null,
+      "decor": true,
+      "background": { "effect": "crt", "glitchRange": 180, "glitchStrength": 8 },
+      "visualizer": {
+        "style": "segments",
+        "columns": 16,
+        "segments": 11,
+        "from": [255, 120, 20],
+        "to": [255, 220, 20],
+        "background": ["#120b02", "#020100"],
+        "glow": 12
+      }
+    },
+
+    "kawaii": {
+      "label": "KAWAII",
+      "pageTitle": "BLACKDEATH – CP4 KAWAII",
+      "playerTitle": "AUDIO NODE // KAWAII MODE",
+      "loopLabel": "LOOP ENABLED",
+      "logo": "assets/img_player/kawaii_logo_2.webp",
+      "background": {
+        "effect": "sprites",
+        "count": 60,
+        "speed": [0.3, 1.0],
+        "sprites": [
+          ["💖", 24], ["☁️", 28], ["⭐", 20], ["🌈", 26], ["🍰", 22], ["🎀", 22], ["🐰", 22], ["🐭", 22], ["🧸", 22],
+          ["🐼", 22], ["🐸", 22], ["🐱", 22]
+        ]
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[255, 200, 230], [255, 216, 184], [200, 255, 241]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "holo": {
+      "label": "HOLO",
+      "pageTitle": "BLACKDEATH – CP5 HOLOGRAM",
+      "playerTitle": "AUDIO NODE // HOLOGRAM MODE",
+      "loopLabel": "LOOP ENABLED",
+      "logo": "assets/img_player/holo_logo.webp",
+      "background": {
+        "effect": "tunnel",
+        "count": 900,
+        "speed": 5,
+        "fade": "rgba(0,0,0,0.3)",
+        "colors": ["#00fff0", "#a066ff", "#ffffff"]
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[0, 255, 240], [160, 102, 255], [255, 255, 255]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "msdos": {
+      "label": "MS-DOS",
+      "pageTitle": "C:\\JUKEBOX.EXE // MS-DOS TERMINAL",
+      "playerTitle": "AUDIO TERMINAL v1.0",
+      "loopLabel": "LOOP.COM /RESIDENT",
+      "logo": "assets/img_player/msdos_logo.webp",
+      "decor": true,
+      "background": null,
+      "visualizer": { "style": "bars", "flat": true, "colors": { "solid": [51, 255, 51] }, "alpha": [0.35, 1] }
+    },
+
+    "amiga500": {
+      "label": "AMIGA 500",
+      "pageTitle": "A500 JUKEBOX // WORKBENCH",
+      "playerTitle": "AUDIO NODE",
+      "loopLabel": "LOOP: ON/OFF",
+      "logo": "assets/img_player/amiga_logo.webp",
+      "decor": true,
+      "background": null,
+      "visualizer": {
+        "style": "bars",
+        "flat": true,
+        "colors": { "gradient": [[255, 136, 0], [255, 255, 0], [51, 102, 255]] },
+        "alpha": [0.5, 1]
+      }
+    },
+
+    "c64": {
+      "label": "C64",
+      "pageTitle": "C64 JUKEBOX // BASIC V2",
+      "playerTitle": "*** C64 JUKEBOX ***",
+      "loopLabel": "20 LOOP = TRUE",
+      "logo": "assets/img_player/c64_logo.webp",
+      "background": null,
+      "visualizer": {
+        "style": "bars",
+        "flat": true,
+        "colors": {
+          "palette": [
+            [136, 57, 50], [103, 182, 189], [139, 63, 150], [85, 160, 73], [191, 206, 114], [139, 84, 41],
+            [214, 214, 214], [255, 255, 255]
+          ]
+        },
+        "alpha": [0.6, 1]
+      }
+    },
+
+    "mac": {
+      "label": "MAC SYS 6/7",
+      "pageTitle": "MACINTOSH SYSTEM 6/7",
+      "playerTitle": "AUDIO NETWORK",
+      "loopLabel": "LOOP ENABLED",
+      "logo": "assets/img_player/mac_logo.webp",
+      "decor": true,
+      "background": null,
+      "visualizer": { "style": "bars", "flat": true, "colors": { "solid": [0, 0, 0] }, "alpha": [0.55, 1] }
+    },
+
+    "arcade": {
+      "label": "ARCADE",
+      "pageTitle": "ARCADE KABINETT // INSERT COIN",
+      "playerTitle": "PLAYER ONE JUKEBOX",
+      "loopLabel": "CONTINUE?",
+      "logo": "assets/img_player/arcade_logo.webp",
+      "decor": true,
+      "background": null,
+      "visualizer": {
+        "style": "bars",
+        "colors": { "rainbow": { "spread": 300, "speed": 0.02, "saturation": 100, "lightness": 60 } },
+        "alpha": [0.4, 1]
+      }
+    },
+
+    "sadmood": {
+      "label": "SAD MOOD",
+      "pageTitle": "BLACKDEATH – SAD MOOD // NOCTURNAL AUDIO",
+      "playerTitle": "SAD MOOD // NOCTURNAL AUDIO",
+      "loopLabel": "LOOP / STAY A LITTLE LONGER",
+      "logo": "assets/img_player/blackdeath_sadmood_logo.webp",
+      "background": {
+        "effect": "rain",
+        "rainMin": 70,
+        "rainMax": 150,
+        "dustCount": 85,
+        "rainColor": "164,176,212",
+        "dustColor": "174,171,205",
+        "sky": ["rgba(5,7,18,0.98)", "rgba(8,10,24,0.97)", "rgba(11,7,18,0.99)"],
+        "moon": { "x": 0.5, "y": 0.17, "size": 0.075 }
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[120, 132, 175], [162, 144, 193], [216, 109, 175]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "happychaos": {
+      "label": "HAPPY CHAOS",
+      "pageTitle": "BLACKDEATH – HAPPY CHAOS // ABSURD AUDIO",
+      "playerTitle": "AUDIO GOOFBALL // TOTALLY NORMAL",
+      "loopLabel": "LOOP? OF COURSE!",
+      "logo": "assets/img_player/blackdeath_happychaos_logo.webp",
+      "background": {
+        "effect": "comic",
+        "burstCount": 18,
+        "wordCount": 9,
+        "sky": ["#66ddff", "#9b83ff", "#ff66c6"],
+        "burstColors": ["#ff4bb7", "#ffe34d", "#66e8ff", "#7ee36d", "#9a7cff"],
+        "wordColors": ["#171225", "#ff3fae", "#ffe34d", "#0d9fc4"],
+        "words": ["LOL", "ZAP!", "^_^", "XD", "BOOM", "HÄ?", "HEHE", "WTF?!"]
+      },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[0, 255, 240], [160, 102, 255], [255, 255, 255]] },
+        "alpha": [0.25, 1]
+      }
+    },
+
+    "teletext": {
+      "label": "TELETEXT",
+      "pageTitle": "P100 // BLACKDEATH TEXT",
+      "playerTitle": "AUDIO-TEXT  S.333",
+      "loopLabel": "ENDLOS-SCHLEIFE",
+      "logo": null,
+      "decor": true,
+      "background": null,
+      "visualizer": {
+        "style": "segments",
+        "columns": 20,
+        "segments": 10,
+        "spacing": 4,
+        "segmentHeight": 10,
+        "segmentGap": 2,
+        "from": [0, 255, 255],
+        "to": [255, 255, 0],
+        "background": ["#000000", "#000000"],
+        "glow": 0
+      }
+    },
+
+    "gameboy": {
+      "label": "GAMEBOY",
+      "pageTitle": "BLACKDEATH // POCKET LCD",
+      "playerTitle": "BLACKDEATH POCKET",
+      "loopLabel": "REPEAT",
+      "logo": null,
+      "decor": true,
+      "background": null,
+      "visualizer": { "style": "bars", "flat": true, "bins": 0.5, "barWidth": 0.8, "colors": { "solid": [15, 56, 15] }, "alpha": [1, 1] }
+    },
+
+    "neonnoir": {
+      "label": "NEON NOIR",
+      "pageTitle": "BLACKDEATH // NEON NOIR",
+      "playerTitle": "NIGHT CITY FREQUENCIES",
+      "loopLabel": "ONE MORE NIGHT",
+      "logo": null,
+      "decor": true,
+      "background": { "effect": "neoncity", "layers": 3, "rain": 260, "signs": 0.32 },
+      "visualizer": {
+        "style": "bars",
+        "colors": { "gradient": [[255, 43, 214], [184, 107, 255], [0, 229, 255]] },
+        "alpha": [0.35, 1]
+      }
+    },
+
+    "steampunk": {
+      "label": "STEAMPUNK",
+      "pageTitle": "BLACKDEATH // DAMPF-PHONOGRAPH",
+      "playerTitle": "~ ÆTHER-PHONOGRAPH Mk. II ~",
+      "loopLabel": "PERPETUUM MOBILE",
+      "logo": null,
+      "decor": true,
+      "background": { "effect": "gears", "count": 11, "alpha": 0.5, "steam": 26 },
+      "visualizer": {
+        "style": "segments",
+        "columns": 16,
+        "segments": 11,
+        "from": [160, 80, 20],
+        "to": [255, 200, 110],
+        "background": ["#1a0f06", "#0b0602"],
+        "glow": 10
+      }
+    },
+
+    "western": {
+      "label": "WESTERN",
+      "pageTitle": "BLACKDEATH // WILD WEST SALOON",
+      "playerTitle": "THE BLACKDEATH GANG",
+      "loopLabel": "ONE MORE ROUND, PARTNER",
+      "logo": null,
+      "decor": true,
+      "background": { "effect": "desert", "dust": 90 },
+      "visualizer": { "style": "bars", "flat": true, "colors": { "solid": [74, 40, 18] }, "alpha": [0.45, 1] }
+    },
+
+    "vinyl": {
+      "label": "VINYL HIFI 70s",
+      "pageTitle": "BLACKDEATH // HIFI STEREO 1974",
+      "playerTitle": "BLACKDEATH  STEREO RECEIVER  SR-1974",
+      "loopLabel": "AUTO-REPEAT",
+      "logo": null,
+      "decor": true,
+      "background": {
+        "effect": "bokeh",
+        "count": 38,
+        "speed": 0.18,
+        "colors": ["#ff9a3c", "#ffcf6b", "#d9542b", "#8f3b1b"],
+        "alpha": [0.05, 0.22],
+        "sky": ["#140a05", "#2a160b", "#120804"]
+      },
+      "visualizer": {
+        "style": "segments",
+        "columns": 16,
+        "segments": 11,
+        "from": [80, 210, 90],
+        "to": [255, 70, 30],
+        "background": ["#0d0a06", "#050302"],
+        "glow": 8
+      }
+    },
+
+    "cassette": {
+      "label": "CASSETTE",
+      "pageTitle": "BLACKDEATH // MIXTAPE",
+      "playerTitle": "TAPE DECK · SIDE A",
+      "loopLabel": "AUTO-REVERSE",
+      "logo": null,
+      "decor": true,
+      "background": null,
+      "visualizer": {
+        "style": "bars",
+        "flat": true,
+        "colors": { "gradient": [[255, 95, 140], [255, 190, 80], [80, 220, 200]] },
+        "alpha": [0.55, 1]
+      }
+    }
+  }
+}

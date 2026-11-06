@@ -1,0 +1,169 @@
+/* =========================================================
+   THEME: TELETEXT (Videotext, 8 Grundfarben, Blockgrafik)
+========================================================= */
+body[data-theme="teletext"] {
+    background: #000;
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    letter-spacing: 1px;
+    scrollbar-color: #00ffff #000;
+}
+
+body[data-theme="teletext"] .theme-switch select,
+body[data-theme="teletext"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    background: #0000ff;
+    border: none;
+    border-radius: 0;
+    color: #ffff00;
+    backdrop-filter: none;
+}
+body[data-theme="teletext"] .theme-switch select:hover,
+body[data-theme="teletext"] .playlist-switch select:hover { background: #ff00ff; color: #fff; }
+body[data-theme="teletext"] .theme-switch select option,
+body[data-theme="teletext"] .playlist-switch select option { background: #000; color: #fff; }
+
+/* ---------- Deko ---------- */
+body[data-theme="teletext"] .ttx-header {
+    position: fixed;
+    top: 64px; left: 50%;
+    transform: translateX(-50%);
+    width: min(760px, 94vw);
+    display: flex;
+    gap: 18px;
+    font-size: 1.2rem;
+    color: #fff;
+    z-index: 5;
+}
+body[data-theme="teletext"] .ttx-page { color: #00ff00; }
+body[data-theme="teletext"] .ttx-name { flex: 1; color: #ffff00; }
+body[data-theme="teletext"] .ttx-cursor { color: #00ffff; animation: ttxBlink 1s steps(1) infinite; }
+@keyframes ttxBlink { 50% { opacity: 0; } }
+
+body[data-theme="teletext"] .ttx-banner {
+    position: fixed;
+    top: 100px; left: 50%;
+    transform: translateX(-50%);
+    width: min(760px, 94vw);
+    z-index: 5;
+    text-align: center;
+}
+body[data-theme="teletext"] .ttx-banner-text {
+    background: #0000ff;
+    color: #ffff00;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    letter-spacing: 0.5em;
+    padding: 14px 0 10px 0.5em;
+    line-height: 1;
+    transform: scaleY(1.6);
+    transform-origin: top;
+    margin-bottom: 30px;
+}
+body[data-theme="teletext"] .ttx-banner-sub {
+    color: #00ffff;
+    font-size: 1.15rem;
+    background: #000;
+    margin-bottom: 8px;
+}
+/* Blockgrafik-Streifen: 2x3-Mosaik-Optik aus Farbblöcken */
+body[data-theme="teletext"] .ttx-mosaic {
+    height: 18px;
+    background:
+        repeating-linear-gradient(90deg, transparent 0 20px, #000 20px 24px),
+        repeating-linear-gradient(90deg,
+            #ff0000 0 48px, #ffff00 48px 96px, #00ff00 96px 144px, #00ffff 144px 192px,
+            #0000ff 192px 240px, #ff00ff 240px 288px, #fff 288px 336px);
+    margin-bottom: 6px;
+}
+body[data-theme="teletext"] .ttx-mosaic-b { transform: scaleX(-1); height: 10px; }
+
+body[data-theme="teletext"] .ttx-fastext {
+    order: 99;
+    display: flex;
+    margin-top: 8px;
+    font-size: 1.1rem;
+}
+body[data-theme="teletext"] .ttx-fastext span { flex: 1; text-align: center; }
+body[data-theme="teletext"] .ttx-fastext .r { color: #ff0000; }
+body[data-theme="teletext"] .ttx-fastext .g { color: #00ff00; }
+body[data-theme="teletext"] .ttx-fastext .y { color: #ffff00; }
+body[data-theme="teletext"] .ttx-fastext .c { color: #00ffff; }
+
+/* ---------- Player ---------- */
+body[data-theme="teletext"] .cyber-player-box {
+    transform: translateX(-50%);
+    width: min(760px, 94vw);
+    background: #000;
+    border: none;
+    border-radius: 0;
+    padding: 0 0 8px;
+    z-index: 10;
+}
+
+body[data-theme="teletext"] .cyber-player-title {
+    background: #00ffff;
+    color: #0000ff;
+    font-size: 1.4rem;
+    padding: 2px 0;
+    margin-bottom: 10px;
+}
+
+body[data-theme="teletext"] .cyber-player-controls { gap: 0; }
+body[data-theme="teletext"] .cyber-btn {
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    padding: 4px 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.25rem;
+    color: #000;
+}
+body[data-theme="teletext"] .cyber-btn.prev  { background: #ff0000; }
+body[data-theme="teletext"] .cyber-btn.play  { background: #00ff00; }
+body[data-theme="teletext"] .cyber-btn.pause { background: #ffff00; }
+body[data-theme="teletext"] .cyber-btn.stop  { background: #00ffff; }
+body[data-theme="teletext"] .cyber-btn.next  { background: #ff00ff; }
+body[data-theme="teletext"] .cyber-btn:hover { background: #fff; }
+body[data-theme="teletext"] .btn-label { display: inline; }
+
+body[data-theme="teletext"] .cyber-loop-label { color: #00ff00; font-size: 1.15rem; }
+body[data-theme="teletext"] .cyber-loop-label input { accent-color: #00ff00; }
+
+body[data-theme="teletext"] .cyber-seek {
+    height: 12px;
+    border-radius: 0;
+    background: repeating-linear-gradient(90deg, #0000ff 0 14px, #000 14px 16px);
+}
+body[data-theme="teletext"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 18px;
+    background: #ffff00;
+    border: none; border-radius: 0;
+}
+body[data-theme="teletext"] .cyber-seek::-moz-range-thumb {
+    width: 14px; height: 18px; background: #ffff00; border: none; border-radius: 0;
+}
+
+body[data-theme="teletext"] .cyber-playlist { max-height: 190px; text-align: left; }
+body[data-theme="teletext"] .cyber-track {
+    padding: 0 10px;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1.25;
+}
+body[data-theme="teletext"] .cyber-track::before { content: "▪ "; color: #00ffff; }
+body[data-theme="teletext"] .cyber-track:hover { color: #00ffff; }
+body[data-theme="teletext"] .cyber-track.active { background: #0000ff; color: #ffff00; }
+
+body[data-theme="teletext"] #cyberVisualizer { margin-top: 10px; background: #000; }
+
+@media (max-width: 700px), (max-height: 760px) {
+    body[data-theme="teletext"] .ttx-banner-sub,
+    body[data-theme="teletext"] .ttx-mosaic-b { display: none; }
+    body[data-theme="teletext"] .ttx-banner-text { margin-bottom: 18px; }
+}
+@media (max-width: 700px) {
+    body[data-theme="teletext"] .btn-label { display: none; }
+}

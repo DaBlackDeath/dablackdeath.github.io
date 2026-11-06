@@ -1,0 +1,142 @@
+/* =========================================================
+   THEME: MACINTOSH SYSTEM 6/7
+========================================================= */
+body[data-theme="mac"] {
+    background: #bcbcbc;
+    font-family: 'Inconsolata', monospace;
+    color: #000;
+    scrollbar-color: #000000 #ffffff;
+}
+
+body[data-theme="mac"] .theme-switch select,
+body[data-theme="mac"] .playlist-switch select {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    border-radius: 4px;
+    backdrop-filter: none;
+}
+body[data-theme="mac"] .theme-switch select:hover,
+body[data-theme="mac"] .playlist-switch select:hover { background: #000; color: #fff; }
+
+body[data-theme="mac"] .crt-vignette,
+body[data-theme="mac"] .mac-menubar,
+body[data-theme="mac"] .logo { display: flex; }
+body[data-theme="mac"] .logo { display: block; }
+
+body[data-theme="mac"] .logo {
+    top: 26%;
+    width: min(90vw, 90vh);
+    filter: drop-shadow(0 4px 0 rgba(0,0,0,0.5));
+    image-rendering: pixelated;
+}
+
+body[data-theme="mac"] .cyber-player-box {
+    bottom: 20px; /* Präziser Abstand von 20px zum unteren Rand */
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding-top: 30px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
+}
+
+body[data-theme="mac"] .cyber-player-box::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 22px;
+    background-image: repeating-linear-gradient(to bottom, #000 0, #000 1px, #fff 1px, #fff 3px);
+    border-bottom: 2px solid #000;
+}
+
+body[data-theme="mac"] .cyber-player-box::after {
+    content: "";
+    position: absolute;
+    top: 6px; left: 10px;
+    width: 11px; height: 11px;
+    background: #fff;
+    border: 1.5px solid #000;
+    z-index: 2;
+}
+
+body[data-theme="mac"] .cyber-player-title {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    display: inline-block;
+    margin: 2px auto 12px;
+    padding: 0 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: #000;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+}
+
+body[data-theme="mac"] .cyber-btn {
+    background: #fff;
+    color: #000;
+    border: 1.5px solid #000;
+    padding: 6px 14px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 5px;
+}
+body[data-theme="mac"] .cyber-btn:hover { background: #000; color: #fff; }
+body[data-theme="mac"] .cyber-btn:active { background: #555; }
+body[data-theme="mac"] .btn-label { display: inline; }
+
+body[data-theme="mac"] .cyber-loop-label { font-size: 0.8rem; font-weight: 700; color: #000; }
+body[data-theme="mac"] .cyber-loop-label input { accent-color: #000; }
+
+body[data-theme="mac"] .cyber-seek {
+    height: 6px;
+    border-radius: 0;
+    background: #fff;
+    border: 1.5px solid #000;
+}
+body[data-theme="mac"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 14px; border-radius: 2px;
+    background: #fff;
+    border: 1.5px solid #000;
+}
+
+body[data-theme="mac"] .cyber-playlist {
+    max-height: 225px;
+    background: #fff;
+    border: 1.5px solid #000;
+    padding: 2px;
+    text-align: left;
+}
+
+body[data-theme="mac"] .cyber-track {
+    padding: 4px 8px;
+    color: #000;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #ddd;
+}
+body[data-theme="mac"] .cyber-track:hover { background: #eee; }
+body[data-theme="mac"] .cyber-track.active { background: #000; color: #fff; }
+
+body[data-theme="mac"] #cyberVisualizer {
+    background: #fff;
+    border: 1.5px solid #000;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+body[data-theme="mac"] .theme-switch,
+body[data-theme="mac"] .playlist-switch {
+    top: 32px;
+}

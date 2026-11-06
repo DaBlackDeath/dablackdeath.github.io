@@ -1,0 +1,114 @@
+/* =========================================================
+   THEME: MSDOS (Grüner Phosphor-Terminal)
+========================================================= */
+body[data-theme="msdos"] {
+    background: #020402;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 3px rgba(51,255,51,0.7);
+    animation: crtFlicker 0.15s infinite;
+    --scan-rgb: 51,255,51;
+    scrollbar-color: rgba(51,255,51,0.7) rgba(0,0,0,0.3);
+}
+
+body[data-theme="msdos"] .theme-switch select,
+body[data-theme="msdos"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    background: rgba(51,255,51,0.08);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    border-radius: 0;
+}
+body[data-theme="msdos"] .theme-switch select:hover,
+body[data-theme="msdos"] .playlist-switch select:hover {
+    background: rgba(51,255,51,0.25);
+    box-shadow: 0 0 10px rgba(51,255,51,0.3);
+}
+
+body[data-theme="msdos"] .crt-scanlines-mono,
+body[data-theme="msdos"] .crt-vignette,
+body[data-theme="msdos"] .logo { display: block; }
+
+body[data-theme="msdos"] .logo {
+    top: 21%;
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 0 14px rgba(51,255,51,0.6));
+    image-rendering: pixelated;
+}
+
+body[data-theme="msdos"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #010200;
+    border: 3px double #33ff33;
+    border-radius: 0;
+    box-shadow: 0 0 0 1px #000, 0 0 30px rgba(51,255,51,0.15);
+}
+
+body[data-theme="msdos"] .cyber-player-title {
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: #33ff33;
+    border-bottom: 1px solid rgba(51,255,51,0.3);
+    padding-bottom: 6px;
+}
+
+body[data-theme="msdos"] .cyber-btn {
+    background: #000;
+    color: #33ff33;
+    border: 1px solid #33ff33;
+    padding: 5px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    border-radius: 0;
+}
+body[data-theme="msdos"] .cyber-btn:hover { background: rgba(51,255,51,0.18); }
+body[data-theme="msdos"] .cyber-btn:active { background: #33ff33; color: #000; }
+body[data-theme="msdos"] .btn-label { display: inline; }
+
+body[data-theme="msdos"] .cyber-loop-label { font-size: 1rem; color: #33ff33; }
+body[data-theme="msdos"] .cyber-loop-label input { accent-color: #33ff33; }
+
+body[data-theme="msdos"] .cyber-seek {
+    height: 10px;
+    border-radius: 0;
+    background: #000;
+    border: 1px solid #33ff33;
+}
+body[data-theme="msdos"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px; height: 16px; border-radius: 0;
+    background: #33ff33;
+    box-shadow: 0 0 6px rgba(51,255,51,0.6);
+}
+
+body[data-theme="msdos"] .cyber-playlist {
+    max-height: 203px;
+    margin-top: 8px;
+    background: #000;
+    border: 1px solid #33ff33;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="msdos"] .cyber-track {
+    padding: 4px 8px;
+    color: #33ff33;
+    font-size: 1.05rem;
+}
+body[data-theme="msdos"] .cyber-track:hover { background: rgba(51,255,51,0.12); }
+body[data-theme="msdos"] .cyber-track.active { background: #33ff33; color: #000; text-shadow: none; }
+
+body[data-theme="msdos"] #cyberVisualizer {
+    background: #000;
+    border: 1px solid #33ff33;
+    border-radius: 0;
+    margin-top: 10px;
+}

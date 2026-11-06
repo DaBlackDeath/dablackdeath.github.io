@@ -1,0 +1,103 @@
+/* =========================================================
+   THEME: C64 (Commodore 64 / BASIC)
+========================================================= */
+body[data-theme="c64"] {
+    background: #40318d;
+    font-family: 'VT323', monospace;
+    color: #d6d6ff;
+    scrollbar-color: #7869c4 #d6d6ff ;
+}
+
+body[data-theme="c64"] .theme-switch select,
+body[data-theme="c64"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #fff;
+    color: #d6d6ff;
+    border-radius: 0;
+}
+body[data-theme="c64"] .theme-switch select:hover,
+body[data-theme="c64"] .playlist-switch select:hover { background: #8b3f96; }
+
+body[data-theme="c64"] .crt-vignette,
+body[data-theme="c64"] .logo { display: block; }
+
+body[data-theme="c64"] .logo {
+    top: 21%;
+    width: min(50vw, 50vh);
+    image-rendering: pixelated;
+}
+
+body[data-theme="c64"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #7869c4;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 10px #40318d, 0 20px 60px rgba(0,0,0,0.6);
+}
+
+body[data-theme="c64"] .cyber-player-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+body[data-theme="c64"] .cyber-btn {
+    background: #000;
+    color: #d6d6ff;
+    border: 2px solid #fff;
+    padding: 6px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    border-radius: 0;
+    box-shadow: 2px 2px 0 #000;
+}
+body[data-theme="c64"] .cyber-btn:hover { background: #8b3f96; }
+body[data-theme="c64"] .cyber-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #000; }
+body[data-theme="c64"] .btn-label { display: inline; }
+
+body[data-theme="c64"] .cyber-loop-label { font-size: 1rem; color: #fff; }
+body[data-theme="c64"] .cyber-loop-label input { accent-color: #bfce72; }
+
+body[data-theme="c64"] .cyber-seek {
+    height: 12px;
+    border-radius: 0;
+    background: #000;
+    border: 2px solid #fff;
+}
+body[data-theme="c64"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 16px; border-radius: 0;
+    background: #bfce72;
+    border: 2px solid #000;
+}
+
+body[data-theme="c64"] .cyber-playlist {
+    max-height: 225px;
+    background: #000;
+    border: 2px solid #fff;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="c64"] .cyber-track {
+    padding: 4px 8px;
+    color: #d6d6ff;
+    font-size: 1.1rem;
+}
+body[data-theme="c64"] .cyber-track:hover { background: rgba(255,255,255,0.15); }
+body[data-theme="c64"] .cyber-track.active { background: #d6d6ff; color: #000; }
+
+body[data-theme="c64"] #cyberVisualizer {
+    background: #000;
+    border: 2px solid #fff;
+    border-radius: 0;
+    margin-top: 10px;
+}

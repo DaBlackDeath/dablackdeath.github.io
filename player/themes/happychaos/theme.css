@@ -1,0 +1,338 @@
+/* =========================================================
+   THEME: HAPPY CHAOS — absurd comic / goofy / joyful
+   Bewusst NICHT Kawaii: mehr Comicbuch, mehr Chaos, dicke
+   schwarze Outlines, halftone dots und völlig überdrehte Farben.
+========================================================= */
+body[data-theme="happychaos"] {
+    background:
+        radial-gradient(circle at 18% 18%, rgba(255,239,77,0.34), transparent 18%),
+        radial-gradient(circle at 84% 22%, rgba(255,79,194,0.25), transparent 22%),
+        linear-gradient(135deg, #59d9ff 0%, #8d7cff 46%, #ff62c5 100%);
+    color: #171225;
+    font-family: 'Nunito', sans-serif;
+    scrollbar-color: #19152a #70dfff;
+    overflow: hidden;
+}
+
+body[data-theme="happychaos"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.34;
+    background-image:
+        radial-gradient(#171225 1.3px, transparent 1.4px),
+        radial-gradient(#fff 1.1px, transparent 1.2px);
+    background-size: 18px 18px, 27px 27px;
+    background-position: 0 0, 8px 10px;
+    mix-blend-mode: multiply;
+}
+
+body[data-theme="happychaos"]::after {
+    content: "LOL!   ZAP!   ^_^   WHAT?!   BOOM!   HEHE!   XD";
+    position: fixed;
+    left: -4%;
+    right: -4%;
+    bottom: 3%;
+    z-index: 2;
+    pointer-events: none;
+    color: rgba(255,255,255,0.20);
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.8rem);
+    font-weight: 900;
+    letter-spacing: 7px;
+    white-space: nowrap;
+    transform: rotate(-2deg);
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.16);
+}
+
+body[data-theme="happychaos"] .theme-switch select,
+body[data-theme="happychaos"] .playlist-switch select {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    background: #fff9dc;
+    border: 3px solid #171225;
+    color: #171225;
+    border-radius: 11px;
+    box-shadow: 4px 4px 0 #171225, 0 0 18px rgba(255,255,255,0.25);
+    backdrop-filter: none;
+}
+
+body[data-theme="happychaos"] .theme-switch select:hover,
+body[data-theme="happychaos"] .playlist-switch select:hover {
+    background: #ffe75a;
+    transform: rotate(-1deg) translateY(-1px);
+}
+
+body[data-theme="happychaos"] .theme-switch select option,
+body[data-theme="happychaos"] .playlist-switch select option {
+    background: #fff9dc;
+    color: #171225;
+}
+
+body[data-theme="happychaos"] #bgCanvas,
+body[data-theme="happychaos"] .logo {
+    display: block;
+}
+
+body[data-theme="happychaos"] #bgCanvas {
+    z-index: 0;
+    opacity: 1;
+}
+
+body[data-theme="happychaos"] .logo {
+    top: 18%;
+    width: min(50vw, 50vw);
+    max-height: 30vh;
+    object-fit: contain;
+    filter:
+        drop-shadow(7px 8px 0 rgba(23,18,37,0.92))
+        drop-shadow(0 0 12px rgba(255,255,255,0.32));
+    animation: happyChaosBounce 3.2s ease-in-out infinite;
+    z-index: 8;
+}
+
+@keyframes happyChaosBounce {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-0.7deg) translateY(0); }
+    25% { transform: translate(-50%, -50%) rotate(0.6deg) translateY(-5px); }
+    50% { transform: translate(-50%, -50%) rotate(-0.4deg) translateY(3px); }
+    75% { transform: translate(-50%, -50%) rotate(0.8deg) translateY(-4px); }
+}
+
+body[data-theme="happychaos"] .cyber-player-box {
+    bottom: 18px;
+    top: auto;
+    transform: translateX(-50%) rotate(-0.25deg);
+    width: 56%;
+    min-width: 500px;
+    max-width: 930px;
+    z-index: 20;
+    padding: 18px 20px 14px;
+    background:
+        linear-gradient(145deg, rgba(255,255,240,0.97), rgba(245,239,255,0.95));
+    border: 4px solid #171225;
+    border-radius: 17px;
+    box-shadow:
+        8px 9px 0 #171225,
+        0 0 0 5px rgba(255,235,71,0.95),
+        0 15px 45px rgba(30,10,60,0.28);
+    backdrop-filter: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-box::before {
+    content: "★  AUDIO OF QUESTIONABLE QUALITY  ★";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 22px;
+    padding-top: 3px;
+    background: #171225;
+    color: #ffe84d;
+    border-bottom: 3px solid #171225;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.52rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-align: center;
+    pointer-events: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-box::after {
+    content: "XD";
+    position: absolute;
+    right: 14px;
+    bottom: 8px;
+    color: rgba(255,44,175,0.18);
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: 2.3rem;
+    font-weight: 900;
+    transform: rotate(-12deg);
+    pointer-events: none;
+}
+
+body[data-theme="happychaos"] .cyber-player-title {
+    margin-top: 10px;
+    margin-bottom: 13px;
+    padding: 7px 12px;
+    font-family: 'Comic Sans MS', 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #171225;
+    background: #7cf0ff;
+    border: 3px solid #171225;
+    border-radius: 9px;
+    box-shadow: 4px 4px 0 #171225;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+    transform: rotate(0.5deg);
+}
+
+body[data-theme="happychaos"] .cyber-player-controls {
+    gap: 8px;
+}
+
+body[data-theme="happychaos"] .cyber-btn {
+    min-width: 55px;
+    padding: 8px 13px;
+    background: #ff4bb7;
+    color: #fff;
+    border: 3px solid #171225;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 0 #171225;
+    text-shadow: 1px 1px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-btn:nth-child(2) { background: #ffe34d; color: #171225; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(3) { background: #66e8ff; color: #171225; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(4) { background: #9a7cff; color: #fff; }
+body[data-theme="happychaos"] .cyber-btn:nth-child(5) { background: #7ee36d; color: #171225; }
+
+body[data-theme="happychaos"] .cyber-btn:hover {
+    transform: translate(-1px, -3px) rotate(-2deg);
+    box-shadow: 5px 7px 0 #171225;
+    filter: saturate(1.18);
+}
+
+body[data-theme="happychaos"] .cyber-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 #171225;
+}
+
+body[data-theme="happychaos"] .btn-label { display: none; }
+
+body[data-theme="happychaos"] .cyber-loop-label {
+    color: #171225;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+body[data-theme="happychaos"] .cyber-loop-label input {
+    accent-color: #ff3fae;
+}
+
+body[data-theme="happychaos"] .cyber-seek {
+    height: 10px;
+    border: 3px solid #171225;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff4bb7, #ffe34d, #66e8ff, #7ee36d, #9a7cff);
+    box-shadow: 3px 3px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #171225;
+    box-shadow: 2px 2px 0 #171225;
+}
+
+body[data-theme="happychaos"] .cyber-playlist {
+    max-height: 185px;
+    margin-top: 11px;
+    padding: 5px;
+    text-align: left;
+    border: 3px solid #171225;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.70);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7);
+}
+
+body[data-theme="happychaos"] .cyber-track {
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    color: #171225;
+    font-size: 0.78rem;
+    font-weight: 900;
+    border: 2px solid transparent;
+    border-radius: 7px;
+}
+
+body[data-theme="happychaos"] .cyber-track::before {
+    content: "☞ ";
+    color: #ff3fae;
+}
+
+body[data-theme="happychaos"] .cyber-track:hover {
+    background: #fff0a8;
+    border-color: #171225;
+    transform: translateX(3px) rotate(-0.4deg);
+}
+
+body[data-theme="happychaos"] .cyber-track.active {
+    background: #7cf0ff;
+    color: #171225;
+    border-color: #171225;
+    box-shadow: 3px 3px 0 #171225;
+}
+
+body[data-theme="happychaos"] #cyberVisualizer {
+    margin-top: 13px;
+    background:
+        radial-gradient(circle at 20% 25%, rgba(255,227,77,0.16), transparent 18%),
+        linear-gradient(180deg, #171225, #292042);
+    border: 4px solid #171225;
+    border-radius: 10px;
+    box-shadow:
+        5px 5px 0 #171225,
+        inset 0 0 24px rgba(255,255,255,0.05);
+}
+
+@media (max-width: 700px) {
+    body[data-theme="happychaos"] .theme-switch { top: 12px; right: 12px; }
+    body[data-theme="happychaos"] .playlist-switch { top: 12px; left: 12px; }
+    body[data-theme="happychaos"] .theme-switch select,
+    body[data-theme="happychaos"] .playlist-switch select {
+        min-width: 0;
+        font-size: 0.64rem;
+        padding: 7px 8px;
+        border-width: 2px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .logo {
+        top: 18%;
+        width: 96vw;
+        max-height: 34vh;
+        filter:
+            drop-shadow(4px 5px 0 rgba(23,18,37,0.95))
+            drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    }
+    body[data-theme="happychaos"] .cyber-player-box {
+        width: calc(100% - 18px);
+        min-width: 0;
+        bottom: 9px;
+        padding: 15px 9px 10px;
+        border-width: 3px;
+        border-radius: 13px;
+        box-shadow:
+            5px 6px 0 #171225,
+            0 0 0 3px rgba(255,235,71,0.95);
+    }
+    body[data-theme="happychaos"] .cyber-player-box::before {
+        font-size: 0.42rem;
+        letter-spacing: 1px;
+    }
+    body[data-theme="happychaos"] .cyber-player-title {
+        font-size: 0.72rem;
+        letter-spacing: 1.4px;
+        padding: 6px 7px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .cyber-btn {
+        min-width: 0;
+        padding: 7px 9px;
+        border-width: 2px;
+        box-shadow: 3px 3px 0 #171225;
+    }
+    body[data-theme="happychaos"] .cyber-track { font-size: 0.68rem; }
+    body[data-theme="happychaos"] .cyber-playlist { max-height: 145px; }
+}

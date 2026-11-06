@@ -1,0 +1,118 @@
+/* =========================================================
+   THEME: HOLO
+========================================================= */
+body[data-theme="holo"] {
+    background: #000;
+    font-family: 'Orbitron', sans-serif;
+    color: #00fff0;
+    scrollbar-color: rgba(46,235,203,0.747) rgba(1,77,60,0.5);
+}
+
+body[data-theme="holo"] .theme-switch select,
+body[data-theme="holo"] .playlist-switch select {
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,255,255,0.4);
+    color: #00fff0;
+}
+
+body[data-theme="holo"] .theme-switch select:hover,
+body[data-theme="holo"] .playlist-switch select:hover {
+    background: rgba(0,255,255,0.2);
+    box-shadow: 0 0 10px rgba(0,255,255,0.6);
+}
+
+body[data-theme="holo"] #bgCanvas,
+body[data-theme="holo"] .logo { display: block; }
+
+body[data-theme="holo"] .logo {
+    opacity: 0.95;
+    top: 23%;
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 0 10px rgb(6, 194, 163, 0.5) );
+    filter:opacity(70%);
+}
+
+body[data-theme="holo"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,255,255,0.35);
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(0,255,255,0.25), inset 0 0 20px rgba(0,0,0,0.8);
+    backdrop-filter: blur(14px) brightness(1.3);
+}
+
+body[data-theme="holo"] .cyber-player-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #00fff0;
+    text-shadow: 0 0 10px #00fff0, 0 0 20px #a066ff;
+}
+
+body[data-theme="holo"] .cyber-btn {
+    background: rgba(0,255,255,0.1);
+    color: #00fff0;
+    border: 1px solid rgba(0,255,255,0.4);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-shadow: 0 0 6px #00fff0;
+    box-shadow: 0 0 10px rgba(0,255,255,0.4), inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+body[data-theme="holo"] .cyber-btn:hover {
+    background: rgba(0,255,255,0.2);
+    box-shadow: 0 0 14px rgba(0,255,255,1), 0 0 22px rgba(160,102,255,0.8);
+}
+
+body[data-theme="holo"] .cyber-loop-label { font-size: 0.8rem; color: #a0eaff; }
+body[data-theme="holo"] .cyber-loop-label input { accent-color: #00fff0; }
+
+body[data-theme="holo"] .cyber-seek {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00fff0, #a066ff, #ffffff);
+}
+
+body[data-theme="holo"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #00fff0;
+    box-shadow: 0 0 10px #00fff0;
+}
+
+body[data-theme="holo"] .cyber-playlist { max-height: 225px; }
+
+body[data-theme="holo"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(0,255,255,0.05);
+    border: 1px solid rgba(0,255,255,0.2);
+    color: #a0eaff;
+}
+
+body[data-theme="holo"] .cyber-track:hover { background: rgba(0,255,255,0.15); }
+body[data-theme="holo"] .cyber-track.active {
+    background: rgba(0,255,255,0.35);
+    color: #00fff0;
+    border-color: #00fff0;
+    box-shadow: 0 0 12px #00fff0;
+}
+
+body[data-theme="holo"] #cyberVisualizer {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(0,255,255,0.35);
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 18px rgba(0,255,255,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}

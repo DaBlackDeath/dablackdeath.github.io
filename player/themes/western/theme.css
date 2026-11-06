@@ -1,0 +1,184 @@
+/* =========================================================
+   THEME: WESTERN (Steckbrief, Sonnenuntergang, Saloon)
+========================================================= */
+body[data-theme="western"] {
+    background: #1e0f33;
+    color: #3b2412;
+    font-family: 'Special Elite', 'Courier New', monospace;
+    scrollbar-color: #6b4a2a #e2c992;
+    --wood: repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0 2px, transparent 2px 9px, rgba(255,255,255,0.04) 9px 11px, transparent 11px 23px),
+            linear-gradient(180deg, #7a4a24, #5a3216);
+}
+
+body[data-theme="western"] #bgCanvas { display: block; }
+
+body[data-theme="western"] .theme-switch select,
+body[data-theme="western"] .playlist-switch select {
+    font-family: 'Rye', serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    background: var(--wood);
+    border: 2px solid #2e1a0b;
+    border-radius: 3px;
+    color: #f3dfb0;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+}
+body[data-theme="western"] .theme-switch select option,
+body[data-theme="western"] .playlist-switch select option { background: #3b2412; color: #f3dfb0; }
+
+/* ---------- Saloon-Schild ---------- */
+body[data-theme="western"] .ww-sign {
+    position: fixed;
+    top: 8vh; left: 50%;
+    transform: translateX(-50%) rotate(1.5deg);
+    text-align: center;
+    z-index: 5;
+    white-space: nowrap;
+}
+body[data-theme="western"] .ww-sign-board {
+    padding: 14px 34px;
+    background: var(--wood);
+    border: 4px solid #2e1a0b;
+    border-radius: 4px;
+    font-family: 'Rye', serif;
+    font-size: clamp(1.3rem, 4vw, 2.6rem);
+    color: #f6c66b;
+    text-shadow: 2px 2px 0 #2e1a0b;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.55), inset 0 0 20px rgba(0,0,0,0.4);
+}
+body[data-theme="western"] .ww-sign-sub {
+    margin-top: 10px;
+    font-family: 'Rye', serif;
+    letter-spacing: 4px;
+    color: #ffe2a6;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* ---------- Steckbrief (= Player-Box) ---------- */
+body[data-theme="western"] .cyber-player-box {
+    transform: translateX(-50%) rotate(-0.7deg);
+    width: 46%;
+    min-width: 500px;
+    max-width: 760px;
+    padding: 18px 30px 14px;
+    background:
+        radial-gradient(ellipse at 15% 20%, rgba(120,70,20,0.18), transparent 35%),
+        radial-gradient(ellipse at 85% 75%, rgba(120,70,20,0.2), transparent 40%),
+        radial-gradient(circle at 70% 15%, rgba(90,50,10,0.12), transparent 12%),
+        linear-gradient(180deg, #f1dfb2, #e2c792);
+    border: 1px solid #a07a46;
+    border-radius: 2px;
+    box-shadow:
+        inset 0 0 50px rgba(110,60,15,0.55),
+        inset 0 0 6px rgba(80,40,10,0.6),
+        0 18px 50px rgba(0,0,0,0.6);
+    z-index: 10;
+}
+/* Belohnung unten (als letztes Flex-Element) */
+body[data-theme="western"] .cyber-player-box::after {
+    content: "REWARD  $ 5,000";
+    order: 99;
+    margin-top: 8px;
+    text-align: center;
+    font-family: 'Rye', serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    color: #3b2412;
+}
+body[data-theme="western"] .ww-nails {
+    position: absolute; inset: 6px;
+    pointer-events: none;
+    --n: radial-gradient(circle at 40% 35%, #b9b2a6 0 2px, #4b463f 3px, rgba(0,0,0,0.25) 5px, transparent 6px);
+    background: var(--n) left top / 14px 14px no-repeat, var(--n) right top / 14px 14px no-repeat;
+}
+
+body[data-theme="western"] .ww-wanted { text-align: center; color: #2e1a0b; }
+body[data-theme="western"] .ww-wanted-title {
+    font-family: 'Rye', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: 6px;
+}
+body[data-theme="western"] .ww-wanted-sub {
+    font-family: 'Rye', serif;
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    margin: 4px 0 6px;
+}
+
+body[data-theme="western"] .cyber-player-title {
+    font-family: 'Rye', serif;
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    color: #8b1a1a;
+    border-top: 2px solid #3b2412;
+    border-bottom: 2px solid #3b2412;
+    padding: 4px 0;
+}
+
+body[data-theme="western"] .cyber-player-controls { gap: 6px; }
+body[data-theme="western"] .cyber-btn {
+    background: var(--wood);
+    color: #f3dfb0;
+    border: 2px solid #2e1a0b;
+    border-radius: 3px;
+    padding: 6px 12px;
+    font-family: 'Rye', serif;
+    font-size: 0.8rem;
+    box-shadow: 0 3px 0 #2e1a0b;
+}
+body[data-theme="western"] .cyber-btn:hover { color: #f6c66b; }
+body[data-theme="western"] .cyber-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #2e1a0b; }
+body[data-theme="western"] .btn-label { display: inline; margin-left: 4px; }
+
+body[data-theme="western"] .cyber-loop-label { font-size: 0.85rem; color: #5a3216; }
+body[data-theme="western"] .cyber-loop-label input { accent-color: #8b1a1a; }
+
+body[data-theme="western"] .cyber-seek {
+    height: 6px;
+    background: repeating-linear-gradient(90deg, #3b2412 0 10px, transparent 10px 14px);
+    border-radius: 0;
+}
+body[data-theme="western"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    background: transparent;
+    border: none;
+    /* Sheriff-Stern */
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    background: radial-gradient(circle at 40% 35%, #ffe08a, #b8862a);
+}
+body[data-theme="western"] .cyber-seek::-moz-range-thumb {
+    width: 20px; height: 20px; border: none; border-radius: 0;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    background: #d9a441;
+}
+
+body[data-theme="western"] .cyber-playlist { max-height: 160px; text-align: left; }
+body[data-theme="western"] .cyber-track {
+    padding: 4px 8px;
+    color: #3b2412;
+    font-size: 0.9rem;
+    border-bottom: 1px dotted rgba(59,36,18,0.45);
+}
+body[data-theme="western"] .cyber-track:hover { background: rgba(110,60,15,0.12); }
+body[data-theme="western"] .cyber-track.active { color: #8b1a1a; font-weight: 700; }
+body[data-theme="western"] .cyber-track.active::before { content: "★ "; }
+
+body[data-theme="western"] #cyberVisualizer {
+    margin-top: 10px;
+    height: 110px;
+    border-top: 2px solid #3b2412;
+    border-bottom: 2px solid #3b2412;
+    background: transparent;
+}
+
+@media (max-height: 820px) {
+    body[data-theme="western"] .ww-sign-sub { display: none; }
+    body[data-theme="western"] .ww-sign { top: 4vh; }
+    body[data-theme="western"] #cyberVisualizer { height: 80px; }
+}
+@media (max-width: 700px) {
+    body[data-theme="western"] .cyber-player-box { width: calc(100% - 18px); min-width: 0; bottom: 9px; padding: 14px 14px 10px; transform: translateX(-50%); }
+    body[data-theme="western"] .btn-label { display: none; }
+}

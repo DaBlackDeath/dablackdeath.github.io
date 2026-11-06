@@ -1,0 +1,120 @@
+/* =========================================================
+   THEME: ARCADE-KABINETT
+========================================================= */
+body[data-theme="arcade"] {
+    background: #000;
+    font-family: 'Orbitron', sans-serif;
+    color: #ff2fd6;
+    scrollbar-color: rgba(22,206,252,0.7) rgba(176,19,190,0.3);
+}
+
+body[data-theme="arcade"] .theme-switch select,
+body[data-theme="arcade"] .playlist-switch select {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.62rem;
+    background: rgba(255,47,214,0.12);
+    border: 1px solid #ff2fd6;
+    color: #ff2fd6;
+    border-radius: 4px;
+}
+body[data-theme="arcade"] .theme-switch select:hover,
+body[data-theme="arcade"] .playlist-switch select:hover {
+    background: rgba(0,240,255,0.2);
+    border-color: #00f0ff;
+    color: #00f0ff;
+}
+
+body[data-theme="arcade"] .crt-scanlines-mono,
+body[data-theme="arcade"] .crt-vignette,
+body[data-theme="arcade"] .arcade-marquee,
+body[data-theme="arcade"] .logo { display: block; }
+
+body[data-theme="arcade"] { --scan-rgb: 255,47,214; }
+
+body[data-theme="arcade"] .logo {
+    top: 24%;
+    width: min(90vw, 90vh);
+    filter: drop-shadow(0 0 16px #ff2fd6) drop-shadow(0 0 30px #00f0ff);
+}
+
+body[data-theme="arcade"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #0a0210;
+    border: 3px solid #ff2fd6;
+    border-radius: 40px;
+    box-shadow:
+        0 0 20px rgba(255,47,214,0.5),
+        0 0 50px rgba(0,240,255,0.25),
+        inset 0 0 40px rgba(255,47,214,0.15);
+}
+
+body[data-theme="arcade"] .cyber-player-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #00f0ff;
+    text-shadow: 0 0 8px #00f0ff;
+}
+
+body[data-theme="arcade"] .cyber-player-controls { gap: 10px; }
+
+body[data-theme="arcade"] .cyber-btn {
+    background: #1a0a22;
+    color: #fff;
+    border: 2px solid #ff2fd6;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 0 10px rgba(255,47,214,0.6);
+}
+body[data-theme="arcade"] .cyber-btn:nth-child(2n) { border-color: #00f0ff; box-shadow: 0 0 10px rgba(0,240,255,0.6); }
+body[data-theme="arcade"] .cyber-btn:hover { filter: brightness(1.3); }
+body[data-theme="arcade"] .btn-label { display: none; }
+
+body[data-theme="arcade"] .cyber-loop-label { font-size: 0.75rem; color: #ffe83d; text-shadow: 0 0 6px #ffe83d; }
+body[data-theme="arcade"] .cyber-loop-label input { accent-color: #ff2fd6; }
+
+body[data-theme="arcade"] .cyber-seek {
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff2fd6, #ffe83d, #00f0ff);
+}
+body[data-theme="arcade"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff;
+    border: 2px solid #ff2fd6;
+    box-shadow: 0 0 10px #ff2fd6;
+}
+
+body[data-theme="arcade"] .cyber-playlist { max-height: 225px; }
+
+body[data-theme="arcade"] .cyber-track {
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(255,47,214,0.06);
+    border: 1px solid rgba(255,47,214,0.25);
+    color: #ffb8f2;
+}
+body[data-theme="arcade"] .cyber-track:hover { background: rgba(0,240,255,0.12); }
+body[data-theme="arcade"] .cyber-track.active {
+    background: rgba(255,47,214,0.3);
+    color: #fff;
+    border-color: #00f0ff;
+    box-shadow: 0 0 12px rgba(255,47,214,0.6);
+}
+
+body[data-theme="arcade"] #cyberVisualizer {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #ff2fd6;
+    border-radius: 12px;
+    margin-top: 10px;
+    box-shadow: 0 0 18px rgba(255,47,214,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}

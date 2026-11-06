@@ -1,0 +1,123 @@
+/* =========================================================
+   THEME: SYNTHWAVE
+========================================================= */
+body[data-theme="synthwave"] {
+    background: #000;
+    color: #ff00ff;
+    font-family: 'Orbitron', sans-serif;
+    scrollbar-color: rgba(22,206,252,0.7) rgba(176,19,190,0.3);
+}
+
+body[data-theme="synthwave"] .theme-switch select,
+body[data-theme="synthwave"] .playlist-switch select {
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 10px;
+    background: rgba(176,19,190,0.3);
+    border: 1px solid rgba(255,150,200,0.6);
+    color: #ff6fb7;
+}
+
+body[data-theme="synthwave"] .theme-switch select:hover,
+body[data-theme="synthwave"] .playlist-switch select:hover {
+    background: rgba(97,219,250,0.8);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255,150,200,0.6);
+}
+
+body[data-theme="synthwave"] .sun,
+body[data-theme="synthwave"] .grid,
+body[data-theme="synthwave"] .vhs,
+body[data-theme="synthwave"] #bgCanvas,
+body[data-theme="synthwave"] .logo { display: block; }
+
+body[data-theme="synthwave"] .logo {
+    top: 27%;
+    width: min(50vw, 50vh);
+    filter: drop-shadow(0 0 20px rgb(233,0,136)) drop-shadow(0 0 40px #e9a136) drop-shadow(0 0 60px #d60df1);
+}
+
+body[data-theme="synthwave"] .cyber-player-box {
+    bottom: 50px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,0,255,0.4);
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(255,0,255,0.25), inset 0 0 20px rgba(0,0,0,0.8);
+    backdrop-filter: blur(14px);
+    z-index: 20;
+}
+
+body[data-theme="synthwave"] .cyber-player-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+}
+
+body[data-theme="synthwave"] .cyber-btn {
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #001010;
+    border: 1px solid rgba(255,0,255,0.6);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba(255,255,255,0.4);
+    box-shadow: 0 0 10px rgba(255,0,255,0.6), 0 0 18px rgba(0,255,255,0.5);
+}
+
+body[data-theme="synthwave"] .cyber-btn:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 14px rgba(255,0,255,1), 0 0 22px rgba(0,255,255,0.8);
+}
+
+body[data-theme="synthwave"] .btn-label { display: inline; }
+
+body[data-theme="synthwave"] .cyber-loop-label { font-size: 0.8rem; color: #ff99ff; }
+body[data-theme="synthwave"] .cyber-loop-label input { accent-color: #ff00ff; }
+
+body[data-theme="synthwave"] .cyber-seek {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #0088ff);
+}
+
+body[data-theme="synthwave"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 10px #ff00ff;
+}
+
+body[data-theme="synthwave"] .cyber-playlist { max-height: 210px; margin-bottom: 10px; }
+
+body[data-theme="synthwave"] .cyber-track {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background: rgba(255,0,255,0.05);
+    border: 1px solid rgba(255,0,255,0.2);
+    color: #ffccff;
+    font-size: 0.85rem;
+}
+
+body[data-theme="synthwave"] .cyber-track:hover { background: rgba(255,0,255,0.15); }
+body[data-theme="synthwave"] .cyber-track.active {
+    background: linear-gradient(90deg, rgba(0,255,255,0.4), rgba(255,0,255,0.4));
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 12px #ff00ff, 0 0 18px #00ffff;
+}
+
+body[data-theme="synthwave"] #cyberVisualizer {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,0,255,0.35);
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(255,0,255,0.35), inset 0 0 18px rgba(0,0,0,0.9);
+}

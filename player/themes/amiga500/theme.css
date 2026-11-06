@@ -1,0 +1,113 @@
+/* =========================================================
+   THEME: AMIGA 500 (Workbench)
+========================================================= */
+body[data-theme="amiga500"] {
+    background-color: #0000a7;
+    background-image: repeating-conic-gradient(#0000a7 0% 25%, #00007a 0% 50%);
+    background-size: 4px 4px;
+    font-family: 'VT323', monospace;
+    color: #000;
+    scrollbar-color: rgb(255, 174, 0) #004ef5;
+}
+
+body[data-theme="amiga500"] .theme-switch select,
+body[data-theme="amiga500"] .playlist-switch select {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    background: #cfcfcf;
+    border: 2px solid #000;
+    color: #000;
+    border-radius: 0;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .theme-switch select:hover,
+body[data-theme="amiga500"] .playlist-switch select:hover { background: #e2e2e2; }
+
+body[data-theme="amiga500"] .crt-vignette,
+body[data-theme="amiga500"] .amiga-titlebar,
+body[data-theme="amiga500"] .logo { display: flex; }
+body[data-theme="amiga500"] .logo { display: block; }
+
+body[data-theme="amiga500"] .logo {
+    top: 21%;
+    width: min(60vw, 60vh);
+    filter: drop-shadow(0 8px 0 rgba(0,0,0,0.3));
+    image-rendering: pixelated;
+}
+
+body[data-theme="amiga500"] .cyber-player-box {
+    bottom: 20px;
+    top: auto;
+    transform: translateX(-50%);
+    width: 50%;
+    min-width: 500px;
+    max-width: 900px;
+    background: #a2a2a2;
+    border: 2px solid #000;
+    border-radius: 0;
+    padding-top: 34px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5), inset 1px 1px 0 #cfcfcf;
+}
+
+body[data-theme="amiga500"] .cyber-player-title { display: none; }
+
+body[data-theme="amiga500"] .cyber-btn {
+    background: #cfcfcf;
+    color: #000;
+    border: 2px solid #000;
+    padding: 6px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    border-radius: 0;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .cyber-btn:hover { background: #dcdcdc; }
+body[data-theme="amiga500"] .cyber-btn:active {
+    box-shadow: inset -2px -2px 0 #fff, inset 2px 2px 0 #6c6c6c;
+    transform: translate(1px, 1px);
+}
+body[data-theme="amiga500"] .btn-label { display: inline; }
+
+body[data-theme="amiga500"] .cyber-loop-label { font-size: 1rem; color: #000; }
+body[data-theme="amiga500"] .cyber-loop-label input { accent-color: #ff8800; }
+
+body[data-theme="amiga500"] .cyber-seek {
+    height: 14px;
+    border-radius: 0;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #6c6c6c;
+}
+body[data-theme="amiga500"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 18px; border-radius: 0;
+    background: #cfcfcf;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #6c6c6c;
+}
+
+body[data-theme="amiga500"] .cyber-playlist {
+    max-height: 225px;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #6c6c6c;
+    padding: 4px;
+    text-align: left;
+}
+
+body[data-theme="amiga500"] .cyber-track {
+    padding: 4px 8px;
+    color: #000;
+    font-size: 1.05rem;
+}
+body[data-theme="amiga500"] .cyber-track::before { content: "▸ "; }
+body[data-theme="amiga500"] .cyber-track:hover { background: #dcdce8; }
+body[data-theme="amiga500"] .cyber-track.active { background: #000; color: #33ff66; }
+
+body[data-theme="amiga500"] #cyberVisualizer {
+    background: #000;
+    border: 2px solid #000;
+    box-shadow: inset 2px 2px 0 #6c6c6c, 0 0 0 2px #cfcfcf;
+    border-radius: 0;
+    margin-top: 10px;
+}

@@ -1,42 +1,33 @@
+/* Wartet, bis alle Bilder geladen UND dekodiert sind, und feuert dann
+   "preloaderComplete". Unterstützt <img src="..."> und <img data-src="...">.
+   Optional: #loader-bar / #loader-text für eine Fortschrittsanzeige. */
 export async function startPreloader() {
     const bar = document.getElementById("loader-bar");
     const text = document.getElementById("loader-text");
     const preloader = document.getElementById("preloader");
 
-    // 1) Bilder aus dem DOM sammeln
-    const images = [...document.querySelectorAll("img[data-src]")];
-    
+    const images = [...document.querySelectorAll("img")];
+    const total = images.length;
     let loaded = 0;
-    let total = 0;
 
-    function update() {
+    const update = () => {
         loaded++;
-        const percent = Math.round((loaded / total) * 100);
-        
+        const percent = total ? Math.round((loaded / total) * 100) : 100;
         if (bar) bar.style.width = percent + "%";
         if (text) text.textContent = percent + "%";
+    };
 
-        if (loaded === total) {
-            // Wenn alles fertig ist, Preloader ausblenden und Event feuern
-            if (preloader) preloader.style.opacity = "0";
-            document.dispatchEvent(new Event("preloaderComplete"));
+    await Promise.all(images.map(async img => {
+        if (img.dataset.src && !img.getAttribute("src")) img.src = img.dataset.src;
+        try {
+            // decode() lädt + dekodiert vorab → kein Ruckeln beim ersten Anzeigen
+            await img.decode();
+        } catch (e) {
+            // Fehlendes/defektes Bild soll den Boot nicht blockieren
         }
-    }
+        update();
+    }));
 
-    // Zeige die Seite/Body wieder an (falls du sie am Anfang ausblendest)
-    document.body.style.opacity = "1";
-
-
-    // 4) Bilder vorladen
-    images.forEach(img => {
-        const realSrc = img.dataset.src;
-        const loader = new Image();
-        loader.onload = () => {
-            img.src = realSrc;
-            update();
-        };
-        loader.onerror = update; // Weiterzählen, falls ein Bild fehlt
-        loader.src = realSrc;
-    });
-
+    if (preloader) preloader.style.opacity = "0";
+    document.dispatchEvent(new Event("preloaderComplete"));
 }

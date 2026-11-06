@@ -1,0 +1,216 @@
+/* =========================================================
+   THEME: GAMEBOY (4-Grün-LCD, Handheld-Gehäuse)
+   Palette: #0f380f  #306230  #8bac0f  #9bbc0f
+========================================================= */
+body[data-theme="gameboy"] {
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), transparent 60%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 4px),
+        #c9c5bd;
+    color: #0f380f;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    scrollbar-color: #306230 #8bac0f;
+}
+
+body[data-theme="gameboy"] .theme-switch select,
+body[data-theme="gameboy"] .playlist-switch select {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    background: #8bac0f;
+    border: 3px solid #0f380f;
+    border-radius: 0;
+    color: #0f380f;
+    backdrop-filter: none;
+}
+body[data-theme="gameboy"] .theme-switch select:hover,
+body[data-theme="gameboy"] .playlist-switch select:hover { background: #9bbc0f; }
+body[data-theme="gameboy"] .theme-switch select option,
+body[data-theme="gameboy"] .playlist-switch select option { background: #9bbc0f; color: #0f380f; }
+
+/* ---------- Gehäuse-Deko ---------- */
+body[data-theme="gameboy"] .gb-brand {
+    position: fixed;
+    top: 9vh; left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 5;
+}
+body[data-theme="gameboy"] .gb-brand-main {
+    font-family: 'Press Start 2P', monospace;
+    font-style: italic;
+    font-size: clamp(1.2rem, 4vw, 2.4rem);
+    color: #2a2a7a;
+    letter-spacing: 2px;
+}
+body[data-theme="gameboy"] .gb-brand-pill {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 3px solid #2a2a7a;
+    color: #2a2a7a;
+    font-size: clamp(0.6rem, 1.6vw, 0.9rem);
+}
+
+body[data-theme="gameboy"] .gb-dpad {
+    position: fixed;
+    left: 8vw; top: 42vh;
+    width: 120px; height: 120px;
+    z-index: 5;
+}
+body[data-theme="gameboy"] .gb-dpad::before,
+body[data-theme="gameboy"] .gb-dpad::after {
+    content: "";
+    position: absolute;
+    background: #2b2b2e;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #111, inset 0 2px 0 rgba(255,255,255,0.12);
+}
+body[data-theme="gameboy"] .gb-dpad::before { left: 40px; top: 0; width: 40px; height: 120px; }
+body[data-theme="gameboy"] .gb-dpad::after  { left: 0; top: 40px; width: 120px; height: 40px; }
+body[data-theme="gameboy"] .gb-dpad i {
+    position: absolute; left: 50px; top: 50px; width: 20px; height: 20px; z-index: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1d1d20 40%, #2b2b2e 70%);
+}
+
+body[data-theme="gameboy"] .gb-ab {
+    position: fixed;
+    right: 8vw; top: 40vh;
+    display: flex; gap: 22px;
+    transform: rotate(-25deg);
+    z-index: 5;
+}
+body[data-theme="gameboy"] .gb-ab b {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #c4306a, #8e1240 70%);
+    box-shadow: 0 5px 0 #520a25;
+    display: block;
+    text-align: center;
+    line-height: 170px;          /* Buchstabe sitzt unter dem Knopf */
+    color: #2a2a7a;
+    font-size: 0.8rem;
+}
+body[data-theme="gameboy"] .gb-ab b:last-child { margin-top: -26px; }
+
+/* ---------- Display-Rahmen (= Player-Box) ---------- */
+body[data-theme="gameboy"] .cyber-player-box {
+    transform: translateX(-50%);
+    width: min(640px, 94vw);
+    padding: 30px 52px 26px;
+    border-radius: 12px 12px 56px 12px;
+    background:
+        linear-gradient(#9bbc0f, #9bbc0f) no-repeat 40px 18px / calc(100% - 80px) calc(100% - 36px),
+        #55546b;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.12), 0 24px 50px rgba(0,0,0,0.25);
+    z-index: 10;
+}
+/* Pixel-Raster (Dot-Matrix) über dem LCD */
+body[data-theme="gameboy"] .cyber-player-box::after {
+    content: "";
+    position: absolute;
+    left: 40px; top: 18px; right: 40px; bottom: 18px;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(15,56,15,0.08) 1px, transparent 1px) 0 0 / 3px 3px,
+        linear-gradient(rgba(15,56,15,0.08) 1px, transparent 1px) 0 0 / 3px 3px;
+}
+
+body[data-theme="gameboy"] .gb-led {
+    position: absolute;
+    left: 8px; top: 38%;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-size: 0.35rem;
+    color: #b8b7c8;
+    letter-spacing: 1px;
+    writing-mode: horizontal-tb;
+}
+body[data-theme="gameboy"] .gb-led i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #4a1010;
+    transition: 0.2s;
+}
+body[data-theme="gameboy"].is-playing .gb-led i { background: #ff2a2a; box-shadow: 0 0 8px #ff2a2a; }
+
+body[data-theme="gameboy"] .cyber-player-title {
+    font-size: 0.7rem;
+    color: #0f380f;
+    padding-top: 6px;
+    letter-spacing: 1px;
+}
+
+body[data-theme="gameboy"] .cyber-player-controls { gap: 6px; }
+body[data-theme="gameboy"] .cyber-btn {
+    background: #8bac0f;
+    color: #0f380f;
+    border: 3px solid #0f380f;
+    border-radius: 0;
+    padding: 6px 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    box-shadow: 3px 3px 0 #306230;
+}
+body[data-theme="gameboy"] .cyber-btn:hover { background: #0f380f; color: #9bbc0f; }
+body[data-theme="gameboy"] .cyber-btn:active { transform: translate(3px, 3px); box-shadow: none; }
+
+body[data-theme="gameboy"] .cyber-loop-label { font-size: 0.6rem; color: #306230; }
+body[data-theme="gameboy"] .cyber-loop-label input { accent-color: #0f380f; }
+
+body[data-theme="gameboy"] .cyber-seek {
+    height: 8px;
+    background: #306230;
+    border: 2px solid #0f380f;
+    border-radius: 0;
+}
+body[data-theme="gameboy"] .cyber-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 16px; border-radius: 0;
+    background: #0f380f;
+}
+body[data-theme="gameboy"] .cyber-seek::-moz-range-thumb {
+    width: 12px; height: 16px; border-radius: 0; border: none; background: #0f380f;
+}
+
+body[data-theme="gameboy"] .cyber-playlist { max-height: 170px; text-align: left; }
+body[data-theme="gameboy"] .cyber-track {
+    padding: 5px 8px 5px 22px;
+    position: relative;
+    font-size: 0.6rem;
+    line-height: 1.5;
+    color: #0f380f;
+}
+body[data-theme="gameboy"] .cyber-track:hover { background: #8bac0f; }
+body[data-theme="gameboy"] .cyber-track.active { background: #0f380f; color: #9bbc0f; }
+body[data-theme="gameboy"] .cyber-track.active::before {
+    content: "▶";
+    position: absolute; left: 6px;
+    animation: gbBlink 0.8s steps(1) infinite;
+}
+@keyframes gbBlink { 50% { opacity: 0; } }
+
+body[data-theme="gameboy"] #cyberVisualizer {
+    margin-top: 10px;
+    height: 110px;
+    background: #8bac0f;
+    border: 3px solid #0f380f;
+    image-rendering: pixelated;
+}
+
+@media (max-width: 1000px) {
+    body[data-theme="gameboy"] .gb-dpad,
+    body[data-theme="gameboy"] .gb-ab { display: none; }
+}
+@media (max-width: 700px) {
+    body[data-theme="gameboy"] .cyber-player-box {
+        padding: 22px 30px 20px;
+        background:
+            linear-gradient(#9bbc0f, #9bbc0f) no-repeat 22px 12px / calc(100% - 44px) calc(100% - 24px),
+            #55546b;
+    }
+    body[data-theme="gameboy"] .cyber-player-box::after { left: 22px; top: 12px; right: 22px; bottom: 12px; }
+    body[data-theme="gameboy"] .gb-led { display: none; }
+    body[data-theme="gameboy"] .cyber-btn { padding: 5px 7px; }
+}
