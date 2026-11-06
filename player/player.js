@@ -167,7 +167,17 @@ const Visualizer = {
         this.ctx = canvas.getContext("2d");
     },
 
-    setConfig(cfg) { this.config = cfg || { style: "bars" }; },
+    setConfig(cfg) {
+        this.config = cfg || { style: "bars" };
+        // Frischen Canvas einsetzen: Chrome markiert einen Canvas intern als "undurchsichtig", sobald er
+        // einmal komplett deckend übermalt wurde (Segment-Anzeige mit background) – danach erscheint er
+        // auch nach clearRect schwarz. Ein neues Element setzt das (und alle Kontext-Zustände) zurück.
+        if (this.canvas && this.canvas.parentNode) {
+            const fresh = this.canvas.cloneNode(false);
+            this.canvas.replaceWith(fresh);
+            this.init(fresh);
+        }
+    },
 
     start(player) {
         this.player = player;
